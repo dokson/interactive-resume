@@ -7,6 +7,7 @@
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 	<body>
 		<script src=script/jquery-3.3.1.min.js></script><script src=script/jquery-ui.min.js></script><script src=script/detect-browser-device.js></script>
+        <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 		<noscript>
 			<div id=javascript-banner-container>
 				<div id=javascript-banner>
@@ -761,6 +762,15 @@
 				</div>
 				<div id=balloon></div>
 				<div id=contact-container>
+                    <div id=contact-center>
+                        <div id="title-contact"></div>
+                        <div id="contact-box">
+                            <div id="contact-box-email"><input id="email-address" name="email-address" maxlength="75"></div>
+                            <div id="contact-box-subject"><input id="email-subject" name="email-subject" maxlength="150"></div>
+                            <div id="contact-box-message"><textarea id="email-message" name="email-message"></textarea></div>
+                        </div>
+                        <div id="contact-button"><input id="send-email" name="send-email" src="image/contact-button.png" type="image" value="submit"></div>
+                    </div>
 					<div id=social-container>
 						<div id=social-top></div>
 						<div id=social-middle>
