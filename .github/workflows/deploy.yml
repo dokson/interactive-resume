@@ -21,9 +21,26 @@ jobs:
     - name: Minify JavaScript and CSS
       run: npm run build
 
+    - name: Prepare deployment files
+      run: |
+        mkdir -p deploy
+        cp -r index.html dist image font download favicon.ico site.webmanifest deploy/
+        echo "Deployment files prepared: $(ls deploy)"
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
-        exclude_assets: '.github, node_modules, src'
+        publish_dir: deploy
+        publish_branch: gh-pages
+        allow_empty_commit: false
+        keep_files: false
+        force_orphan: false
+        enable_jekyll: false
+        disable_nojekyll: false
+
+    - name: Clean up deployment files
+      if: always()  # Run even if previous steps fail
+      run: |
+        rm -rf deploy
+        echo "Cleaned up deploy folder"
