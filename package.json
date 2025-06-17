@@ -7,7 +7,7 @@
     "build": "node src/js/build.js",
     "start": "npm run build"
   },
-  "keywords": ["interactive", "resume", "cv", "portfolio", "web"],
+  "keywords": ["interactive", "resume", "cv", "business", "portfolio", "web"],
   "author": "Alessandro Colace",
   "license": "UNLICENSED",
   "devDependencies": {
