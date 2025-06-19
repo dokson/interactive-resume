@@ -1,27 +1,23 @@
-const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const SCRIPTS = [
-    { name: 'Minify Sources', script: 'node src/build/minify.js' },
-    { name: 'Generate Manifest', script: 'node src/build/generate-manifest.js' },
-    { name: 'Copy External Libraries', script: 'node src/build/copy-libs.js' }
-];
+const packageJson = require(path.join(__dirname, '../../package.json'));
+
+const { execSync } = require('child_process');
 
 console.log(`🚀 Starting deploy process...`);
 
-const distDir = path.join(__dirname, '../../dist');
-if (!fs.existsSync(distDir)) {
-    fs.mkdirSync(distDir, { recursive: true });
-    console.log(`📁 Created output directory: ${distDir}`);
+if (!fs.existsSync(packageJson.config.build.outputDir)) {
+    fs.mkdirSync(packageJson.config.build.outputDir, { recursive: true });
+    console.log(`📁 Created output directory: ${packageJson.config.build.outputDir}`);
 }
 
-SCRIPTS.forEach((step, index) => {
+packageJson.config.build.steps.forEach((step, index) => {
     try {
         console.log(`\n📦 Step ${index + 1}: ${step.name}`);
         console.log('─'.repeat(100));
         
-        execSync(step.script, { 
+        execSync(`npm run ${step.script}`, {
             stdio: 'inherit',
             cwd: path.join(__dirname, '../..')
         });

@@ -1,8 +1,10 @@
 {
     "name": "interactive-resume",
     "version": "2.0.0",
-    "description": "My 2019's interactive CV, based on Robby Leonardi's interactive Resume",
-    
+    "author": "Alessandro Colace",
+    "description": "Interactive Resume",
+    "job_title": "Cloud Data Consultant",
+    "based_on": "http://www.rleonardi.com/interactive-resume/",
     "scripts": {
         "deploy": "node src/build/deploy.js",
         "deploy:minify": "node src/build/minify.js",
@@ -10,65 +12,69 @@
         "deploy:copy-libs": "node src/build/copy-libs.js",
         "start": "npm run deploy"
     },
-    "keywords": [
-        "interactive",
-        "resume",
-        "cv",
-        "business",
-        "portfolio",
-        "web"
-    ],
-    "author": "Alessandro Colace",
-    "license": "UNLICENSED",
     "config": {
-        "personal": {
-            "name": "Alessandro Colace",
-            "shortName": "A. Colace",
-            "title": "Cloud Data Consultant",
-            "description": "Interactive resume of Alessandro Colace - Cloud Data Consultant"
+        "build": {
+            "outputDir": "dist",
+            "libsDir": "src/libs",
+            "jsDir": "src/js",
+            "cssDir": "src/css",
+            "cssFile": "style.css",
+            "manifestFile": "site.webmanifest",
+            "steps": [
+                { "name": "Minify Sources", "script": "deploy:minify" },
+                { "name": "Generate Manifest", "script": "deploy:generate-manifest" },
+                { "name": "Copy External Libraries", "script": "deploy:copy-libs" }
+            ]
         },
         "manifest": {
             "themeColor": "#5bbad5",
             "backgroundColor": "#ffffff",
             "display": "standalone",
             "orientation": "portrait-primary",
-            "startUrl": "/",
-            "scope": "/",
-            "lang": "en",
+            "lang": "en-US",
             "icons": [
                 {
-                    "src": "/image/icons/favicon-16x16.png",
+                    "src": "image/icons/favicon-16x16.png",
                     "sizes": "16x16",
                     "type": "image/png",
                     "purpose": "any"
                 },
                 {
-                    "src": "/image/icons/favicon-32x32.png",
+                    "src": "image/icons/favicon-32x32.png",
                     "sizes": "32x32",
                     "type": "image/png",
                     "purpose": "any"
                 },
                 {
-                    "src": "/image/icons/android-chrome-192x192.png",
+                    "src": "image/icons/android-chrome-192x192.png",
                     "sizes": "192x192",
                     "type": "image/png",
                     "purpose": "any maskable"
                 },
                 {
-                    "src": "/image/icons/android-chrome-512x512.png",
+                    "src": "image/icons/android-chrome-512x512.png",
                     "sizes": "512x512",
                     "type": "image/png",
                     "purpose": "any maskable"
                 },
                 {
-                    "src": "/image/icons/apple-touch-icon.png",
+                    "src": "image/icons/apple-touch-icon.png",
                     "sizes": "180x180",
                     "type": "image/png",
                     "purpose": "any"
                 }
             ]
-        }
+        },
+        "keywords": [
+            "interactive",
+            "resume",
+            "cv",
+            "business",
+            "portfolio",
+            "web"
+        ]
     },
+    "license": "UNLICENSED",
     "devDependencies": {
         "uglify-js": "^3.19.3",
         "clean-css": "^5.3.3"

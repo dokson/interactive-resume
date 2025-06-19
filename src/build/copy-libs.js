@@ -1,17 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const CONFIG = {
-    outputDir: path.join(__dirname, '../../dist'),
-    libsDir: path.join(__dirname, '../../src/libs')
-};
+const packageJson = require(path.join(__dirname, '../../package.json'));
 
 console.log('🔄 Copy external libs...');
 
-fs.readdirSync(CONFIG.libsDir).forEach(file => {
+fs.readdirSync(packageJson.config.build.libsDir).forEach(file => {
     try {
-        const srcPath = path.join(CONFIG.libsDir, file);
-        const destPath = path.join(CONFIG.outputDir, file);
+        const srcPath = path.join(packageJson.config.build.libsDir, file);
+        const destPath = path.join(packageJson.config.build.outputDir, file);
         fs.copyFileSync(srcPath, destPath);
         console.log(`✅ Copied to ${destPath}`);
     } catch (error) {

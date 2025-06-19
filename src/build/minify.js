@@ -1,20 +1,16 @@
 const fs = require('fs');
-const uglifyJS = require('uglify-js');
-const CleanCSS = require('clean-css');
 const path = require('path');
 
-const CONFIG = {
-    outputDir: path.join(__dirname, '../../dist'),
-    jsDir: path.join(__dirname, '../js'),
-    cssDir: path.join(__dirname, '../css'),
-    cssFile: 'style.css'
-};
+const packageJson = require(path.join(__dirname, '../../package.json'));
+
+const uglifyJS = require('uglify-js');
+const CleanCSS = require('clean-css');
 
 console.log('🔄 JavaScript minification...');
 
-fs.readdirSync(CONFIG.jsDir).forEach(file => {
-    const inputFile = path.join(CONFIG.jsDir, file);
-    const outputFile = path.join(CONFIG.outputDir, `${file.replace('.js', '.min.js')}`);
+fs.readdirSync(packageJson.config.build.jsDir).forEach(file => {
+    const inputFile = path.join(packageJson.config.build.jsDir, file);
+    const outputFile = path.join(packageJson.config.build.outputDir, `${file.replace('.js', '.min.js')}`);
     try {
         const jsCode = fs.readFileSync(inputFile, 'utf8');
         const result = uglifyJS.minify(jsCode, { compress: true, mangle: true, sourceMap: false });
@@ -34,8 +30,8 @@ fs.readdirSync(CONFIG.jsDir).forEach(file => {
 
 console.log('🔄 CSS minification...');
 
-const cssInputFile = path.join(CONFIG.cssDir, CONFIG.cssFile);
-const cssOutputFile = path.join(CONFIG.outputDir, CONFIG.cssFile.replace('.css', '.min.css'));
+const cssInputFile = path.join(packageJson.config.build.cssDir, packageJson.config.build.cssFile);
+const cssOutputFile = path.join(packageJson.config.build.outputDir, packageJson.config.build.cssFile.replace('.css', '.min.css'));
 
 if (fs.existsSync(cssInputFile)) {
     try {
@@ -45,14 +41,14 @@ if (fs.existsSync(cssInputFile)) {
         const result = cleanCSS.minify(cssFile);
 
         if (result.errors.length > 0) {
-            console.error(`❌ CSS minification error for ${CONFIG.cssFile}:`, result.errors);
+            console.error(`❌ CSS minification error for ${packageJson.config.build.cssFile}:`, result.errors);
             process.exit(1);
         }
 
         fs.writeFileSync(cssOutputFile, result.styles);
-        console.log(`✅ ${CONFIG.cssFile} → ${path.basename(cssOutputFile)}`);
+        console.log(`✅ ${packageJson.config.build.cssFile} → ${path.basename(cssOutputFile)}`);
     } catch (error) {
-        console.error(`❌ Error processing ${CONFIG.cssFile}:`, error.message);
+        console.error(`❌ Error processing ${packageJson.config.build.cssFile}:`, error.message);
         process.exit(1);
     }
 } else {
