@@ -12,7 +12,7 @@ console.log(`🚀 Starting deploy process...`);
 const distDir = path.join(__dirname, '../../dist');
 if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
-    console.log(`📁 Created output directory: ${CONFIG.outputDir}`);
+    console.log(`📁 Created output directory: ${distDir}`);
 }
 
 SCRIPTS.forEach((step, index) => {
