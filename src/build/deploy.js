@@ -4,7 +4,8 @@ const fs = require('fs');
 
 const SCRIPTS = [
     { name: 'Minify Sources', script: 'node src/build/minify.js' },
-    { name: 'Generate Manifest', script: 'node src/build/generate-manifest.js' }
+    { name: 'Generate Manifest', script: 'node src/build/generate-manifest.js' },
+    { name: 'Copy External Libraries', script: 'node src/build/copy-libs.js' }
 ];
 
 console.log(`🚀 Starting deploy process...`);
@@ -21,8 +22,8 @@ SCRIPTS.forEach((step, index) => {
         console.log('─'.repeat(100));
         
         execSync(step.script, { 
-            stdio: 'inherit', 
-            cwd: path.join(__dirname, '../..') 
+            stdio: 'inherit',
+            cwd: path.join(__dirname, '../..')
         });
         
         console.log(`✅ ${step.name} completed`);
@@ -32,17 +33,5 @@ SCRIPTS.forEach((step, index) => {
     }
 });
 
-console.log(`🎉 Deploy process completed!`);
-
 console.log('─'.repeat(100));
-
-if (fs.existsSync(distDir)) {
-    const files = fs.readdirSync(distDir);
-    console.log(`📋 ${distDir}:`);
-    files.forEach(file => {
-        const filePath = path.join(distDir, file);
-        const stats = fs.statSync(filePath);
-        const size = (stats.size / 1024).toFixed(1);
-        console.log(`   • ${file} (${size} KB)`);
-    });
-}
+console.log(`🎉 Deploy process completed!`);
