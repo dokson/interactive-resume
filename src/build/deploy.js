@@ -33,3 +33,16 @@ SCRIPTS.forEach((step, index) => {
 });
 
 console.log(`🎉 Deploy process completed!`);
+
+console.log('─'.repeat(100));
+
+if (fs.existsSync(distDir)) {
+    const files = fs.readdirSync(distDir);
+    console.log(`📋 ${distDir}:`);
+    files.forEach(file => {
+        const filePath = path.join(distDir, file);
+        const stats = fs.statSync(filePath);
+        const size = (stats.size / 1024).toFixed(1);
+        console.log(`   • ${file} (${size} KB)`);
+    });
+}
