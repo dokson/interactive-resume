@@ -26,4 +26,4 @@ const manifest = {
 
 fs.writeFileSync(path.join(CONFIG.outputDir, CONFIG.manifestFile), JSON.stringify(manifest, null, 4));
 
-console.log(`✅ ${CONFIG.manifestFile} generated from package.json configuration`);
+console.log(`✅ ${CONFIG.manifestFile} generated from ${CONFIG.packageJson}`);
