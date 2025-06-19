@@ -64,7 +64,7 @@
                     "purpose": "any"
                 }
             ],
-            "iconsPath": "/image/icons/"
+            "iconsPath": "image/icons/"
         },
         "keywords": [
             "interactive",

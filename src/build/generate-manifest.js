@@ -21,7 +21,7 @@ const manifest = {
     description: `${packageJson.description} of ${packageJson.author} | ${packageJson.job_title} - based on ${packageJson.based_on}`,
     icons: packageJson.config.manifest.icons.map(icon => ({
         ...icon,
-        src: `${packageJson.name}${packageJson.config.manifest.iconsPath}${icon.src}`
+        src: `../${packageJson.config.manifest.iconsPath}${icon.src}`
     })),
     theme_color: packageJson.config.manifest.themeColor,
     background_color: packageJson.config.manifest.backgroundColor,
