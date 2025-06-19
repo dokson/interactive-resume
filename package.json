@@ -2,10 +2,12 @@
     "name": "interactive-resume",
     "version": "2.0.0",
     "description": "My 2019's interactive CV, based on Robby Leonardi's interactive Resume",
+    
     "scripts": {
-        "minify": "node src/build/minify.js",
-        "generate-manifest": "node src/build/generate-manifest.js",
-        "start": "npm run minify && npm run generate-manifest"
+        "deploy": "node src/build/deploy.js",
+        "deploy:minify": "node src/build/minify.js",
+        "deploy:generate-manifest": "node src/build/generate-manifest.js",
+        "start": "npm run deploy"
     },
     "keywords": [
         "interactive",

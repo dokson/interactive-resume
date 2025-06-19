@@ -24,6 +24,8 @@ const manifest = {
     categories: packageJson.keywords
 };
 
+console.log('🔄 Generating web manifest...');
+
 fs.writeFileSync(path.join(CONFIG.outputDir, CONFIG.manifestFile), JSON.stringify(manifest, null, 4));
 
-console.log(`✅ ${CONFIG.manifestFile} generated from ${CONFIG.packageJson}`);
+console.log(`✅ ${CONFIG.packageJson} → dist/${CONFIG.manifestFile}`);
