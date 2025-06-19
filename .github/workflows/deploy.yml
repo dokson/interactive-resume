@@ -1,7 +1,14 @@
+name: Build and Deploy to GitHub Pages
+
 on:
   push:
     branches:
     - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -14,18 +21,20 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
-    - name: Minify JavaScript and CSS
-      run: npm run build
+    - name: Minify and generate manifest
+      run: npm start
 
     - name: Prepare deployment files
       run: |
         mkdir -p deploy
-        cp -r index.html dist image font download favicon.ico site.webmanifest deploy/
-        echo "Deployment files prepared: $(ls deploy)"
+        cp -r dist downloads font image favicon.ico index.html deploy/
+        echo "Deployment files prepared:"
+        du -sh deploy/*
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
@@ -40,7 +49,7 @@ jobs:
         disable_nojekyll: false
 
     - name: Clean up deployment files
-      if: always()  # Run even if previous steps fail
+      if: always() # Run even if previous steps fail
       run: |
         rm -rf deploy
         echo "Cleaned up deploy folder"
