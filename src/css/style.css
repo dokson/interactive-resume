@@ -27,11 +27,11 @@ a {
 }
 
 #algae-7 {
-	left: 4900px
+	left: 4700px
 }
 
 #algae-8 {
-	left: 5000px
+	left: 4800px
 }
 
 .algae-a {
@@ -213,7 +213,8 @@ body {
 }
 
 #bubble-container,
-.building, .building2 {
+.building,
+.building2 {
 	position: absolute
 }
 
@@ -235,11 +236,11 @@ body {
 
 
 #buildings-container-2 {
-    position: absolute;
-    left: 6680px;
-    bottom: 20%;
-    width: 900px;
-    height: 80%
+	position: absolute;
+	left: 6680px;
+	bottom: 20%;
+	width: 900px;
+	height: 80%
 }
 
 #kiev {
@@ -2029,6 +2030,15 @@ img {
 	width: 1px;
 	height: 100%;
 	background-color: #00bff3
+}
+
+.ladder {
+	position: absolute;
+	right: 5px;
+	top: -96px;
+	width: 156px;
+	height: 200%;
+	background-image: url(../image/ladder.png);
 }
 
 .scroll-or-swipe-text-container {
