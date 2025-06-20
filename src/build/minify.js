@@ -30,12 +30,11 @@ fs.readdirSync(packageJson.config.build.jsDir).forEach(file => {
 
 console.log('🔄 CSS minification...');
 
-const cssInputFile = path.join(packageJson.config.build.cssDir, packageJson.config.build.cssFile);
-const cssOutputFile = path.join(packageJson.config.build.outputDir, packageJson.config.build.cssFile.replace('.css', '.min.css'));
-
-if (fs.existsSync(cssInputFile)) {
+fs.readdirSync(packageJson.config.build.cssDir).forEach(file => {
+    const inputFile = path.join(packageJson.config.build.cssDir, file);
+    const outputFile = path.join(packageJson.config.build.outputDir, `${file.replace('.css', '.min.css')}`);
     try {
-        const cssFile = fs.readFileSync(cssInputFile, 'utf8');
+        const cssFile = fs.readFileSync(inputFile, 'utf8');
         const cleanCSS = new CleanCSS({ level: 2, returnPromise: false });
 
         const result = cleanCSS.minify(cssFile);
@@ -45,12 +44,10 @@ if (fs.existsSync(cssInputFile)) {
             process.exit(1);
         }
 
-        fs.writeFileSync(cssOutputFile, result.styles);
-        console.log(`✅ ${packageJson.config.build.cssFile} → ${path.basename(cssOutputFile)}`);
+        fs.writeFileSync(outputFile, result.styles);
+        console.log(`✅ ${file} → ${path.basename(outputFile)}`);
     } catch (error) {
-        console.error(`❌ Error processing ${packageJson.config.build.cssFile}:`, error.message);
+        console.error(`❌ Error processing ${file}:`, error.message);
         process.exit(1);
     }
-} else {
-    console.warn(`⚠️ Warning: ${cssInputFile} not found`);
-}
+});
