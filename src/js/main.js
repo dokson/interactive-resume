@@ -148,38 +148,49 @@ function detectPageVerticalPosition() {
 }
 
 function moveLayers() {
-    if (setLayersMovement(),
-        "horizontal" == layersMovement) {
-        for (var e = 0; e < layerHorizontalArray.length; e++)
-            layerHorizontalArray[e].style.left = -1 * layerHorizontalSpeedArray[e] * pageVerticalPosition + "px";
-        positionLayerHorizontalToBottom(),
-            clearHappyAleTimer(),
-            positionVerticalLayersHorizontally()
+    setLayersMovement();
+    if (layersMovement === "horizontal") {
+        for (let i = 0; i < layerHorizontalArray.length; i++) {
+            const layerOffset = -1 * layerHorizontalSpeedArray[i] * pageVerticalPosition;
+            layerHorizontalArray[i].style.left = layerOffset + "px";
+        }
+        positionLayerHorizontalToBottom();
+        clearHappyAleTimer();
+        positionVerticalLayersHorizontally();
     }
-    if ("vertical" == layersMovement) {
-        for (e = 0; e < layerVerticalArray.length; e++)
-            layerVerticalArray[e].style.bottom = -1 * layerVerticalSpeedArray[e] * (pageVerticalPosition - (layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth)) + "px";
-        positionVerticalLayersAtLeftMost(),
-            positionHorizontalLayersToHaveSameRightPosition(),
-            positionHorizontalLayersVertically(),
-            clearShiftAleFrameTimer(),
-            clearHappyAleTimer()
+    if (layersMovement === "vertical") {
+        const lastHorizontalLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
+        const horizontalOffset = pageVerticalPosition - (lastHorizontalLayer.offsetWidth - containerDiv.offsetWidth);
+        
+        for (let i = 0; i < layerVerticalArray.length; i++) {
+            const layerOffset = -1 * layerVerticalSpeedArray[i] * horizontalOffset;
+            layerVerticalArray[i].style.bottom = layerOffset + "px";
+        }
+        positionVerticalLayersAtLeftMost();
+        positionHorizontalLayersToHaveSameRightPosition();
+        positionHorizontalLayersVertically();
+        clearShiftAleFrameTimer();
+        clearHappyAleTimer();
     }
-    "not moving 1" == layersMovement && (positionVerticalLayersAtLeftMost(),
-        positionVerticalLayersToHaveSameTopPosition(),
-        positionHorizontalLayersAtBottomMost(),
-        positionHorizontalLayersToHaveSameRightPosition(),
-        clearHappyAleTimer()),
-        "not moving 2" == layersMovement && (positionVerticalLayersAtLeftMost(),
-            positionVerticalLayersToHaveSameTopPosition(),
-            positionHorizontalLayersAtBottomMost(),
-            positionHorizontalLayersToHaveSameRightPosition(),
-            animateSocialContainer(),
-            happyAle(),
-            drawManyFireworks()),
-        positionRocketAndAleContainerHorizontally(),
-        positionContactContainer(),
-        positionFireworksContainer()
+    if (layersMovement === "not moving 1") {
+        positionVerticalLayersAtLeftMost();
+        positionVerticalLayersToHaveSameTopPosition();
+        positionHorizontalLayersAtBottomMost();
+        positionHorizontalLayersToHaveSameRightPosition();
+        clearHappyAleTimer();
+    }
+    if (layersMovement === "not moving 2") {
+        positionVerticalLayersAtLeftMost();
+        positionVerticalLayersToHaveSameTopPosition();
+        positionHorizontalLayersAtBottomMost();
+        positionHorizontalLayersToHaveSameRightPosition();
+        animateSocialContainer();
+        happyAle();
+        drawManyFireworks();
+    }
+    positionRocketAndAleContainerHorizontally();
+    positionContactContainer();
+    positionFireworksContainer();
 }
 
 function positionVerticalLayersAtLeftMost() {
@@ -618,38 +629,99 @@ function positionExperience3Elements() {
 }
 
 function animateInformationAndEnemiesElements() {
-    if ("horizontal" == layersMovement) {
-        if (0 == isAleSwimming)
-            for (var e = 0; e < landInformationContainerArray.length; e++)
-                (previousPageVerticalPosition + .5 * containerDiv.offsetWidth < landInformationContainerArray[e].offsetLeft || previousPageVerticalPosition + .5 * containerDiv.offsetWidth > landInformationContainerArray[e].offsetLeft + landInformationContainerArray[e].offsetWidth) && pageVerticalPosition + .5 * containerDiv.offsetWidth > landInformationContainerArray[e].offsetLeft && pageVerticalPosition + .5 * containerDiv.offsetWidth < landInformationContainerArray[e].offsetLeft + landInformationContainerArray[e].offsetWidth && (landInformationContainerArray[e] == about1ContainerDiv && 1 == canAnimatePlantInformation && (animatePlants(),
-                    canAnimatePlantInformation = !1),
-                    landInformationContainerArray[e] == about2ContainerDiv &&
-                    (1 == canAnimateBuildingInformation && (animateBuildings(), canAnimateBuildingInformation = !1)),
-                    landInformationContainerArray[e] == about3ContainerDiv &&
-                    (1 == canAnimateBuilding2Information && (animateBuildings2(), canAnimateBuilding2Information = !1)),
-                    landInformationContainerArray[e] == experience1ContainerDiv && (0 == canAnimateRobotInformation ? animateRobotHands() : (animateRobot(),
-                        animateExperienceTextContainer(0),
-                        animateChainBlockAndStringContainer(0),
-                        canAnimateRobotInformation = !1)),
-                    landInformationContainerArray[e] == experience2ContainerDiv && (0 == canAnimateSquidInformation ? animateSquidHands() : (animateSquid(),
-                        animateExperienceTextContainer(1),
-                        animateChainBlockAndStringContainer(1),
-                        canAnimateSquidInformation = !1)),
-                    landInformationContainerArray[e] == experience3ContainerDiv && (0 == canAnimateAlienInformation ? animateAlienHand() : (animateAlien(),
-                        animateExperienceTextContainer(2),
-                        animateChainBlockAndStringContainer(2),
-                        canAnimateAlienInformation = !1)));
-        if (1 == isAleSwimming)
-            for (e = 0; e < seaInformationContainerArray.length; e++)
-                (previousPageVerticalPosition + .5 * containerDiv.offsetWidth < sea1Div.offsetLeft + seaInformationContainerArray[e].offsetLeft || previousPageVerticalPosition + .5 * containerDiv.offsetWidth > sea1Div.offsetLeft + seaInformationContainerArray[e].offsetLeft + seaInformationContainerArray[e].offsetWidth) && pageVerticalPosition + .5 * containerDiv.offsetWidth > sea1Div.offsetLeft + seaInformationContainerArray[e].offsetLeft && pageVerticalPosition + .5 * containerDiv.offsetWidth < sea1Div.offsetLeft + seaInformationContainerArray[e].offsetLeft + seaInformationContainerArray[e].offsetWidth && (seaInformationContainerArray[e] == skill1ContainerDiv && (makeSeaAnimalsBlinking(fishEyeArray),
-                    1 == canAnimateFishInformation && (animateSeaAnimals(fishArray),
-                        canAnimateFishInformation = !1)),
-                    seaInformationContainerArray[e] == skill2ContainerDiv && (makeSeaAnimalsBlinking(crabEyeArray),
-                        1 == canAnimateCrabInformation && (animateSeaAnimals(crabArray),
-                            canAnimateCrabInformation = !1)),
-                    seaInformationContainerArray[e] == skill3ContainerDiv && (makeSeaAnimalsBlinking(turtleEyeArray),
-                        1 == canAnimateTurtleInformation && (animateSeaAnimals(turtleArray),
-                            canAnimateTurtleInformation = !1)))
+    if (layersMovement !== "horizontal") 
+        return;
+
+    if (isAleSwimming == 0) {
+        for (var e = 0; e < landInformationContainerArray.length; e++) {
+            const container = landInformationContainerArray[e];
+            const containerLeft = container.offsetLeft;
+            const containerRight = containerLeft + container.offsetWidth;
+            const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const previousViewportCenter = previousPageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
+            const isNowInsideViewport = (viewportCenter > containerLeft &&  viewportCenter < containerRight);
+            
+            if (wasOutsideViewport && isNowInsideViewport) {
+                if (container == about1ContainerDiv && canAnimatePlantInformation == 1) {
+                    animatePlants();
+                    canAnimatePlantInformation = !1;
+                }
+                if (container == about2ContainerDiv && canAnimateBuildingInformation == 1) {
+                    animateBuildings();
+                    canAnimateBuildingInformation = !1;
+                }
+                if (container == about3ContainerDiv && canAnimateBuilding2Information == 1) {
+                    animateBuildings2();
+                    canAnimateBuilding2Information = !1;
+                }
+                if (container == experience1ContainerDiv) {
+                    if (canAnimateRobotInformation == 0) {
+                        animateRobotHands();
+                    } else {
+                        animateRobot();
+                        animateExperienceTextContainer(0);
+                        animateChainBlockAndStringContainer(0);
+                        canAnimateRobotInformation = !1;
+                    }
+                }
+                if (container == experience2ContainerDiv) {
+                    if (canAnimateSquidInformation == 0) {
+                        animateSquidHands();
+                    } else {
+                        animateSquid();
+                        animateExperienceTextContainer(1);
+                        animateChainBlockAndStringContainer(1);
+                        canAnimateSquidInformation = !1;
+                    }
+                }
+                if (container == experience3ContainerDiv) {
+                    if (canAnimateAlienInformation == 0) {
+                        animateAlienHand();
+                    } else {
+                        animateAlien();
+                        animateExperienceTextContainer(2);
+                        animateChainBlockAndStringContainer(2);
+                        canAnimateAlienInformation = !1;
+                    }
+                }
+            }
+        }
+    }
+    if (isAleSwimming == 1) {
+        for (e = 0; e < seaInformationContainerArray.length; e++) {
+            const container = seaInformationContainerArray[e];
+            const containerLeft = sea1Div.offsetLeft + container.offsetLeft;
+            const containerRight = containerLeft + container.offsetWidth;
+            const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const previousViewportCenter = previousPageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
+            const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
+            
+            if (wasOutsideViewport && isNowInsideViewport) {
+                if (container == skill1ContainerDiv) {
+                    makeSeaAnimalsBlinking(fishEyeArray);
+                    if (canAnimateFishInformation == 1) {
+                        animateSeaAnimals(fishArray);
+                        canAnimateFishInformation = !1;
+                    }
+                }
+                if (container == skill2ContainerDiv) {
+                    makeSeaAnimalsBlinking(crabEyeArray);
+                    if (canAnimateCrabInformation == 1) {
+                        animateSeaAnimals(crabArray);
+                        canAnimateCrabInformation = !1;
+                    }
+                }
+                if (container == skill3ContainerDiv) {
+                    makeSeaAnimalsBlinking(turtleEyeArray);
+                    if (canAnimateTurtleInformation == 1) {
+                        animateSeaAnimals(turtleArray);
+                        canAnimateTurtleInformation = !1;
+                    }
+                }
+            }
+        }
     }
 }
 
