@@ -490,26 +490,6 @@ function animateBuildings2() {
     }, 1e3, function () { })
 }
 
-function blinkBuildings() {
-    if (pageVerticalPosition + .5 * containerDiv.offsetWidth < about2ContainerDiv.offsetLeft || pageVerticalPosition + .5 * containerDiv.offsetWidth > about2ContainerDiv.offsetLeft + about2ContainerDiv.offsetWidth) clearInterval(buildingBlinkTimer);
-    else {
-        var e = Math.floor(Math.random() * buildingArray.length);
-        $(buildingEnemyFaceEyeArray[e]).fadeTo(0, 1), $(buildingEnemyFaceEyeArray[e]).stop().delay(300).animate({
-            opacity: 0
-        }, 0, function () { })
-    }
-}
-
-function blinkBuildings2() {
-    if (pageVerticalPosition + .5 * containerDiv.offsetWidth < about3ContainerDiv.offsetLeft || pageVerticalPosition + .5 * containerDiv.offsetWidth > about3ContainerDiv.offsetLeft + about3ContainerDiv.offsetWidth) clearInterval(building2BlinkTimer);
-    else {
-        var e = Math.floor(Math.random() * building2Array.length);
-        $(buildingEnemyFaceEyeArray[e]).fadeTo(0, 1), $(buildingEnemyFaceEyeArray[e]).stop().delay(300).animate({
-            opacity: 0
-        }, 0, function () { })
-    }
-}
-
 function positionBuildings() {
     for (var e = 0; e < buildingArray.length; e++) buildingArray[e].style.left = buildingEarlyPositionArray[e] + "px"
 }

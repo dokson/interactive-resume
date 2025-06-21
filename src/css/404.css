@@ -48,25 +48,19 @@ body {
 }
 
 @font-face {
-    font-family: 'frankfurter-medium-plain';
-    src: url('../font/frankfurter-medium-plain.eot');
-    src: url('../font/frankfurter-medium-plain.eot?#iefix') format('embedded-opentype'),
-        url('../font/frankfurter-medium-plain.woff') format('woff'),
-        url('../font/frankfurter-medium-plain.ttf') format('truetype'),
-        url('../font/frankfurter-medium-plain.svg#frankfurter-medium-plain') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'frankfurter-medium-plain';
+	src: url(../font/frankfurter-medium-plain.eot);
+	src: url(../font/frankfurter-medium-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-medium-plain.woff) format('woff'), url(../font/frankfurter-medium-plain.ttf) format('truetype'), url(../font/frankfurter-medium-plain.svg#frankfurter-medium-plain) format('svg');
+	font-weight: 400;
+	font-style: normal
 }
 
 @font-face {
-    font-family: 'frankfurter-plain';
-    src: url('../font/frankfurter-plain.eot');
-    src: url('../font/frankfurter-plain.eot?#iefix') format('embedded-opentype'),
-        url('../font/frankfurter-plain.woff') format('woff'),
-        url('../font/frankfurter-plain.ttf') format('truetype'),
-        url('../font/frankfurter-plain.svg#frankfurter-plain') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'frankfurter-plain';
+	src: url(../font/frankfurter-plain.eot);
+	src: url(../font/frankfurter-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-plain.woff) format('woff'), url(../font/frankfurter-plain.ttf) format('truetype'), url(../font/frankfurter-plain.svg#frankfurter-plain) format('svg');
+	font-weight: 400;
+	font-style: normal
 }
 
 .four {
@@ -94,15 +88,6 @@ body {
 
 img {
     border-style: none;
-}
-
-#robby {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    background-image: url(../image/robby-404.png);
-    float: left;
-    margin-left: 3px;
 }
 
 #text {
