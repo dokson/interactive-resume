@@ -93,12 +93,20 @@ a {
 	background-image: url(../image/alien-steer.png)
 }
 
-#balloon {
+#rocket {
 	position: absolute;
-	bottom: 15%;
-	width: 400px;
-	height: 700px;
-	background-image: url(../image/balloon.png)
+	bottom: 20%;
+	width: 338px;
+	height: 464px;
+	background: url(../image/rocket-sprite.png) no-repeat 0 -470px;
+}
+
+.rocket-container {
+	position: relative;
+	z-index: 6;
+	width: 338px;
+	height: 465px;
+	background: url(../image/rocket-sprite.png) no-repeat 0 0;
 }
 
 .banner {
@@ -158,8 +166,7 @@ a {
 	background-image: url(../image/banner-bottom-b.png)
 }
 
-#banners-container,
-#boxes {
+#banners-container {
 	position: absolute;
 	left: 15%;
 	width: 520px
@@ -197,14 +204,6 @@ body {
 	background-color: #00bff3
 }
 
-#boxes {
-	left: 13900px;
-	bottom: 20%;
-	width: 700px;
-	height: 100px;
-	background-image: url(../image/box.png)
-}
-
 #bubble {
 	position: relative;
 	left: -50%;
@@ -235,7 +234,6 @@ body {
 	background-image: url(../image/bologna.png)
 }
 
-
 #buildings-container-2 {
 	position: absolute;
 	left: 6680px;
@@ -244,7 +242,7 @@ body {
 	height: 80%
 }
 
-#kiev {
+#building-kyiv-statue {
 	left: 0;
 	bottom: 0;
 	width: 350px;
@@ -252,7 +250,7 @@ body {
 	background-image: url(../image/kyiv.png)
 }
 
-#milan {
+#building-milan-cathedral {
 	left: 530px;
 	bottom: 0;
 	width: 512px;
@@ -281,6 +279,37 @@ body {
 	position: absolute;
 	width: 100px;
 	height: 100%
+}
+
+#control-tower {
+	position: absolute;
+	left: 19980px;
+	bottom: 20%;
+	width: 880px;
+	height: 530px;
+}
+
+#control-tower-piller {
+	position: absolute;
+	left: 100px;
+	width: 680px;
+	height: 100%;
+	background-color: #808080;
+}
+
+#control-tower-door {
+	position: absolute;
+	left: 200px;
+	width: 480px;
+	height: 100%;
+	background-color: #515151;
+}
+
+#control-tower-window {
+	position: absolute;
+	width: 880px;
+	height: 330px;
+	background-image: url(../image/control-tower.png);
 }
 
 .coral-a,
@@ -703,24 +732,6 @@ body {
 	display: none
 }
 
-#dock-column,
-#dock-floor {
-	position: absolute;
-	left: 19530px;
-	top: 80%;
-	width: 2970px
-}
-
-#dock-floor {
-	height: 50px;
-	background-image: url(../image/dock-floor.png)
-}
-
-#dock-column {
-	height: 20%;
-	background-image: url(../image/dock-column.png)
-}
-
 #elevation-1,
 #elevation-2 {
 	left: 4380px;
@@ -810,25 +821,12 @@ body {
 }
 
 .experience-text-c {
-	width: 100%
-}
-
-.experience-text-c,
-.experience-text-d,
-.experience-text-e {
+	width: 80%;
 	position: relative;
 	margin-bottom: 20px;
-	font-family: Arial;
+	font-family: frankfurter-medium-plain;
 	color: #fff;
 	font-size: 18px
-}
-
-.experience-text-d {
-	width: 75%
-}
-
-.experience-text-e {
-	width: 85%
 }
 
 .experience-text-container {
@@ -1120,7 +1118,8 @@ body {
 }
 
 .ground,
-.layer-horizontal {
+.layer-horizontal,
+#space-station-ground {
 	position: absolute;
 	height: 100%
 }
@@ -1206,6 +1205,15 @@ img {
 	margin-top: -12px
 }
 
+.ladder {
+	position: absolute;
+	right: 5px;
+	top: -96px;
+	width: 156px;
+	height: 200%;
+	background-image: url(../image/ladder.png);
+}
+
 .layer-horizontal {
 	left: 0;
 	top: 100%
@@ -1236,6 +1244,15 @@ img {
 
 #layer-vertical-2 {
 	height: 6000px
+}
+
+#launch-ramp {
+	position: absolute;
+	left: 21200px;
+	bottom: 20%;
+	width: 198px;
+	height: 490px;
+	background-image: url(../image/launch-ramp.png);
 }
 
 .mountain {
@@ -1920,13 +1937,6 @@ img {
 	height: 80%
 }
 
-#sea-2 {
-	left: 19530px;
-	width: 2970px;
-	height: 10%;
-	background-color: #0072bc
-}
-
 #sea-floor {
 	position: absolute
 }
@@ -2073,15 +2083,6 @@ img {
 	background-color: #00bff3
 }
 
-.ladder {
-	position: absolute;
-	right: 5px;
-	top: -96px;
-	width: 156px;
-	height: 200%;
-	background-image: url(../image/ladder.png);
-}
-
 .scroll-or-swipe-text-container {
 	position: absolute;
 	bottom: -120px;
@@ -2133,6 +2134,23 @@ img {
 	width: 60px;
 	height: 60px;
 	margin-bottom: 10px
+}
+
+#space-station-floor,
+#space-station-ground {
+	position: absolute;
+	left: 19530px;
+	top: 80%;
+	width: 100%;
+}
+
+#space-station-floor {
+	height: 50px;
+	background-image: url(../image/space-station-floor.png)
+}
+
+#space-station-ground {
+	background-image: url(../image/ground-2.png);
 }
 
 #splash-container,
@@ -2585,4 +2603,13 @@ img {
 	width: 190px;
 	height: 110px;
 	background-image: url(../image/window.png)
+}
+
+#xray-machine {
+	position: absolute;
+	left: 13560px;
+	bottom: 20%;
+	width: 533px;
+	height: 190px;
+	background-image: url(../image/xray-machine.png);
 }

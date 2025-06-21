@@ -61,8 +61,8 @@ function handleEnd(e) {
 }
 
 function runTheseFunctionsAfterScrollOrSwipe() {
-    orientAle(), 
-    checkAleJumpFallSwim(), 
+    orientAle(),
+    checkAleJumpFallSwim(),
     moveLayers(),
     shiftUpDownHorizontalLayers(),
     animateInformationAndEnemiesElements(),
@@ -120,7 +120,7 @@ function setBannersContainerVerticalPosition() {
 }
 
 function setPageHeight() {
-    pageDiv.style.height = layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + distanceBetweenAleAndBalloon + "px"
+    pageDiv.style.height = layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + distanceBetweenAleAndRocket + "px"
 }
 
 function setLayerSpeed() {
@@ -177,7 +177,7 @@ function moveLayers() {
             animateSocialContainer(),
             happyAle(),
             drawManyFireworks()),
-        positionBalloonAndAleContainerHorizontally(),
+        positionRocketAndAleContainerHorizontally(),
         positionContactContainer(),
         positionFireworksContainer()
 }
@@ -426,18 +426,58 @@ function positionVerticalLayersHorizontally() {
     for (var e = 0; e < layerVerticalArray.length; e++) layerVerticalArray[e].style.left = layerHorizontalArray[e].offsetLeft + layerHorizontalArray[e].offsetWidth - containerDiv.offsetWidth + "px"
 }
 
-function positionBalloonAndAleContainerHorizontally() {
-    var e = pageVerticalPosition * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] - (layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth);
-    aleMaxHorizontalDistance = .5 * containerDiv.offsetWidth + 250;
-    var t = .5 * containerDiv.offsetWidth + e;
-    aleMaxHorizontalDistance <= t && (t = aleMaxHorizontalDistance);
-    var i = .5 * containerDiv.offsetWidth + 50,
-        n = .5 * (containerDiv.offsetWidth - balloonDiv.offsetWidth) + e;
-    i <= n && (n = i), "vertical" == layersMovement ? (balloonDiv.style.left = n + "px", aleContainerDiv.style.left = t + "px") : "not moving 1" == layersMovement || "not moving 2" == layersMovement ? (aleContainerDiv.style.left = t + pageVerticalPosition - (pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndBalloon) + "px", balloonDiv.style.left = n + "px") : (balloonDiv.style.left = layerHorizontalArray[layerHorizontalArray.length - 1].offsetLeft + layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - .5 * (containerDiv.offsetWidth + balloonDiv.offsetWidth) + "px", aleContainerDiv.style.left = "50%")
+function positionRocketAndAleContainerHorizontally() {
+    const lastLayerSpeed = layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1];
+    const lastLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
+
+    const horizontalOffset = pageVerticalPosition * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
+
+    aleMaxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332;
+
+    let alePosition = (containerDiv.offsetWidth * 0.5) + horizontalOffset;
+
+    if (aleMaxHorizontalDistance <= alePosition) {
+        alePosition = aleMaxHorizontalDistance;
+    }
+
+    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + 170;
+    let rocketPosition = (containerDiv.offsetWidth - rocketDiv.offsetWidth) * 0.5 + horizontalOffset;
+
+    if (rocketMaxPosition <= rocketPosition) {
+        rocketPosition = rocketMaxPosition;
+    }
+
+    switch (layersMovement) {
+        case "vertical":
+            rocketDiv.style.left = rocketPosition + "px";
+            aleContainerDiv.style.left = alePosition + "px";
+            aleContainerDiv.style.padding = "0px 0px 150px 0px";
+            break;
+
+        case "not moving 1":
+        case "not moving 2":
+            const pageOffset = pageVerticalPosition -
+                (pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket);
+
+            aleContainerDiv.style.left = (alePosition + pageOffset) + "px";
+            aleContainerDiv.style.padding = "0px 0px 0px 0px";
+            rocketDiv.style.left = rocketPosition + "px";
+            break;
+
+        default:
+            const rocketFollowPosition = lastLayer.offsetLeft +
+                lastLayer.offsetWidth -
+                (containerDiv.offsetWidth + rocketDiv.offsetWidth) * 0.5;
+
+            rocketDiv.style.left = rocketFollowPosition + "px";
+            aleContainerDiv.style.left = "50%";
+            aleContainerDiv.style.padding = "0px 0px 0px 0px";
+            break;
+    }
 }
 
 function setLayersMovement() {
-    layersMovement = pageVerticalPosition * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] <= layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth ? "horizontal" : pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndBalloon && pageVerticalPosition < pageDiv.offsetHeight - containerDiv.offsetHeight ? "not moving 1" : pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight ? "not moving 2" : "vertical"
+    layersMovement = pageVerticalPosition * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] <= layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth ? "horizontal" : pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket && pageVerticalPosition < pageDiv.offsetHeight - containerDiv.offsetHeight ? "not moving 1" : pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight ? "not moving 2" : "vertical"
 }
 
 function orientAle() {
@@ -823,7 +863,7 @@ function createBubble() {
 function animateBubble() {
     var e = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
     positionBubble(e),
-    showBubble(), 
+    showBubble(),
     $(bubbleDiv).stop().animate({
         top: "0px"
     }, 2 * e, function () {
@@ -972,14 +1012,13 @@ function hideScrollOrSwipeTextContainer() {
 }
 
 function fadeOutScrollOrSwipeTextContainer() {
-    $(scrollOrSwipeTextContainer1Div).fadeTo(0, 0),
-    $(scrollOrSwipeTextContainer2Div).fadeTo(0, 0)
+    $(scrollOrSwipeTextContainer1Div).fadeTo(0, 0), $(scrollOrSwipeTextContainer2Div).fadeTo(0, 0)
 }
 
 function positionContactConfirmationContainer() {
     for (var e = 0; e < contactConfirmationContainerArray.length; e++)
         contactConfirmationContainerArray[e].style.left = "not moving 1" == layersMovement || "not moving 2" == layersMovement ? aleContainerDiv.offsetLeft + "px" : aleMaxHorizontalDistance + "px",
-    contactConfirmationContainerArray[e].style.top = .8 * containerDiv.offsetHeight - 370 + "px"
+        contactConfirmationContainerArray[e].style.top = .8 * containerDiv.offsetHeight - 370 + "px"
 }
 
 function hideContactConfirmationContainer() {
@@ -1061,7 +1100,7 @@ function drawOneLayerOfFirework() {
     } else
         fireworkLayerNumber = 0,
         clearInterval(drawOneLayerOfFireworkTimer),
-        makeFireworkDisappear(drawFireworkCounter), 
+        makeFireworkDisappear(drawFireworkCounter),
         drawFireworkCounter += 1
 }
 
@@ -1086,7 +1125,7 @@ var blinkAleEyesTimer, contentDiv = document.getElementById("content"),
     isPreloadShiftUpAnimationFinish = !1,
     canFinishShiftUpHorizontalLayersAfterEverythingLoaded = !0,
     splashContainerDiv = document.getElementById("splash-container"),
-    balloonDiv = document.getElementById("balloon"),
+    rocketDiv = document.getElementById("rocket"),
     groundAndGrassContainer1Div = document.getElementById("ground-and-grass-container-1"),
     elevation1Div = document.getElementById("elevation-1"),
     elevation2Div = document.getElementById("elevation-2"),
@@ -1121,7 +1160,7 @@ buildingEarlyPositionArray.push(buildingEarlyPosition1, buildingEarlyPosition2, 
 var canAnimateBuildingInformation,
     canAnimateBuilding2Information,
     buildingBlinkTimer,
-    building2BlinkTimer, 
+    building2BlinkTimer,
     animateRobotHandsTimer,
     spinRobotHandsTimer,
     animateSquidHandsTimer,
@@ -1131,7 +1170,7 @@ var canAnimateBuildingInformation,
     canAnimateBossInformation,
     canAnimateRobotInformation,
     canAnimateSquidInformation,
-    canAnimateAlienInformation, 
+    canAnimateAlienInformation,
     bubbleTimer,
     shiftUpLayerHorizontalDistance,
     shiftUpLayerHorizontalTimer,
@@ -1240,7 +1279,7 @@ var isAleJumping,
     isAleBelowSeaLevel = !1,
     elevationArray = new Array,
     elevationNumberBelowAle = null,
-    distanceBetweenAleAndBalloon = 150,
+    distanceBetweenAleAndRocket = 300,
     counter = 0,
     switcher = 1,
     aleStaticFrame = 0,
@@ -1304,19 +1343,19 @@ $(window).on("beforeunload", function () {
 }),
 window.onload = function () {
     "computer" != deviceName && initTouchEvents(),
-    storeDivs(), 
+    storeDivs(),
     setFrontLayerVerticalHeight(),
     setBannersContainerVerticalPosition(),
     shiftUpPreloader(),
     showContainer(),
     initVariablesAfterShowContainer(),
-    shiftUpHorizontalLayersAfterEverythingLoaded(), 
+    shiftUpHorizontalLayersAfterEverythingLoaded(),
     disableAnimateAleRunSwim(),
     resetVariables(),
     setPageHeight(),
     setLayerSpeed(),
     positionVerticalLayersHorizontally(),
-    positionBalloonAndAleContainerHorizontally(),
+    positionRocketAndAleContainerHorizontally(),
     positionContactContainer(),
     positionFireworksContainer(),
     resetFunctions(),
