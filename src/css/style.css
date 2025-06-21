@@ -95,6 +95,7 @@ a {
 
 #balloon {
 	position: absolute;
+	bottom: 15%;
 	width: 400px;
 	height: 700px;
 	background-image: url(../image/balloon.png)
@@ -857,8 +858,7 @@ body {
 	border-color: #777
 }
 
-#email-button,
-#fence {
+#email-button {
 	position: absolute;
 	width: 485px;
 	height: 230px;
@@ -881,10 +881,21 @@ body {
 	transform: scaleX(1)
 }
 
-#fence {
-	width: 740px;
-	height: 100px;
-	background-image: url(../image/fence.png)
+#fence-container {
+	position: absolute;
+	bottom: 180px;
+	left: 2164px;
+	height: 83px;
+	padding-right: 85px;
+	background: url(../image/fence-sprite.png) no-repeat right -74px;
+}
+
+.fence {
+	position: absolute;
+	float: left;
+	height: 100%;
+	width: 334px;
+	background: url(../image/fence-sprite.png) repeat-x 0 0;
 }
 
 .firework {
@@ -1043,49 +1054,78 @@ body {
 	width: 6220px
 }
 
-.gate {
-	position: absolute;
-	bottom: 20%;
-	width: 320px;
-	height: 300px;
-	background-image: url(../image/gate.png)
-}
-
 #gate-1 {
-	left: 2100px
+	position: absolute;
+	left: 1800px;
+	bottom: 20%;
+	width: 385px;
+	height: 320px;
+	background: url(../image/gates-sprite.png) no-repeat 0 0;
 }
 
 #gate-2 {
-	left: 7780px
+	position: absolute;
+	left: 7780px;
+	bottom: 20%;
+	width: 320px;
+	height: 300px;
+	background-image: url(../image/gate.png);
 }
 
 #gate-3 {
-	left: 13320px
+	position: absolute;
+	bottom: 20%;
+	left: 13320px;
+	width: 298px;
+	height: 316px;
+	background: url(../image/gates-sprite.png) no-repeat 0 -620px;
 }
 
 #gate-4 {
-	left: 19530px
+	position: absolute;
+	bottom: 20%;
+	left: 19530px;
+	width: 326px;
+	height: 318px;
+	background: url(../image/gates-sprite.png) no-repeat 0 -936px;
 }
 
-.gate-text {
-	position: absolute;
-	top: 14px;
+.gate-level-text {
+	position: relative;
+	font-size: 60px;
 	font-family: frankfurter-plain;
-	color: #fff;
-	font-size: 60px
 }
 
 #gate-text-1 {
-	left: 37px
+	left: 40px;
+	top: 30px;
+	text-align: center;
+	color: #333;
 }
 
-#gate-text-2,
+#gate-text-2 {
+	left: 32px;
+	top: 14px;
+	color: #fff;
+}
+
 #gate-text-3 {
-	left: 32px
+	left: 38px;
+	top: 18px;
+	color: #fff;
 }
 
-#gate-text-4 {
-	left: 29px
+#gate-text-4-a {
+	top: 5px;
+	text-align: center;
+	color: #333;
+}
+
+#gate-text-4-b {
+	text-align: center;
+	color: #333;
+	font-size: 26px;
+	font-family: frankfurter-medium-plain;
 }
 
 .grass {
