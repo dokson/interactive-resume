@@ -199,6 +199,15 @@ a {
 	background-image: url(../image/banner-top-b.png)
 }
 
+#base-background {
+	position: absolute;
+	left: 13320px;
+	width: 100%;
+	height: 100%;
+	bottom: 20%;
+	background-image: url(../image/base-background.png);
+}
+
 body {
 	margin: 0;
 	background-color: #00bff3
@@ -568,10 +577,6 @@ body {
 	height: 100%
 }
 
-.cloud {
-	position: absolute
-}
-
 .content-noscroll {
 	position: absolute;
 	width: 100%;
@@ -580,9 +585,10 @@ body {
 }
 
 .cloud {
+	position: absolute;
 	width: 180px;
 	height: 120px;
-	background-image: url(../image/cloud.png)
+	background-image: url(../image/cloud.png);
 }
 
 #cloud-1 {
@@ -603,31 +609,6 @@ body {
 #cloud-4 {
 	left: 1900px;
 	top: 20%
-}
-
-#cloud-5 {
-	left: 10%;
-	bottom: 550px
-}
-
-#cloud-6 {
-	left: 25%;
-	bottom: 1200px
-}
-
-#cloud-7 {
-	left: 70%;
-	bottom: 1400px
-}
-
-#cloud-8 {
-	left: 40%;
-	bottom: 1800px
-}
-
-#cloud-9 {
-	left: 80%;
-	bottom: 2000px
 }
 
 #container {
@@ -700,11 +681,11 @@ body {
 }
 
 #crane-1 {
-	left: 7750px
+	left: 16180px
 }
 
 #crane-2 {
-	left: 9000px
+	left: 17985px
 }
 
 #detect-container {
@@ -1057,7 +1038,7 @@ body {
 #gate-3 {
 	position: absolute;
 	bottom: 20%;
-	left: 13320px;
+	left: 13350px;
 	width: 298px;
 	height: 316px;
 	background: url(../image/gates-sprite.png) no-repeat 0 -620px;
@@ -1066,7 +1047,7 @@ body {
 #gate-4 {
 	position: absolute;
 	bottom: 20%;
-	left: 19530px;
+	left: 19600px;
 	width: 326px;
 	height: 318px;
 	background: url(../image/gates-sprite.png) no-repeat 0 -936px;
@@ -1078,22 +1059,45 @@ body {
 	font-family: frankfurter-plain;
 }
 
-#gate-text-1 {
-	left: 40px;
-	top: 30px;
+.gate-level-subtext {
+	position: relative;
+	font-size: 26px;
+	font-family: frankfurter-medium-plain;
+	text-align: center;
+}
+
+#gate-text-1-a {
+	left: 36px;
+	top: 15px;
 	text-align: center;
 	color: #333;
 }
 
-#gate-text-2 {
+#gate-text-1-b {
+	left: 36px;
+	color: #333;
+	top: 5px;
+}
+
+#gate-text-2-a {
 	left: 32px;
-	top: 14px;
 	color: #fff;
 }
 
-#gate-text-3 {
-	left: 38px;
-	top: 18px;
+#gate-text-2-b {
+	color: #fff;
+	right: 15px;
+	bottom: 5px;
+}
+
+#gate-text-3-a {
+	top: 5px;
+	text-align: center;
+	color: #fff;
+}
+
+#gate-text-3-b {
+	bottom: 5px;
 	color: #fff;
 }
 
@@ -1104,10 +1108,7 @@ body {
 }
 
 #gate-text-4-b {
-	text-align: center;
 	color: #333;
-	font-size: 26px;
-	font-family: frankfurter-medium-plain;
 }
 
 .grass {
@@ -1239,11 +1240,18 @@ img {
 }
 
 #layer-vertical-1 {
+	background-color: #002233;
 	height: 3500px
 }
 
-#layer-vertical-2 {
-	height: 6000px
+#launch-pad-background {
+	position: absolute;
+	left: 19530px;
+	bottom: 20%;
+	width: 100%;
+	height: 150%;
+	background: url(../image/launch-pad-background.png) repeat;
+	border-left: 3px solid #e1e1e1;
 }
 
 #launch-ramp {
@@ -1290,7 +1298,7 @@ img {
 #hangar,
 #hangar-door {
 	position: absolute;
-	left: 8030px;
+	left: 13650px;
 	bottom: 20%;
 	width: 800px;
 	height: 530px;
@@ -2242,8 +2250,59 @@ img {
 	background-image: url(../image/squid-hand-open-d.png)
 }
 
-#title-about,
-#title-awards-and {
+.star {
+	position: absolute;
+	width: 120px;
+	height: 114px;
+	background-image: url(../image/star.png);
+}
+
+#star-1 {
+	left: 25%;
+	bottom: 1200px
+}
+
+#star-2 {
+	left: 50%;
+	bottom: 1400px
+}
+
+#star-3 {
+	left: 10%;
+	bottom: 1600px
+}
+
+#star-4 {
+	left: 40%;
+	bottom: 1800px
+}
+
+#star-5 {
+	left: 90%;
+	bottom: 2000px
+}
+
+#star-6 {
+	left: 25%;
+	bottom: 2200px
+}
+
+#star-7 {
+	left: 70%;
+	bottom: 2400px
+}
+
+#star-8 {
+	left: 10%;
+	bottom: 2600px
+}
+
+#star-9 {
+	left: 40%;
+	bottom: 2800px
+}
+
+#title-about {
 	position: absolute;
 	left: 2280px;
 	bottom: 20%;
@@ -2252,8 +2311,19 @@ img {
 	background-image: url(../image/title-about.png)
 }
 
+#title-ale {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 840px;
+	height: 420px;
+	background-image: url(../image/title-ale.png)
+}
+
 #title-awards-and {
+	position: absolute;
 	left: 19710px;
+	bottom: 20%;
 	width: 1060px;
 	height: 420px;
 	background-image: url(../image/title-awards-and.png)
@@ -2268,17 +2338,8 @@ img {
 	background-image: url(../image/title-contact.png)
 }
 
-#title-experience,
 #title-colace {
 	position: absolute;
-	left: 13500px;
-	bottom: 20%;
-	width: 1140px;
-	height: 400px;
-	background-image: url(../image/title-experience.png)
-}
-
-#title-colace {
 	left: 200px;
 	bottom: 0;
 	width: 880px;
@@ -2286,22 +2347,22 @@ img {
 	background-image: url(../image/title-colace.png)
 }
 
-#title-publication,
-#title-ale {
+#title-experience {
+	position: absolute;
+	left: 13620px;
+	bottom: 0%;
+	width: 1140px;
+	height: 400px;
+	background-image: url(../image/title-experience.png)
+}
+
+#title-publication {
 	position: absolute;
 	left: 19910px;
 	bottom: 20%;
 	width: 1180px;
 	height: 300px;
 	background-image: url(../image/title-publication.png)
-}
-
-#title-ale {
-	left: 0;
-	bottom: 0;
-	width: 840px;
-	height: 420px;
-	background-image: url(../image/title-ale.png)
 }
 
 #title-skills {
@@ -2317,132 +2378,129 @@ img {
 }
 
 #title-skills,
-#tree-1,
-#tree-2 {
+#tree-1 {
 	left: 0;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-2 {
-	left: 100px
+	left: 100px;
+	bottom: 0;
 }
 
-#tree-3,
-#tree-4 {
+#tree-3 {
 	left: 240px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-4 {
-	left: 880px
+	left: 880px;
+	bottom: 0;
 }
 
-#tree-5,
-#tree-6 {
+#tree-5 {
 	left: 920px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-6 {
-	left: 1060px
+	left: 1060px;
+	bottom: 0;
 }
 
 #tree-7 {
 	left: 2650px;
-	bottom: 20%
+	bottom: 20%;
 }
 
 #tree-8 {
-	left: 2750px
-}
-
-#tree-10,
-#tree-8,
-#tree-9 {
-	bottom: 20%
+	left: 2750px;
+	bottom: 20%;
 }
 
 #tree-9 {
-	left: 3010px
+	left: 3010px;
+	bottom: 20%;
 }
 
 #tree-10 {
-	left: 2850px
+	left: 2850px;
+	bottom: 20%;
 }
 
 #tree-11 {
 	left: -100px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-12 {
 	left: 20px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-13 {
 	left: 140px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-14 {
 	left: 260px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-15 {
 	left: 380px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-16 {
 	left: 500px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-17 {
 	left: 620px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-18 {
 	left: 740px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-19 {
 	left: 860px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-20 {
 	left: -150px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-21 {
 	left: -120px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-22 {
 	left: -30px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-23 {
 	left: 230px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-24 {
 	left: 260px;
-	bottom: 0
+	bottom: 0;
 }
 
 #tree-25 {
 	left: 370px;
-	bottom: 0
+	bottom: 0;
 }
 
 .tree-bright-a {
@@ -2452,8 +2510,7 @@ img {
 	background-image: url(../image/tree-bright-a.png)
 }
 
-.tree-bright-b,
-.tree-bright-c {
+.tree-bright-b {
 	position: absolute;
 	width: 140px;
 	height: 185px;
@@ -2461,47 +2518,42 @@ img {
 }
 
 .tree-bright-c {
+	position: absolute;
 	width: 200px;
 	height: 240px;
 	background-image: url(../image/tree-bright-c.png)
 }
 
-.tree-bright-d,
-.tree-bright-e,
-.tree-dark-a {
+.tree-bright-d {
 	position: absolute;
 	width: 200px;
 	height: 300px;
 	background-image: url(../image/tree-bright-d.png)
 }
 
-.tree-bright-e,
-.tree-dark-a {
+.tree-bright-e {
+	position: absolute;
+	width: 200px;
 	height: 430px;
 	background-image: url(../image/tree-bright-e.png)
 }
 
 .tree-dark-a {
+	position: absolute;
 	width: 140px;
 	height: 95px;
 	background-image: url(../image/tree-dark-a.png)
 }
 
 .tree-dark-b {
-	width: 140px
-}
-
-.tree-dark-b,
-.tree-dark-c {
-	position: absolute
-}
-
-.tree-dark-b {
+	position: absolute;
+	width: 140px;
 	height: 185px;
 	background-image: url(../image/tree-dark-b.png)
 }
 
 .tree-dark-c {
+	position: absolute;
 	width: 200px;
 	height: 240px;
 	background-image: url(../image/tree-dark-c.png)
@@ -2515,20 +2567,14 @@ img {
 }
 
 .tree-dark-e {
-	width: 200px
-}
-
-.tree-dark-e,
-.turtle {
-	position: absolute
-}
-
-.tree-dark-e {
+	position: absolute;
+	width: 200px;
 	height: 430px;
 	background-image: url(../image/tree-dark-e.png)
 }
 
 .turtle {
+	position: absolute;
 	width: 125px;
 	height: 75px;
 	overflow: hidden;
@@ -2562,8 +2608,7 @@ img {
 	top: 300px
 }
 
-#turtles-container,
-.waterfall {
+#turtles-container {
 	position: absolute;
 	left: 270px;
 	top: 50px;
@@ -2579,21 +2624,6 @@ img {
 	height: 440px
 }
 
-.waterfall {
-	left: 150px;
-	top: 0;
-	width: 860px;
-	height: 100%
-}
-
-#waterfall-1 {
-	background-image: url(../image/waterfall-a.png)
-}
-
-#waterfall-2 {
-	background-image: url(../image/waterfall-b.png)
-}
-
 #work-container2 {
 	left: -80px
 }
@@ -2607,7 +2637,7 @@ img {
 
 #xray-machine {
 	position: absolute;
-	left: 13560px;
+	left: 13480px;
 	bottom: 20%;
 	width: 533px;
 	height: 190px;

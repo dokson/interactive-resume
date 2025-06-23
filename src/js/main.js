@@ -1046,18 +1046,6 @@ function checkElevationNumberBelowAle() {
     }
 }
 
-function animateWaterfall() {
-    clearInterval(waterfallTimer), waterfallTimer = setInterval(function () {
-        switchWaterfallTexture()
-    }, 1e3)
-}
-
-function switchWaterfallTexture() {
-    $(waterfall2Div).fadeTo(0, 0), $(waterfall2Div).stop().delay(500).animate({
-        opacity: 1
-    }, 0, function () { })
-}
-
 function positionSeaFloorObjectsVertically() {
     for (var e = 0; e < seaFloorFrontObjectArray.length; e++)
         seaFloorFrontObjectArray[e].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[e].style.bottom = -1 * (seaFloorFrontObjectArray[e].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[e].style.bottom = "0px";
@@ -1336,7 +1324,6 @@ var isAleJumping,
     canAnimateSocialContainer,
     happyAleTimer,
     scrollOrSwipeTextContainerTimer,
-    waterfallTimer,
     drawFireworkTimer,
     fireworkCenterX,
     fireworkCenterY,
@@ -1389,8 +1376,6 @@ contactContainerDiv = document.getElementById("contact-container"),
     emailSubjectDiv = document.getElementById("email-subject"),
     emailMessageDiv = document.getElementById("email-message"),
     isContactConfirmationContainerVisible = !0,
-    waterfall1Div = document.getElementById("waterfall-1"),
-    waterfall2Div = document.getElementById("waterfall-2"),
     touchStartX = 0,
     touchCurrentX = 0,
     touchEndX = 0,
@@ -1437,7 +1422,6 @@ window.onload = function () {
     hideContactConfirmationContainer(),
     hideAleEyesClose(),
     animateAleEyes(),
-    animateWaterfall(),
     positionSeaFloorObjectsVertically(),
     openSquidHands(),
     hideBubble(),
