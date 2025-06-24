@@ -1376,23 +1376,23 @@ img {
 }
 
 #piechart-robot-text-graphic-1 {
-	left: 168px;
-	top: 155px
+	left: 178px;
+	top: 158px
 }
 
 #piechart-robot-text-graphic-2 {
-	left: 216px;
-	top: 194px
+	left: 220px;
+	top: 190px
 }
 
 #piechart-robot-text-animation-1 {
-	left: 49px;
-	top: 97px
+	left: 56px;
+	top: 104px;
 }
 
 #piechart-robot-text-animation-2 {
-	left: 46px;
-	top: 148px
+	left: 52px;
+	top: 154px
 }
 
 #piechart-robot-text-code-1 {
@@ -1401,8 +1401,8 @@ img {
 }
 
 #piechart-robot-text-code-2 {
-	left: 221px;
-	top: 106px
+	left: 220px;
+	top: 102px
 }
 
 #piechart-alien-front,
@@ -1428,18 +1428,18 @@ img {
 }
 
 #piechart-alien-text-graphic-1 {
-	left: 20px;
-	top: 98px
+	left: 58px;
+	top: 100px
 }
 
 #piechart-alien-text-graphic-2 {
-	left: 42px;
-	top: 150px
+	left: 52px;
+	top: 154px
 }
 
 #piechart-alien-text-animation-1 {
-	left: 170px;
-	top: 155px
+	left: 212px;
+	top: 162px
 }
 
 #piechart-alien-text-animation-2 {
@@ -1448,8 +1448,8 @@ img {
 }
 
 #piechart-alien-text-code-1 {
-	left: 220px;
-	top: 67px
+	left: 212px;
+	top: 76px
 }
 
 #piechart-alien-text-code-2 {
@@ -1472,18 +1472,19 @@ img {
 }
 
 #piechart-squid-text-graphic-1 {
-	left: 22px;
-	top: 98px
+	left: 12px;
+	top: 74px;
+	font-size: 42px;
 }
 
 #piechart-squid-text-graphic-2 {
-	left: 42px;
-	top: 150px
+	left: 52px;
+	top: 154px
 }
 
 #piechart-squid-text-animation-1 {
-	left: 168px;
-	top: 155px
+	left: 200px;
+	top: 160px
 }
 
 #piechart-squid-text-animation-2 {
@@ -1493,37 +1494,40 @@ img {
 
 #piechart-squid-text-code-1 {
 	left: 220px;
-	top: 67px
+	top: 70px
 }
 
 #piechart-squid-text-code-2 {
-	left: 221px;
+	left: 218px;
 	top: 105px
 }
 
-.piechart-text-a,
-.piechart-text-b {
+.piechart-text-a {
 	position: absolute;
 	font-family: poster-sans-bold;
 	color: #fff;
-	font-size: 36px
+	font-size: 32px
 }
 
 .piechart-text-b {
+	position: absolute;
 	font-family: frankfurter-medium-plain;
+	color: #fff;
 	font-size: 30px
 }
 
-.piechart-text-c,
-.piechart-text-d {
+.piechart-text-c {
 	position: absolute;
 	font-family: poster-sans-bold;
 	color: #fff;
-	font-size: 50px
+	font-size: 50px;
+	text-align: center;
 }
 
 .piechart-text-d {
+	position: absolute;
 	font-family: frankfurter-medium-plain;
+	color: #fff;
 	font-size: 40px
 }
 
@@ -1549,22 +1553,22 @@ img {
 }
 
 #plant-1 {
-	left: 150px;
+	left: 180px;
 	top: 65%
 }
 
 #plant-2 {
-	left: 330px;
+	left: 390px;
 	top: 65%
 }
 
 #plant-3 {
-	left: 575px;
+	left: 610px;
 	top: 52%
 }
 
 #plant-4 {
-	left: 830px;
+	left: 835px;
 	top: 52%
 }
 
@@ -1604,7 +1608,8 @@ img {
 
 .plant-line,
 .plant-ribbon {
-	position: absolute
+	position: absolute;
+	text-align: center;
 }
 
 #plant-ribbon-container {
@@ -1615,50 +1620,50 @@ img {
 }
 
 #plant-ribbon-1 {
-	left: 175px
+	left: 160px
 }
 
 #plant-ribbon-2 {
-	left: 305px
+	left: 370px
 }
 
 #plant-ribbon-3 {
-	left: 535px
+	left: 580px
 }
 
 #plant-ribbon-4 {
-	left: 800px
+	left: 815px
 }
 
-.plant-ribbon-left {
+.plant-ribbon-left,
+.plant-ribbon-right {
 	position: relative;
 	float: left;
 	width: 20px;
-	height: 40px;
+	height: 66px;
+}
+
+.plant-ribbon-left {
 	margin-right: -1px;
-	background-image: url(../image/plant-ribbon-left.png)
+	background-image: url(../image/plant-ribbon-left.png);
 }
 
 .plant-ribbon-middle {
 	position: relative;
 	float: left;
-	height: 34px;
+	height: 60px;
 	padding-top: 6px;
 	padding-left: 2px;
 	padding-right: 2px;
 	background-color: #f7941d;
 	font-family: frankfurter-plain;
 	color: #fff;
-	font-size: 24px
+	font-size: 24px;
 }
 
 .plant-ribbon-right {
-	position: relative;
-	float: left;
-	width: 20px;
-	height: 40px;
 	margin-left: -1px;
-	background-image: url(../image/plant-ribbon-right.png)
+	background-image: url(../image/plant-ribbon-right.png);
 }
 
 #plant-text-1 {
@@ -1856,6 +1861,7 @@ img {
 	font-family: lobster;
 	color: #fff;
 	font-size: 36px;
+	padding-right: 2px;
 	text-align: center
 }
 
