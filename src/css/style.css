@@ -2250,54 +2250,62 @@ img {
 	background-image: url(../image/squid-hand-open-d.png)
 }
 
-.star {
+.star,
+.star-red {
 	position: absolute;
 	width: 120px;
 	height: 114px;
+}
+
+.star {
 	background-image: url(../image/star.png);
 }
 
-#star-1 {
+.star-red {
+	background-image: url(../image/star-red.png);
+}
+
+.star-1 {
 	left: 25%;
 	bottom: 1200px
 }
 
-#star-2 {
+.star-2 {
 	left: 50%;
 	bottom: 1400px
 }
 
-#star-3 {
+.star-3 {
 	left: 10%;
 	bottom: 1600px
 }
 
-#star-4 {
+.star-4 {
 	left: 40%;
 	bottom: 1800px
 }
 
-#star-5 {
+.star-5 {
 	left: 90%;
 	bottom: 2000px
 }
 
-#star-6 {
+.star-6 {
 	left: 25%;
 	bottom: 2200px
 }
 
-#star-7 {
+.star-7 {
 	left: 70%;
 	bottom: 2400px
 }
 
-#star-8 {
+.star-8 {
 	left: 10%;
 	bottom: 2600px
 }
 
-#star-9 {
+.star-9 {
 	left: 40%;
 	bottom: 2800px
 }

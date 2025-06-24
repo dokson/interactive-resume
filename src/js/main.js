@@ -1046,6 +1046,18 @@ function checkElevationNumberBelowAle() {
     }
 }
 
+function animateStars() {
+    clearInterval(starsTimer), starsTimer = setInterval(function () {
+        switchStarsTexture()
+    }, 1e3)
+}
+
+function switchStarsTexture() {
+    $(stars).fadeTo(0, 0), $(stars).stop().delay(500).animate({
+        opacity: 1
+    }, 0, function () { })
+}
+
 function positionSeaFloorObjectsVertically() {
     for (var e = 0; e < seaFloorFrontObjectArray.length; e++)
         seaFloorFrontObjectArray[e].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[e].style.bottom = -1 * (seaFloorFrontObjectArray[e].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[e].style.bottom = "0px";
@@ -1323,6 +1335,7 @@ var isAleJumping,
     pageVerticalPositionWhenAnimateAle2,
     canAnimateSocialContainer,
     happyAleTimer,
+    starsTimer,
     scrollOrSwipeTextContainerTimer,
     drawFireworkTimer,
     fireworkCenterX,
@@ -1376,6 +1389,7 @@ contactContainerDiv = document.getElementById("contact-container"),
     emailSubjectDiv = document.getElementById("email-subject"),
     emailMessageDiv = document.getElementById("email-message"),
     isContactConfirmationContainerVisible = !0,
+    stars = document.getElementsByClassName("star"),
     touchStartX = 0,
     touchCurrentX = 0,
     touchEndX = 0,
@@ -1422,6 +1436,7 @@ window.onload = function () {
     hideContactConfirmationContainer(),
     hideAleEyesClose(),
     animateAleEyes(),
+    animateStars(),
     positionSeaFloorObjectsVertically(),
     openSquidHands(),
     hideBubble(),
