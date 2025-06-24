@@ -1046,14 +1046,20 @@ function checkElevationNumberBelowAle() {
     }
 }
 
-function animateStars() {
-    clearInterval(starsTimer), starsTimer = setInterval(function () {
-        switchStarsTexture()
+function animateStarsAndAlienEyes() {
+    clearInterval(starsAndAlienTimer), starsAndAlienTimer = setInterval(function () {
+        switchStarsColor(), switchAlienEyes()
     }, 1e3)
 }
 
-function switchStarsTexture() {
+function switchStarsColor() {
     $(stars).fadeTo(0, 0), $(stars).stop().delay(500).animate({
+        opacity: 1
+    }, 0, function () { })
+}
+
+function switchAlienEyes() {
+    $(alienEyes).fadeTo(0, 0), $(alienEyes).stop().delay(500).animate({
         opacity: 1
     }, 0, function () { })
 }
@@ -1335,7 +1341,7 @@ var isAleJumping,
     pageVerticalPositionWhenAnimateAle2,
     canAnimateSocialContainer,
     happyAleTimer,
-    starsTimer,
+    starsAndAlienTimer,
     scrollOrSwipeTextContainerTimer,
     drawFireworkTimer,
     fireworkCenterX,
@@ -1366,12 +1372,12 @@ var isAleJumping,
     shiftAleFrameTimeInterval = 200,
     minimumVerticalDistanceToTriggerAleSwimDownFrame = 100,
     about3ContainerDiv = document.getElementById("buildings-container-2"),
-    building2TargetLeft1 = 0,
+    building2TargetLeft1 = -12,
     building2TargetLeft2 = 305,
     building2TargetLeft3 = 550,
     building2EarlyPosition1 = 795,
     building2EarlyPosition2 = 1100,
-    building2EarlyPosition3 = 4000,
+    building2EarlyPosition3 = 1505,
     building2Array = new Array,
     building2TargetLeftArray = new Array;
 var building2EarlyPositionArray = new Array;
@@ -1390,6 +1396,7 @@ contactContainerDiv = document.getElementById("contact-container"),
     emailMessageDiv = document.getElementById("email-message"),
     isContactConfirmationContainerVisible = !0,
     stars = document.getElementsByClassName("star"),
+    alienEyes = document.getElementById("alien-close-eyes"),
     touchStartX = 0,
     touchCurrentX = 0,
     touchEndX = 0,
@@ -1436,7 +1443,7 @@ window.onload = function () {
     hideContactConfirmationContainer(),
     hideAleEyesClose(),
     animateAleEyes(),
-    animateStars(),
+    animateStarsAndAlienEyes(),
     positionSeaFloorObjectsVertically(),
     openSquidHands(),
     hideBubble(),
