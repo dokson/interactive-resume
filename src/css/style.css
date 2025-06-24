@@ -2281,48 +2281,98 @@ img {
 }
 
 .star-1 {
-	left: 25%;
-	bottom: 1200px
+	left: 20%;
+	bottom: 1000px;
 }
 
 .star-2 {
-	left: 50%;
-	bottom: 1400px
+	left: 70%;
+	bottom: 1100px;
 }
 
 .star-3 {
-	left: 10%;
-	bottom: 1600px
+	left: 45%;
+	bottom: 1200px;
 }
 
 .star-4 {
-	left: 40%;
-	bottom: 1800px
+	left: 85%;
+	bottom: 1300px;
 }
 
 .star-5 {
-	left: 90%;
-	bottom: 2000px
+	left: 35%;
+	bottom: 1400px;
 }
 
 .star-6 {
-	left: 25%;
-	bottom: 2200px
+	left: 60%;
+	bottom: 1500px;
 }
 
 .star-7 {
-	left: 70%;
-	bottom: 2400px
+	left: 15%;
+	bottom: 1600px;
 }
 
 .star-8 {
-	left: 10%;
-	bottom: 2600px
+	left: 50%;
+	bottom: 1700px;
 }
 
 .star-9 {
+	left: 80%;
+	bottom: 1800px;
+}
+
+.star-10 {
+	left: 30%;
+	bottom: 1900px;
+}
+
+.star-11 {
+	left: 65%;
+	bottom: 2000px;
+}
+
+.star-12 {
+	left: 90%;
+	bottom: 2100px;
+}
+
+.star-13 {
 	left: 40%;
-	bottom: 2800px
+	bottom: 2200px;
+}
+
+.star-14 {
+	left: 75%;
+	bottom: 2300px;
+}
+
+.star-15 {
+	left: 25%;
+	bottom: 2400px;
+}
+
+.star-16 {
+	left: 55%;
+	bottom: 2500px;
+}
+
+.star-17 {
+	left: 85%;
+	bottom: 2600px;
+}
+
+.star-18 {
+	left: 10%;
+	bottom: 2700px;
+}
+
+.star-19 {
+	left: 40%;
+	bottom: 2800px;
 }
 
 #title-about {
