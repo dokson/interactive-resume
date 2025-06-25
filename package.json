@@ -65,7 +65,12 @@
             "cv",
             "business",
             "portfolio",
-            "web"
+            "web",
+            "data-architect",
+            "data-engineer",
+            "data-modeler",
+            "data-analyst",
+            "data-governance-expert"
         ]
     },
     "license": "UNLICENSED",
