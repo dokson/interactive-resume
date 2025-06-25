@@ -2117,6 +2117,21 @@ img {
 	background-color: #00bff3
 }
 
+.scroll-icon,
+.swipe-icon {
+	display: inline-block;
+	height: 38px;
+	padding-right: 58px;
+}
+
+.scroll-icon {
+	background: url(../image/scroll-swipe.png) no-repeat top right;
+}
+
+.swipe-icon {
+	background: url(../image/scroll-swipe.png) no-repeat bottom right;
+}
+
 .scroll-or-swipe-text-container {
 	position: absolute;
 	bottom: -120px;
