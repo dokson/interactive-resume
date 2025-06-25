@@ -1,0 +1,11 @@
+NOTICES AND INFORMATION
+
+This project is a non-commercial, educational reinterpretation inspired by the interactive resume originally created by Robby Leonardi (http://www.rleonardi.com/interactive-resume/).
+
+All animations, logic, and visual elements were recreated manually based on the public-facing version of the original site, without access to its source code.
+
+This project was created in 2019 and published on GitHub in 2025.
+
+This project is not affiliated with or endorsed by Robby Leonardi.
+
+If requested by the original creator, this project will be immediately removed.
