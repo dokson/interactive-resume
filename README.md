@@ -1,4 +1,4 @@
-# 🕹️ Alessandro Colace Interactive Resume - last updated: June 2025
+# 🕹️ Alessandro Colace Interactive Resume
 
 This **interactive resume** transforms a traditional CV into a **scrollable visual experience**, designed to **engage the visitors**, guiding them through **key milestones**, technical **skills**, and **career achievements**, in a way that is both informative and memorable.
 
