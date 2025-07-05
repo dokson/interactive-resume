@@ -1499,7 +1499,7 @@ img {
 
 #piechart-squid-text-graphic-2 {
 	left: 52px;
-	top: 154px
+	top: 174px
 }
 
 #piechart-squid-text-animation-1 {
@@ -2423,13 +2423,13 @@ img {
 	background-image: url(../image/title-ale.png)
 }
 
-#title-awards-and {
+#title-colace {
 	position: absolute;
-	left: 19710px;
-	bottom: 20%;
-	width: 1060px;
-	height: 420px;
-	background-image: url(../image/title-awards-and.png)
+	left: 200px;
+	bottom: 0;
+	width: 880px;
+	height: 300px;
+	background-image: url(../image/title-colace.png)
 }
 
 #title-contact {
@@ -2441,31 +2441,13 @@ img {
 	background-image: url(../image/title-contact.png)
 }
 
-#title-colace {
-	position: absolute;
-	left: 200px;
-	bottom: 0;
-	width: 880px;
-	height: 300px;
-	background-image: url(../image/title-colace.png)
-}
-
 #title-experience {
 	position: absolute;
-	left: 13620px;
-	bottom: 0%;
-	width: 1140px;
-	height: 400px;
-	background-image: url(../image/title-experience.png)
-}
-
-#title-publication {
-	position: absolute;
-	left: 19910px;
+	left: 13770px;
 	bottom: 20%;
-	width: 1180px;
-	height: 300px;
-	background-image: url(../image/title-publication.png)
+	width: 990px;
+	height: 250px;
+	background-image: url(../image/title-experience.png)
 }
 
 #title-skills {
@@ -2728,7 +2710,7 @@ img {
 }
 
 #work-container2 {
-	left: -80px
+	left: -50px
 }
 
 .window {
