@@ -32,7 +32,7 @@ jobs:
     - name: Prepare deployment files
       run: |
         mkdir -p deploy
-        cp -r dist document font image CNAME *.html favicon.ico deploy/
+        cp -r dist document font image *.html favicon.ico deploy/
         echo "Deployment files prepared:"
         du -sh deploy/*
 
@@ -42,6 +42,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: deploy
         publish_branch: gh-pages
+        cname: www.colace.me
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
         allow_empty_commit: false
         keep_files: false
         force_orphan: false
