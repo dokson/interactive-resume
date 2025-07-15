@@ -38,15 +38,6 @@ body {
     text-align: center;
 }
 
-#container-cv {
-    position: relative;
-    width: 400px;
-    height: 200px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 30px;
-}
-
 @font-face {
 	font-family: 'frankfurter-medium-plain';
 	src: url(../font/frankfurter-medium-plain.eot);
