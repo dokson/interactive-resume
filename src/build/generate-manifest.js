@@ -33,7 +33,7 @@ const manifest = {
     categories: packageJson.config.manifest.keywords
 };
 
-console.log('🔄 Generating web manifest...');
+console.log(`🔄 Generating web manifest...`);
 
 fs.writeFileSync(path.join(packageJson.config.build.outputDir, packageJson.config.build.manifestFile), JSON.stringify(manifest, null, 4));
 

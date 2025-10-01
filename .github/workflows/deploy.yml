@@ -3,7 +3,7 @@ name: Build and Deploy to GitHub Pages
 on:
   push:
     branches:
-    - main
+      - main
 
 permissions:
   contents: write
@@ -14,45 +14,46 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v5
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Minify and generate manifest
-      run: npm start
+      - name: Inject SEO, Minify and Generate Manifest
+        run: npm start
 
-    - name: Prepare deployment files
-      run: |
-        mkdir -p deploy
-        cp -r dist document font image *.html favicon.ico deploy/
-        echo "Deployment files prepared:"
-        du -sh deploy/*
+      - name: Prepare deployment files
+        run: |
+          mkdir -p deploy
+          mv dist/index.html index.html
+          cp -r dist document font image *.html favicon.ico robots.txt sitemap.xml deploy/
+          echo "Deployment files prepared:"
+          du -sh deploy/*
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: deploy
-        publish_branch: gh-pages
-        cname: www.colace.me
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        allow_empty_commit: false
-        keep_files: false
-        force_orphan: false
-        enable_jekyll: false
-        disable_nojekyll: false
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: deploy
+          publish_branch: gh-pages
+          cname: www.colace.me
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          allow_empty_commit: false
+          keep_files: false
+          force_orphan: false
+          enable_jekyll: false
+          disable_nojekyll: false
 
-    - name: Clean up deployment files
-      if: always() # Run even if previous steps fail
-      run: |
-        rm -rf deploy
-        echo "Cleaned up deploy folder"
+      - name: Clean up deployment files
+        if: always() # Run even if previous steps fail
+        run: |
+          rm -rf deploy
+          echo "Cleaned up deploy folder"
