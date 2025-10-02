@@ -21,10 +21,22 @@
             "cssDir": "src/css",
             "manifestFile": "site.webmanifest",
             "steps": [
-                { "name": "Inject SEO", "script": "deploy:inject-seo" },
-                { "name": "Minify Sources", "script": "deploy:minify" },
-                { "name": "Generate Manifest", "script": "deploy:generate-manifest" },
-                { "name": "Copy External Libraries", "script": "deploy:copy-libs" }
+                {
+                    "name": "Inject SEO",
+                    "script": "deploy:inject-seo"
+                },
+                {
+                    "name": "Minify Sources",
+                    "script": "deploy:minify"
+                },
+                {
+                    "name": "Generate Manifest",
+                    "script": "deploy:generate-manifest"
+                },
+                {
+                    "name": "Copy External Libraries",
+                    "script": "deploy:copy-libs"
+                }
             ]
         },
         "manifest": {
@@ -104,8 +116,11 @@
         ]
     },
     "license": "UNLICENSED",
+    "dependencies": {
+        "@emailjs/browser": "^4.4.1"
+    },
     "devDependencies": {
-        "uglify-js": "^3.19.3",
-        "clean-css": "^5.3.3"
+        "clean-css": "^5.3.3",
+        "uglify-js": "^3.19.3"
     }
 }
