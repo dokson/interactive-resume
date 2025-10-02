@@ -5,6 +5,12 @@
     "description": "Interactive Resume",
     "job_title": "Cloud Data Consultant",
     "based_on": "http://www.rleonardi.com/interactive-resume/",
+    "homepage": "https://www.colace.me",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dokson/interactive-resume.git"
+    },
+    "bugs": "https://github.com/dokson/interactive-resume/issues",
     "scripts": {
         "deploy": "node src/build/deploy.js",
         "deploy:inject-seo": "node src/build/inject-seo.js",
@@ -12,6 +18,15 @@
         "deploy:generate-manifest": "node src/build/generate-manifest.js",
         "deploy:copy-libs": "node src/build/copy-libs.js",
         "start": "npm run deploy"
+    },
+    "dependencies": {
+        "@emailjs/browser": "^4.4.1",
+        "jquery": "^3.3.1",
+        "jquery-ui-dist": "^1.12.1"
+    },
+    "devDependencies": {
+        "clean-css": "^5.3.3",
+        "uglify-js": "^3.19.3"
     },
     "config": {
         "build": {
@@ -37,6 +52,11 @@
                     "name": "Copy External Libraries",
                     "script": "deploy:copy-libs"
                 }
+            ],
+            "externalLibs": [
+                { "from": "@emailjs/browser", "file": "dist/email.min.js" },
+                { "from": "jquery", "file": "dist/jquery.min.js" },
+                { "from": "jquery-ui-dist", "file": "jquery-ui.min.js" }
             ]
         },
         "manifest": {
@@ -115,12 +135,5 @@
             "vector-database"
         ]
     },
-    "license": "UNLICENSED",
-    "dependencies": {
-        "@emailjs/browser": "^4.4.1"
-    },
-    "devDependencies": {
-        "clean-css": "^5.3.3",
-        "uglify-js": "^3.19.3"
-    }
+    "license": "UNLICENSED"
 }
