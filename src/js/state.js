@@ -325,7 +325,6 @@ window.onresize = function () {
     positionChainBlockAndStringContainer();
     positionSeaFloorObjectsVertically();
     enableScrollOrSwipe();
-    printResizeText();
 };
 
 $(window).on("orientationchange", orientationChangeHandler);

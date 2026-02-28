@@ -1,25 +1,48 @@
 function detectBrowser() {
-    if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) {
+    var match;
+    match = /Firefox[\/\s](\d+\.\d+)/.exec(navigator.userAgent);
+    if (match) {
         browserName = "firefox";
-        var e = new Number(RegExp.$1);
-        browserVersion = Math.floor(e)
+        browserVersion = Math.floor(Number(match[1]))
     }
-    if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+    match = /MSIE (\d+\.\d+);/.exec(navigator.userAgent);
+    if (match) {
         browserName = "internet explorer";
-        var r = new Number(RegExp.$1);
-        browserVersion = Math.floor(r)
+        browserVersion = Math.floor(Number(match[1]))
     }
-    if (/Opera[\/\s](\d+\.\d+)/.test(navigator.userAgent)) {
+    match = /Opera[\/\s](\d+\.\d+)/.exec(navigator.userAgent);
+    if (match) {
         browserName = "opera";
-        var a = new Number(RegExp.$1);
-        browserVersion = Math.floor(a)
+        browserVersion = Math.floor(Number(match[1]))
     }
-    navigator.userAgent.toLowerCase().indexOf("chrome") > -1 && -1 != navigator.userAgent.toLowerCase().indexOf("safari") && (browserName = "chrome", browserVersion = ""),
-        -1 == navigator.userAgent.toLowerCase().indexOf("chrome") && -1 != navigator.userAgent.toLowerCase().indexOf("safari") && (browserName = "safari", browserVersion = "")
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf("chrome") > -1 && ua.indexOf("safari") !== -1) {
+        browserName = "chrome";
+        browserVersion = ""
+    }
+    if (ua.indexOf("chrome") === -1 && ua.indexOf("safari") !== -1) {
+        browserName = "safari";
+        browserVersion = ""
+    }
 }
+
 function detectDevice() {
-    deviceName = navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) ? "iosdevice" : navigator.userAgent.match(/Android/i) ? "android" : navigator.userAgent.match(/BlackBerry/i) ? "blackberry" : navigator.userAgent.match(/IEMobile/i) ? "iemobile" : navigator.userAgent.match(/Silk/i) ? "kindle" : "computer"
+    var ua = navigator.userAgent;
+    if (ua.match(/iPhone/i) || ua.match(/iPod/i) || ua.match(/iPad/i)) {
+        deviceName = "iosdevice"
+    } else if (ua.match(/Android/i)) {
+        deviceName = "android"
+    } else if (ua.match(/BlackBerry/i)) {
+        deviceName = "blackberry"
+    } else if (ua.match(/IEMobile/i)) {
+        deviceName = "iemobile"
+    } else if (ua.match(/Silk/i)) {
+        deviceName = "kindle"
+    } else {
+        deviceName = "computer"
+    }
 }
+
 var browserName, browserVersion;
 detectBrowser();
 var deviceName;
