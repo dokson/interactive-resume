@@ -38,7 +38,7 @@ function resetVariables() {
     if (!isFishStillAnimating) canAnimateFishInformation = true;
     if (!isCrabStillAnimating) canAnimateCrabInformation = true;
     if (!isTurtleStillAnimating) canAnimateTurtleInformation = true;
-    canDrawManyFireworks = canAnimateSocialContainer = canAnimateAlienInformation = canAnimateSquidInformation = canAnimateRobotInformation = true
+    canDrawManyFireworks = canAnimateLinksContainer = canAnimateAlienInformation = canAnimateSquidInformation = canAnimateRobotInformation = true
 }
 
 function resetFunctions() {
@@ -51,7 +51,7 @@ function resetFunctions() {
     positionExperience1Elements();
     positionExperience2Elements();
     positionExperience3Elements();
-    positionSocialContainer();
+    positionLinksContainer();
     positionExperienceTextContainer();
     positionChainBlockAndStringContainer();
     resetFireworkSvg()

@@ -1,7 +1,7 @@
 // ─── EmailJS init (must run before initContactButton) ────────────────────────
 emailjs.init("H_cQjD2uFvh4WSAUf");
 
-// ─── Contact & social ────────────────────────────────────────────────────────
+// ─── Contact & Links ────────────────────────────────────────────────────────
 function positionContactContainer() {
     contactContainerDiv.style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + "px";
     contactContainerDiv.style.left = layerVerticalArray[layerVerticalArray.length - 1].offsetLeft + "px"
@@ -12,33 +12,33 @@ function positionFireworksContainer() {
     fireworksContainerDiv.style.left = layerVerticalArray[layerVerticalArray.length - 1].offsetLeft + "px"
 }
 
-function positionSocialContainer() {
-    if (canAnimateSocialContainer) {
-        setSocialContainerOpacity(0);
-        socialContainerDiv.style.top = "80%"
+function positionLinksContainer() {
+    if (canAnimateLinksContainer) {
+        setLinksContainerOpacity(0);
+        linksContainerDiv.style.top = "80%"
     } else {
-        socialContainerDiv.style.top = "0px"
+        linksContainerDiv.style.top = "0px"
     }
 }
 
-function animateSocialContainer() {
-    if (canAnimateSocialContainer) {
-        $(socialContainerDiv).stop().animate({ top: [0, "easeOutCubic"] }, 1000, function () { });
-        setSocialContainerOpacity(1);
-        canAnimateSocialContainer = false
+function animateLinksContainer() {
+    if (canAnimateLinksContainer) {
+        $(linksContainerDiv).stop().animate({ top: [0, "easeOutCubic"] }, 1000, function () { });
+        setLinksContainerOpacity(1);
+        canAnimateLinksContainer = false
     }
 }
 
-function setSocialContainerOpacity(opacity) {
+function setLinksContainerOpacity(opacity) {
     if (opacity > 1) { opacity = 1 }
     if (opacity < 0) { opacity = 0 }
-    var childCount = $(socialContainerDiv).children().length;
+    var childCount = $(linksContainerDiv).children().length;
     for (var i = 0; i < childCount; i++) {
-        $(socialContainerDiv.children[i]).fadeTo(0, opacity)
+        $(linksContainerDiv.children[i]).fadeTo(0, opacity)
     }
-    var subChildCount = $(socialContainerDiv.children[1]).children().length;
+    var subChildCount = $(linksContainerDiv.children[1]).children().length;
     for (i = 0; i < subChildCount; i++) {
-        $(socialContainerDiv.children[1].children[i]).fadeTo(0, opacity)
+        $(linksContainerDiv.children[1].children[i]).fadeTo(0, opacity)
     }
 }
 

@@ -173,7 +173,7 @@ var isAleJumping,
     shiftAleFrameTimer,
     pageVerticalPositionWhenAnimateAle1,
     pageVerticalPositionWhenAnimateAle2,
-    canAnimateSocialContainer,
+    canAnimateLinksContainer,
     happyAleTimer,
     starsAndAlienTimer,
     scrollOrSwipeTextContainerTimer,
@@ -213,9 +213,9 @@ var about3ContainerDiv = document.getElementById("buildings-container-2"),
     building2EarlyPositionArray = [795, 1100, 1505],
     building2Array = [];
 
-// ─── Contact / social / fireworks ────────────────────────────────────────────
+// ─── Contact / links / fireworks ────────────────────────────────────────────
 var contactContainerDiv = document.getElementById("contact-container"),
-    socialContainerDiv = document.getElementById("social-container"),
+    linksContainerDiv = document.getElementById("links-container"),
     isAleHappy = false,
     scrollOrSwipeTextContainer1Div = document.getElementById("scroll-or-swipe-text-container-1"),
     scrollOrSwipeTextContainer2Div = document.getElementById("scroll-or-swipe-text-container-2"),
@@ -310,7 +310,7 @@ window.onresize = function () {
     animateInformationAndEnemiesElements();
     positionSplashContainer();
     positionAleContainerVertically();
-    positionSocialContainer();
+    positionLinksContainer();
     positionPlants();
     hideContactConfirmationContainer();
     positionContactConfirmationContainer();

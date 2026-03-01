@@ -173,7 +173,7 @@ function moveLayers() {
     }
     if (layersMovement === "not moving 2") {
         positionLayersWhenNotMoving();
-        animateSocialContainer();
+        animateLinksContainer();
         happyAle();
         drawManyFireworks();
     }
