@@ -3,8 +3,16 @@
 
   <url>
     <loc>https://www.colace.me/</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colace.me/cv.html</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
   </url>
 
 </urlset>
