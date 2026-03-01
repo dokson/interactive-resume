@@ -15,6 +15,7 @@ Individual build steps can be run in isolation:
 npm run deploy:inject-seo         # inject JSON-LD from src/json/seo-meta.json into dist/index.html
 npm run deploy:minify             # minify src/js/*.js → dist/*.min.js and src/css/*.css → dist/*.min.css
 npm run deploy:generate-manifest  # generate dist/site.webmanifest from package.json metadata
+npm run deploy:generate-sitemap   # dynamically generate sitemap.xml with the latest build date
 npm run deploy:copy-libs          # copy npm dependency bundles (jQuery, jQuery UI, EmailJS) into dist/
 ```
 

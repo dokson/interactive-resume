@@ -16,6 +16,7 @@
         "deploy:inject-seo": "node src/build/inject-seo.js",
         "deploy:minify": "node src/build/minify.js",
         "deploy:generate-manifest": "node src/build/generate-manifest.js",
+        "deploy:generate-sitemap": "node src/build/generate-sitemap.js",
         "deploy:copy-libs": "node src/build/copy-libs.js",
         "start": "npm run deploy"
     },
@@ -49,14 +50,27 @@
                     "script": "deploy:generate-manifest"
                 },
                 {
+                    "name": "Generate Sitemap",
+                    "script": "deploy:generate-sitemap"
+                },
+                {
                     "name": "Copy External Libraries",
                     "script": "deploy:copy-libs"
                 }
             ],
             "externalLibs": [
-                { "from": "@emailjs/browser", "file": "dist/email.min.js" },
-                { "from": "jquery", "file": "dist/jquery.min.js" },
-                { "from": "jquery-ui-dist", "file": "jquery-ui.min.js" }
+                {
+                    "from": "@emailjs/browser",
+                    "file": "dist/email.min.js"
+                },
+                {
+                    "from": "jquery",
+                    "file": "dist/jquery.min.js"
+                },
+                {
+                    "from": "jquery-ui-dist",
+                    "file": "jquery-ui.min.js"
+                }
             ]
         },
         "manifest": {

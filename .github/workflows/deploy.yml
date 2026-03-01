@@ -33,7 +33,9 @@ jobs:
         run: |
           mkdir -p deploy
           mv dist/index.html index.html
-          cp -r dist document font image *.html favicon.ico robots.txt sitemap.xml deploy/
+          mv dist/site.webmanifest site.webmanifest
+          mv dist/sitemap.xml sitemap.xml
+          cp -r dist document font image *.html favicon.ico robots.txt sitemap.xml site.webmanifest deploy/
           echo "Deployment files prepared:"
           du -sh deploy/*
 
