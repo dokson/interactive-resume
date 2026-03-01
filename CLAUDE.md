@@ -44,13 +44,45 @@ jQuery, jQuery UI, and `@emailjs/browser` are npm dependencies. The `copy-libs` 
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci && npm start`, then assembles `deploy/` (merging `dist/`, static assets, and root HTML files) and force-pushes it to `gh-pages` via `peaceiris/actions-gh-pages`. The live site uses CNAME `www.colace.me`.
 
+### JS module structure
+
+All source JS lives in `src/js/`. The build minifies every file individually; no bundler is used. All functions are global declarations — the TypeScript server will flag cross-file globals as "undefined", but these are **always false positives**. Do not add imports, exports, or workarounds for them.
+
+`index.html` loads scripts in this exact order (load order matters for `contact.js`):
+
+```
+detect-browser-device.min.js   ← <head>, before jQuery
+container-transparent-or-displaynone.min.js
+preloader-transparent-or-displaynone.min.js
+preloader.min.js
+─── (jQuery + jQuery UI) ───────────────────
+email.min.js                    ← must precede contact.min.js
+init.min.js
+ale.min.js
+layers.min.js
+animation.min.js
+contact.min.js                  ← has top-level emailjs.init() + initContactButton()
+state.min.js                    ← must be last: attaches event handlers that call all other functions
+```
+
+Module responsibilities:
+- **`ale.js`** — Ale character: movement, jump/fall/swim, eyes, orientation, happy state
+- **`layers.js`** — Layer system, scroll/swipe, page dimensions, horizontal shift
+- **`animation.js`** — About/sea/experience animations, scroll hint
+- **`contact.js`** — Contact section + EmailJS (merged from `mail.js`); has top-level `emailjs.init()` and `initContactButton()` calls at the bottom of the file
+- **`init.js`** — `storeDivs()`, `initVariablesAfterShowContainer()`, `resetVariables()`, `resetFunctions()`
+- **`state.js`** — All global variables + window resize/scroll/keydown event handlers
+- **`preloader.js`** / **`container-transparent-or-displaynone.js`** / **`preloader-transparent-or-displaynone.js`** — Bootstrap helpers that run on load; `containerDiv` and `preloaderDiv` are declared here, not in `state.js`
+
 ## Coding Standards & Best Practices
 
 When editing JavaScript files in `src/js/`, please adhere to the following best practices to maintain human-readable code. Avoid writing "minified-style" artifacts directly into the source:
 - **Avoid Yoda conditions**: Write `variable === val` instead of `val === variable`.
 - **Avoid comma operators**: Do not chain multiple distinct expressions with commas (e.g., `doThis(), doThat()`). Write them as separate statements on new lines.
 - **Use standard boolean literals**: Always use `true` and `false` instead of minifier tricks like `!0` and `!1`.
-- **Write clean conditionals**: Expand inline nested ternaries or complex `&&` operator assignments into readable `if/else` blocks. 
+- **Write clean conditionals**: Expand inline nested ternaries or complex `&&` operator assignments into readable `if/else` blocks.
+- **No scientific notation**: Write `1000`, `2000`, `3000` instead of `1e3`, `2e3`, `3e3`. Scientific notation is a minifier artifact — it has no place in source code.
+- **No `setTimeout` with strings**: Always use the function form — `setTimeout(function () { fn() }, 200)` — never `setTimeout("fn()", 200)`. The string form is implicit `eval` and is deprecated.
 - **DOM Queries**: If a view component selects many DOM elements, group them logically or use helper mappings instead of repetitive isolated `document.getElementById` declarations.
 - **HTML Formatting**: Do not use automatic line-wrapping or formatters that wrap long HTML lines (e.g., in `index.html`). The extensive use of inline classes and IDs for animations means that line breaks mid-tag will destroy the layout. Use settings like `"html.format.wrapLineLength": 0` in VS Code or configure `.prettierrc` (`"printWidth": 9999`) to prevent this.
 
@@ -60,6 +92,7 @@ When editing JavaScript files in `src/js/`, please adhere to the following best 
   - Update `src/json/seo-meta.json` to change the Schema.org `Person` JSON-LD injects.
   - Update `index.html` `<head>` tags to change Open Graph (`og:*`), Twitter Cards (`twitter:*`), and standard meta descriptions. ALWAYS ensure `og:image` and `twitter:image` are defined.
   - Update `package.json` -> `config.keywords` to change the site manifest keywords.
+- **Image Directory Structure**: Images in the `image/` directory must be categorized semantically to match the JS modules they belong to. When adding new images, place them in the appropriate subfolder (`image/ale/`, `image/animation/`, `image/contact/`, or `image/layers/`). **NEVER** place images directly in the root `image/` directory; every image must belong to one of these specific sections.
 - **Adding External Libraries**: If you `npm install` a new frontend dependency:
   1. Add it to `package.json` -> `config.build.externalLibs`.
   2. Reference the copied `.min.js` file in `index.html` or `cv.html`.
