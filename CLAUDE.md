@@ -13,7 +13,7 @@ Individual build steps can be run in isolation:
 
 ```bash
 npm run deploy:inject-seo         # inject JSON-LD from src/json/seo-meta.json into dist/index.html
-npm run deploy:minify             # minify src/js/*.js → dist/*.min.js and src/css/*.css → dist/*.min.css
+npm run deploy:minify             # minify JS → dist/*.min.js, CSS → dist/*.min.css, HTML → dist/*.html
 npm run deploy:generate-manifest  # generate dist/site.webmanifest from package.json metadata
 npm run deploy:generate-sitemap   # dynamically generate sitemap.xml with the latest build date
 npm run deploy:copy-libs          # copy npm dependency bundles (jQuery, jQuery UI, EmailJS) into dist/
@@ -26,8 +26,8 @@ This is a static HTML/CSS/JS site with a Node.js-only build pipeline. There is n
 ### Source vs. dist
 
 - **`index.html`, `cv.html`, `404.html`** are source HTML files. `index.html` is the entry point for the interactive resume and references assets from `dist/` (minified JS/CSS) and static directories (`image/`, `font/`).
-- **`dist/`** is the build output directory. It is not committed. The CI workflow assembles `deploy/` from `dist/` plus the static directories before pushing to `gh-pages`.
-- **`src/js/`** and **`src/css/`** contain the editable source files. Every `.js` file in `src/js/` is minified individually to a corresponding `.min.js` in `dist/`. Same for CSS.
+- **`dist/`** is the build output directory. It is not committed. The CI workflow assembles `deploy/` from `dist/` plus static directories before pushing to `gh-pages`.
+- **`src/js/`** and **`src/css/`** contain the editable source files. Every `.js` is minified to `.min.js` in `dist/`, every `.css` to `.min.css`. `index.html` is also minified in-place in `dist/` (after SEO injection); `cv.html` and `404.html` are minified from root into `dist/`. **Never edit files in `dist/` directly** — all changes must be made to source files.
 
 ### SEO injection
 
