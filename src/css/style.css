@@ -830,6 +830,20 @@ body {
 	font-size: 18px
 }
 
+.experience-text-a a,
+.experience-text-b a,
+.experience-text-c a {
+	color: #64ffda;
+	text-decoration: none;
+	transition: opacity 0.2s
+}
+
+.experience-text-a a:hover,
+.experience-text-b a:hover,
+.experience-text-c a:hover {
+	opacity: 0.8
+}
+
 .experience-text-container {
 	position: absolute;
 	bottom: 185px;
@@ -1396,8 +1410,8 @@ img {
 }
 
 #piechart-robot-text-graphic-1 {
-	left: 178px;
-	top: 158px
+	left: 200px;
+	top: 160px
 }
 
 #piechart-robot-text-graphic-2 {
@@ -1416,8 +1430,8 @@ img {
 }
 
 #piechart-robot-text-code-1 {
-	left: 220px;
-	top: 67px
+	left: 214px;
+	top: 72px
 }
 
 #piechart-robot-text-code-2 {
@@ -1448,18 +1462,18 @@ img {
 }
 
 #piechart-alien-text-graphic-1 {
-	left: 58px;
-	top: 100px
+	left: 16px;
+	top: 84px
 }
 
 #piechart-alien-text-graphic-2 {
 	left: 52px;
-	top: 154px
+	top: 176px
 }
 
 #piechart-alien-text-animation-1 {
-	left: 212px;
-	top: 162px
+	left: 186px;
+	top: 164px
 }
 
 #piechart-alien-text-animation-2 {
@@ -1468,8 +1482,8 @@ img {
 }
 
 #piechart-alien-text-code-1 {
-	left: 212px;
-	top: 76px
+	left: 204px;
+	top: 78px
 }
 
 #piechart-alien-text-code-2 {
@@ -1493,7 +1507,7 @@ img {
 
 #piechart-squid-text-graphic-1 {
 	left: 12px;
-	top: 74px;
+	top: 88px;
 	font-size: 42px;
 }
 
@@ -1540,7 +1554,7 @@ img {
 	position: absolute;
 	font-family: poster-sans-bold;
 	color: #fff;
-	font-size: 50px;
+	font-size: 46px;
 	text-align: center;
 }
 
@@ -1640,19 +1654,19 @@ img {
 }
 
 #plant-ribbon-1 {
-	left: 160px
+	left: 158px
 }
 
 #plant-ribbon-2 {
-	left: 370px
+	left: 368px
 }
 
 #plant-ribbon-3 {
-	left: 580px
+	left: 598px
 }
 
 #plant-ribbon-4 {
-	left: 815px
+	left: 834px
 }
 
 .plant-ribbon-left,
