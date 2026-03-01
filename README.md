@@ -2,7 +2,7 @@
 
 This **interactive resume** transforms a traditional CV into a **scrollable visual experience**, designed to **engage the visitors**, guiding them through **key milestones**, technical **skills**, and **career achievements**, in a way that is both informative and memorable.
 
-🟢 View it here: [https://dokson.github.io/interactive-resume/](https://dokson.github.io/interactive-resume/)
+[![Live Site](https://img.shields.io/badge/Live%20Site-www.colace.me-0078D4?style=flat-square&logo=google-chrome&logoColor=white)](https://www.colace.me)
 
 ## 🖼️ Project Story
 
@@ -10,15 +10,24 @@ I discovered the [original project by Robby Leonardi](http://www.rleonardi.com/i
 
 The project remained untouched until **2025**, when I decided to revisit and polish it. I felt it would be a shame to keep it private, so I published it here on **GitHub Pages** (through the `gh-pages` branch) hoping it could inspire others to reimagine how a resume can look and feel.
 
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Libraries | [jQuery 4](https://jquery.com/), [jQuery UI](https://jqueryui.com/) |
+| Contact form | [@emailjs/browser](https://www.emailjs.com/) |
+| Build pipeline | [Node.js](https://nodejs.org/) |
+| CI/CD | [GitHub Actions](https://github.com/features/actions) |
+| Hosting | [GitHub Pages](https://pages.github.com/) (custom domain: [`www.colace.me`](https://www.colace.me)) |
+| PDF sync | CV.pdf auto-committed from [dokson/cv](https://github.com/dokson/cv) |
+
 ## 📝 License
 
-This project is a **personal reinterpretation** of [Robby Leonardi's interactive resume](http://www.rleonardi.com/interactive-resume/), originally published more than 10 years ago.
+This project is based on code from [Robby Leonardi's interactive resume](http://www.rleonardi.com/interactive-resume/), originally published more than 10 years ago and never formally open-sourced. The codebase has been **extensively refactored and reorganised** following modern software engineering best practices, and the characters, storyline, and most visual assets have been replaced with original work by Alessandro Colace, though some graphic elements from the original site are still present.
 
-While the original source code was not publicly released, I recreated the structure and design logic based on the public website for **educational and personal use only**. As such, this project is **not licensed for commercial use or redistribution**.
+Because the underlying code derives from a proprietary work, no open-source license is applied here, and the project is **not available for redistribution or commercial use**.
 
-You are welcome to view the code and take inspiration for your own interactive resume, but please make sure to build something that reflects your unique story and style.
-
-> ⚠️ No open source license (like MIT) is applied here, due to the proprietary nature of the original work this is based on.
+You are welcome to view the code and draw inspiration for your own interactive resume, but please build something that genuinely reflects your own story and style.
 
 ## 🙏 Acknowledgments
 
@@ -35,5 +44,3 @@ You are welcome to view the code and take inspiration for your own interactive r
 ---
 
 ⭐ If you find this project useful or inspiring, consider giving it a star on GitHub!
-
-*Feel free to use this as inspiration for your own interactive resume, but please make it uniquely yours!*
