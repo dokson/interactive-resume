@@ -32,24 +32,15 @@ var about1ContainerDiv = document.getElementById("plants-container"),
     plantLine1Div = document.getElementById("plant-line-1"),
     plantLine2Div = document.getElementById("plant-line-2"),
     plantArray = [],
-    plantTargetTopObjectArray = [];
-plantTargetTopObjectArray.push(plantLine1Div, plantLine1Div, plantLine2Div, plantLine2Div);
+    plantTargetTopObjectArray = [plantLine1Div, plantLine1Div, plantLine2Div, plantLine2Div];
 
 // ─── About: plants & buildings 1 ─────────────────────────────────────────────
 var canAnimatePlantInformation;
 
 var about2ContainerDiv = document.getElementById("buildings-container"),
-    buildingTargetLeft1 = 0,
-    buildingTargetLeft2 = 305,
-    buildingTargetLeft3 = 710,
-    buildingEarlyPosition1 = 795,
-    buildingEarlyPosition2 = 1100,
-    buildingEarlyPosition3 = 1505,
-    buildingArray = [],
-    buildingTargetLeftArray = [],
-    buildingEarlyPositionArray = [];
-buildingTargetLeftArray.push(buildingTargetLeft1, buildingTargetLeft2, buildingTargetLeft3);
-buildingEarlyPositionArray.push(buildingEarlyPosition1, buildingEarlyPosition2, buildingEarlyPosition3);
+    buildingTargetLeftArray = [0, 305, 710],
+    buildingEarlyPositionArray = [795, 1100, 1505],
+    buildingArray = [];
 
 // ─── Experience / piecharts / sea animals & skills: fish ─────────────────────
 var canAnimateBuildingInformation,
@@ -99,29 +90,44 @@ var alienDiv = document.getElementById("alien"),
     alienSteerAngleLimit = 15,
     alienSteerAngleIncrement = 5;
 
-var piechartRobotFrontDiv = document.getElementById("piechart-robot-front"),
-    piechartRobotTextGraphic1Div = document.getElementById("piechart-robot-text-graphic-1"),
-    piechartRobotTextGraphic2Div = document.getElementById("piechart-robot-text-graphic-2"),
-    piechartRobotTextAnimation1Div = document.getElementById("piechart-robot-text-animation-1"),
-    piechartRobotTextAnimation2Div = document.getElementById("piechart-robot-text-animation-2"),
-    piechartRobotTextCode1Div = document.getElementById("piechart-robot-text-code-1"),
-    piechartRobotTextCode2Div = document.getElementById("piechart-robot-text-code-2");
+function getPiechartElements(prefix) {
+    return {
+        front: document.getElementById("piechart-" + prefix + "-front"),
+        graphic1: document.getElementById("piechart-" + prefix + "-text-graphic-1"),
+        graphic2: document.getElementById("piechart-" + prefix + "-text-graphic-2"),
+        animation1: document.getElementById("piechart-" + prefix + "-text-animation-1"),
+        animation2: document.getElementById("piechart-" + prefix + "-text-animation-2"),
+        code1: document.getElementById("piechart-" + prefix + "-text-code-1"),
+        code2: document.getElementById("piechart-" + prefix + "-text-code-2")
+    };
+}
 
-var piechartSquidFrontDiv = document.getElementById("piechart-squid-front"),
-    piechartSquidTextGraphic1Div = document.getElementById("piechart-squid-text-graphic-1"),
-    piechartSquidTextGraphic2Div = document.getElementById("piechart-squid-text-graphic-2"),
-    piechartSquidTextAnimation1Div = document.getElementById("piechart-squid-text-animation-1"),
-    piechartSquidTextAnimation2Div = document.getElementById("piechart-squid-text-animation-2"),
-    piechartSquidTextCode1Div = document.getElementById("piechart-squid-text-code-1"),
-    piechartSquidTextCode2Div = document.getElementById("piechart-squid-text-code-2");
+var piechartRobot = getPiechartElements("robot"),
+    piechartRobotFrontDiv = piechartRobot.front,
+    piechartRobotTextGraphic1Div = piechartRobot.graphic1,
+    piechartRobotTextGraphic2Div = piechartRobot.graphic2,
+    piechartRobotTextAnimation1Div = piechartRobot.animation1,
+    piechartRobotTextAnimation2Div = piechartRobot.animation2,
+    piechartRobotTextCode1Div = piechartRobot.code1,
+    piechartRobotTextCode2Div = piechartRobot.code2;
 
-var piechartAlienFrontDiv = document.getElementById("piechart-alien-front"),
-    piechartAlienTextGraphic1Div = document.getElementById("piechart-alien-text-graphic-1"),
-    piechartAlienTextGraphic2Div = document.getElementById("piechart-alien-text-graphic-2"),
-    piechartAlienTextAnimation1Div = document.getElementById("piechart-alien-text-animation-1"),
-    piechartAlienTextAnimation2Div = document.getElementById("piechart-alien-text-animation-2"),
-    piechartAlienTextCode1Div = document.getElementById("piechart-alien-text-code-1"),
-    piechartAlienTextCode2Div = document.getElementById("piechart-alien-text-code-2");
+var piechartSquid = getPiechartElements("squid"),
+    piechartSquidFrontDiv = piechartSquid.front,
+    piechartSquidTextGraphic1Div = piechartSquid.graphic1,
+    piechartSquidTextGraphic2Div = piechartSquid.graphic2,
+    piechartSquidTextAnimation1Div = piechartSquid.animation1,
+    piechartSquidTextAnimation2Div = piechartSquid.animation2,
+    piechartSquidTextCode1Div = piechartSquid.code1,
+    piechartSquidTextCode2Div = piechartSquid.code2;
+
+var piechartAlien = getPiechartElements("alien"),
+    piechartAlienFrontDiv = piechartAlien.front,
+    piechartAlienTextGraphic1Div = piechartAlien.graphic1,
+    piechartAlienTextGraphic2Div = piechartAlien.graphic2,
+    piechartAlienTextAnimation1Div = piechartAlien.animation1,
+    piechartAlienTextAnimation2Div = piechartAlien.animation2,
+    piechartAlienTextCode1Div = piechartAlien.code1,
+    piechartAlienTextCode2Div = piechartAlien.code2;
 
 var bubbleDiv = document.getElementById("bubble"),
     shiftUpDownLayerHorizontalIncrement = 40,
@@ -133,8 +139,7 @@ var skill1ContainerDiv = document.getElementById("skill-1-container"),
     fishEyeArray = [],
     isFishStillAnimating = false,
     fishAnimateNumber = 0,
-    numberOfFishInEachRowArray = [];
-numberOfFishInEachRowArray.push(5, 5, 3, 3);
+    numberOfFishInEachRowArray = [5, 5, 3, 3];
 
 // ─── Skills: crabs ───────────────────────────────────────────────────────────
 var canAnimateCrabInformation,
@@ -143,8 +148,7 @@ var canAnimateCrabInformation,
     crabEyeArray = [],
     isCrabStillAnimating = false,
     crabAnimateNumber = 0,
-    numberOfCrabInEachRowArray = [];
-numberOfCrabInEachRowArray.push(4, 5, 3, 3);
+    numberOfCrabInEachRowArray = [4, 5, 3, 3];
 
 // ─── Skills: turtles ─────────────────────────────────────────────────────────
 var canAnimateTurtleInformation,
@@ -153,8 +157,7 @@ var canAnimateTurtleInformation,
     turtleEyeArray = [],
     isTurtleStillAnimating = false,
     turtleAnimateNumber = 0,
-    numberOfTurtleInEachRowArray = [];
-numberOfTurtleInEachRowArray.push(5, 5, 4, 3);
+    numberOfTurtleInEachRowArray = [5, 5, 4, 3];
 
 // ─── Ale physics & sprite frames / buildings 2 ───────────────────────────────
 var isAleJumping,
@@ -206,17 +209,9 @@ var aleFrameIndex = 0,
     minimumVerticalDistanceToTriggerAleSwimDownFrame = 100;
 
 var about3ContainerDiv = document.getElementById("buildings-container-2"),
-    building2TargetLeft1 = -12,
-    building2TargetLeft2 = 305,
-    building2TargetLeft3 = 550,
-    building2EarlyPosition1 = 795,
-    building2EarlyPosition2 = 1100,
-    building2EarlyPosition3 = 1505,
-    building2Array = [],
-    building2TargetLeftArray = [],
-    building2EarlyPositionArray = [];
-building2EarlyPositionArray.push(building2EarlyPosition1, building2EarlyPosition2, building2EarlyPosition3);
-building2TargetLeftArray.push(building2TargetLeft1, building2TargetLeft2, building2TargetLeft3);
+    building2TargetLeftArray = [-12, 305, 550],
+    building2EarlyPositionArray = [795, 1100, 1505],
+    building2Array = [];
 
 // ─── Contact / social / fireworks ────────────────────────────────────────────
 var contactContainerDiv = document.getElementById("contact-container"),
@@ -250,12 +245,10 @@ var fireworksContainerDiv = document.getElementById("fireworks-container"),
 // ─── Bootstrap & section dispatch ────────────────────────────────────────────
 disableIsAleJumpingAndFalling();
 
-var landInformationContainerArray = [];
-landInformationContainerArray.push(about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv);
+var landInformationContainerArray = [about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv];
 
 var canScrollOrSwipe;
-var seaInformationContainerArray = [];
-seaInformationContainerArray.push(skill1ContainerDiv, skill2ContainerDiv, skill3ContainerDiv);
+var seaInformationContainerArray = [skill1ContainerDiv, skill2ContainerDiv, skill3ContainerDiv];
 
 disableScrollOrSwipe();
 

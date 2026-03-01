@@ -29,39 +29,53 @@ function animateSocialContainer() {
     }
 }
 
-function setSocialContainerOpacity(e) {
-    if (e > 1) { e = 1 }
-    if (e < 0) { e = 0 }
-    for (var t = $(socialContainerDiv).children().length, i = 0; i < t; i++) {
-        $(socialContainerDiv.children[i]).fadeTo(0, e)
+function setSocialContainerOpacity(opacity) {
+    if (opacity > 1) { opacity = 1 }
+    if (opacity < 0) { opacity = 0 }
+    var childCount = $(socialContainerDiv).children().length;
+    for (var i = 0; i < childCount; i++) {
+        $(socialContainerDiv.children[i]).fadeTo(0, opacity)
     }
-    var n = $(socialContainerDiv.children[1]).children().length;
-    for (i = 0; i < n; i++) {
-        $(socialContainerDiv.children[1].children[i]).fadeTo(0, e)
+    var subChildCount = $(socialContainerDiv.children[1]).children().length;
+    for (i = 0; i < subChildCount; i++) {
+        $(socialContainerDiv.children[1].children[i]).fadeTo(0, opacity)
     }
 }
 
 // ─── Contact confirmation & form ─────────────────────────────────────────────
 function positionContactConfirmationContainer() {
+    var leftPosition = (layersMovement === "not moving 1" || layersMovement === "not moving 2") ?
+        aleContainerDiv.offsetLeft : aleMaxHorizontalDistance;
+
     for (var e = 0; e < contactConfirmationContainerArray.length; e++) {
-        contactConfirmationContainerArray[e].style.left = layersMovement === "not moving 1" || layersMovement === "not moving 2" ? aleContainerDiv.offsetLeft + "px" : aleMaxHorizontalDistance + "px";
-        contactConfirmationContainerArray[e].style.top = .8 * containerDiv.offsetHeight - 370 + "px"
+        contactConfirmationContainerArray[e].style.left = leftPosition + "px";
+        contactConfirmationContainerArray[e].style.top = (.8 * containerDiv.offsetHeight - 370) + "px";
     }
+}
+
+function toggleContactConfirmationContainer(isVisible) {
+    var opacity = isVisible ? 1 : 0;
+    for (var e = 0; e < contactConfirmationContainerArray.length; e++) {
+        var containerChildren = contactConfirmationContainerArray[e].children[0].children;
+        for (var i = 0; i < containerChildren.length; i++) {
+            $(containerChildren[i]).fadeTo(0, opacity);
+        }
+    }
+    isContactConfirmationContainerVisible = isVisible;
 }
 
 function hideContactConfirmationContainer() {
     if (isContactConfirmationContainerVisible) {
-        for (var e = 0; e < contactConfirmationContainerArray.length; e++)
-            for (var t = $(contactConfirmationContainerArray[e]).children().children().length, i = 0; i < t; i++)
-                $(contactConfirmationContainerArray[e].children[0].children[i]).fadeTo(0, 0);
-        isContactConfirmationContainerVisible = false
+        toggleContactConfirmationContainer(false);
     }
 }
 
 function showContactConfirmationContainer(e) {
-    for (var t = $(contactConfirmationContainerArray[e]).children().children().length, i = 0; i < t; i++)
-        $(contactConfirmationContainerArray[e].children[0].children[i]).fadeTo(0, 1);
-    isContactConfirmationContainerVisible = true
+    var containerChildren = contactConfirmationContainerArray[e].children[0].children;
+    for (var i = 0; i < containerChildren.length; i++) {
+        $(containerChildren[i]).fadeTo(0, 1);
+    }
+    isContactConfirmationContainerVisible = true;
 }
 
 function focusEmail() {
@@ -166,14 +180,14 @@ function sendEmail() {
         subject = $("#email-subject").val(),
         message = $("#email-message").val();
 
-    if (email.match(/^([a-z0-9._-]+@[a-z0-9._-]+\.[a-z]{2,}$)/i)) {
-        var isSubjectValid = false,
-            isMessageValid = false;
+    var isEmailValid = email.match(/^([a-z0-9._-]+@[a-z0-9._-]+\.[a-z]{2,}$)/i);
 
-        if (subject.length < 1) { isSubjectValid = false; focusSubject() }
-        if (subject.length >= 1) { isSubjectValid = true }
-        if (message.length < 1) { isMessageValid = false; focusMessage() }
-        if (message.length >= 1) { isMessageValid = true }
+    if (isEmailValid) {
+        var isSubjectValid = subject.length >= 1;
+        var isMessageValid = message.length >= 1;
+
+        if (!isSubjectValid) focusSubject();
+        if (!isMessageValid) focusMessage();
 
         if (isSubjectValid && isMessageValid) {
             var templateParams = {
@@ -181,14 +195,14 @@ function sendEmail() {
                 "subject": subject,
                 "message": message
             };
-            setTimeout("showContactConfirmationContainer(2)", 200);
-            setTimeout(function () { send(templateParams) }, 2000)
+            setTimeout(function () { showContactConfirmationContainer(2); }, 200);
+            setTimeout(function () { send(templateParams); }, 2000);
         } else {
-            setTimeout("showContactConfirmationContainer(1)", 200)
+            setTimeout(function () { showContactConfirmationContainer(1); }, 200);
         }
     } else {
         focusEmail();
-        setTimeout("showContactConfirmationContainer(0)", 200)
+        setTimeout(function () { showContactConfirmationContainer(0); }, 200);
     }
     return false;
 }
@@ -199,14 +213,14 @@ function send(templateParams) {
             console.log('Email sent successfully!', response.status, response.text);
             hideContactConfirmationContainer();
             positionContactConfirmationContainer();
-            setTimeout("showContactConfirmationContainer(4)", 200);
+            setTimeout(function () { showContactConfirmationContainer(4); }, 200);
             clearAllInputField();
         })
         .catch(function (error) {
             console.log('Email failed to send:', error);
             hideContactConfirmationContainer();
             positionContactConfirmationContainer();
-            setTimeout("showContactConfirmationContainer(3)", 200);
+            setTimeout(function () { showContactConfirmationContainer(3); }, 200);
         });
 }
 

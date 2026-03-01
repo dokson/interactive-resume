@@ -168,17 +168,11 @@ function moveLayers() {
         clearHappyAleTimer();
     }
     if (layersMovement === "not moving 1") {
-        positionVerticalLayersAtLeftMost();
-        positionVerticalLayersToHaveSameTopPosition();
-        positionHorizontalLayersAtBottomMost();
-        positionHorizontalLayersToHaveSameRightPosition();
+        positionLayersWhenNotMoving();
         clearHappyAleTimer();
     }
     if (layersMovement === "not moving 2") {
-        positionVerticalLayersAtLeftMost();
-        positionVerticalLayersToHaveSameTopPosition();
-        positionHorizontalLayersAtBottomMost();
-        positionHorizontalLayersToHaveSameRightPosition();
+        positionLayersWhenNotMoving();
         animateSocialContainer();
         happyAle();
         drawManyFireworks();
@@ -201,6 +195,13 @@ function setLayersMovement() {
 }
 
 // ─── Layer positioning utilities ─────────────────────────────────────────────
+function positionLayersWhenNotMoving() {
+    positionVerticalLayersAtLeftMost();
+    positionVerticalLayersToHaveSameTopPosition();
+    positionHorizontalLayersAtBottomMost();
+    positionHorizontalLayersToHaveSameRightPosition();
+}
+
 function positionVerticalLayersAtLeftMost() {
     for (var e = 0; e < layerVerticalArray.length; e++)
         layerVerticalArray[e].style.left = "0px"
@@ -267,8 +268,7 @@ function shiftUpDownHorizontalLayersOnResize() {
         pageVerticalPosition >= sea1Div.offsetLeft - aleLeftEdge &&
         pageVerticalPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge;
     if (aleIsInSea) {
-        clearInterval(shiftUpLayerHorizontalTimer);
-        clearInterval(shiftDownLayerHorizontalTimer);
+        clearShiftUpDownLayerHorizontalTimer();
         isAleSwimming = true;
         positionLayerHorizontalToTop();
         positionVerticalLayersBottomToHorizontalLayersBottom();
@@ -279,8 +279,7 @@ function shiftUpDownHorizontalLayersOnResize() {
         pageVerticalPosition < sea1Div.offsetLeft - aleLeftEdge ||
         pageVerticalPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge;
     if (aleIsOutsideSea) {
-        clearInterval(shiftUpLayerHorizontalTimer);
-        clearInterval(shiftDownLayerHorizontalTimer);
+        clearShiftUpDownLayerHorizontalTimer();
         isAleSwimming = false;
         if (layersMovement === "horizontal") {
             positionLayerHorizontalToBottom();
@@ -323,10 +322,7 @@ function moveUpLayerHorizontal() {
         }
         positionVerticalLayersBottomToHorizontalLayersBottom()
     } else {
-        clearInterval(shiftUpLayerHorizontalTimer);
-        positionHorizontalLayersAtBottomMost();
-        positionHorizontalLayersToHaveSameRightPosition();
-        isAleBelowSeaLevel = false
+        resetLayersWhenNotHorizontal(shiftUpLayerHorizontalTimer);
     }
 }
 
@@ -353,11 +349,15 @@ function moveDownLayerHorizontal() {
         }
         positionVerticalLayersBottomToHorizontalLayersBottom()
     } else {
-        clearInterval(shiftDownLayerHorizontalTimer);
-        positionHorizontalLayersAtBottomMost();
-        positionHorizontalLayersToHaveSameRightPosition();
-        isAleBelowSeaLevel = false
+        resetLayersWhenNotHorizontal(shiftDownLayerHorizontalTimer);
     }
+}
+
+function resetLayersWhenNotHorizontal(timerToClear) {
+    clearInterval(timerToClear);
+    positionHorizontalLayersAtBottomMost();
+    positionHorizontalLayersToHaveSameRightPosition();
+    isAleBelowSeaLevel = false;
 }
 
 function clearShiftUpDownLayerHorizontalTimer() {

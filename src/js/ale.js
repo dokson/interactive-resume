@@ -41,11 +41,20 @@ function checkAleJumpFallSwim() {
 }
 
 function aleJumpUp(e) {
-    (previousPageVerticalPosition <= elevationArray[e].offsetLeft - aleRightEdge && pageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge || previousPageVerticalPosition >= elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge && pageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge) && (positionAleAtGroundLevel(), $(aleContainerDiv).stop().animate({
-        bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + 300, "easeOutCubic"]
-    }, 300, function () {
-        aleJumpDown(e)
-    }), setAleJumpUpFrame())
+    if (
+        (previousPageVerticalPosition <= elevationArray[e].offsetLeft - aleRightEdge &&
+            pageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge) ||
+        (previousPageVerticalPosition >= elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge &&
+            pageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge)
+    ) {
+        positionAleAtGroundLevel();
+        $(aleContainerDiv).stop().animate({
+            bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + 300, "easeOutCubic"]
+        }, 300, function () {
+            aleJumpDown(e);
+        });
+        setAleJumpUpFrame();
+    }
 }
 
 function aleJumpDown(e) {
@@ -134,12 +143,42 @@ function animateAleRunSwim() {
 }
 
 function shiftAleFrame() {
-    if (isAleFalling) return clearShiftAleFrameTimer(), void setAleJumpDownAndFallFrame();
-    if (isAleSwimming && isAleBelowSeaLevel ? (aleStartFrame = aleStartSwimFrame, aleStopFrame = aleStopSwimFrame) : (aleStartFrame = aleStartRunFrame, aleStopFrame = aleStopRunFrame), aleFramesDiv.style.left = -1 * aleOneFrameWidth * (aleStartFrame + aleFrameIndex) + "px", aleStopFrame < aleStartFrame + aleFrameIndex + aleFrameDirection && (aleFrameDirection *= -1), aleStartFrame + aleFrameIndex + aleFrameDirection == aleStartFrame && (pageVerticalPositionWhenAnimateAle1 = pageVerticalPosition), aleStartFrame + aleFrameIndex + aleFrameDirection < aleStartFrame) {
-        if (pageVerticalPositionWhenAnimateAle1 == (pageVerticalPositionWhenAnimateAle2 = pageVerticalPosition)) return clearShiftAleFrameTimer(), void (layersMovement === "not moving 2" && aleHandsUp());
-        aleFrameDirection *= -1
+    if (isAleFalling) {
+        clearShiftAleFrameTimer();
+        setAleJumpDownAndFallFrame();
+        return;
     }
-    aleFrameIndex += aleFrameDirection
+
+    if (isAleSwimming && isAleBelowSeaLevel) {
+        aleStartFrame = aleStartSwimFrame;
+        aleStopFrame = aleStopSwimFrame;
+    } else {
+        aleStartFrame = aleStartRunFrame;
+        aleStopFrame = aleStopRunFrame;
+    }
+
+    aleFramesDiv.style.left = -1 * aleOneFrameWidth * (aleStartFrame + aleFrameIndex) + "px";
+
+    if (aleStopFrame < aleStartFrame + aleFrameIndex + aleFrameDirection) {
+        aleFrameDirection *= -1;
+    }
+
+    if (aleStartFrame + aleFrameIndex + aleFrameDirection === aleStartFrame) {
+        pageVerticalPositionWhenAnimateAle1 = pageVerticalPosition;
+    }
+
+    if (aleStartFrame + aleFrameIndex + aleFrameDirection < aleStartFrame) {
+        if (pageVerticalPositionWhenAnimateAle1 === pageVerticalPosition) {
+            pageVerticalPositionWhenAnimateAle2 = pageVerticalPosition;
+            clearShiftAleFrameTimer();
+            if (layersMovement === "not moving 2") {
+                aleHandsUp();
+            }
+            return;
+        }
+        aleFrameDirection *= -1;
+    }
+    aleFrameIndex += aleFrameDirection;
 }
 
 function clearShiftAleFrameTimer() {
@@ -181,7 +220,9 @@ function hideAleEyesClose() {
 function getSwimUpHeight() {
     swimUpHeight = Math.abs(deltaPageVerticalPosition);
     var e = sea1Div.offsetHeight - aleDiv.offsetHeight;
-    e < swimUpHeight && (swimUpHeight = e)
+    if (e < swimUpHeight) {
+        swimUpHeight = e;
+    }
 }
 
 // ─── Ale: orientation ─────────────────────────────────────────────────────────

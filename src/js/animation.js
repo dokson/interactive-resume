@@ -10,24 +10,34 @@ function positionPlants() {
 }
 
 // ─── About: buildings ────────────────────────────────────────────────────────
+function animateElementsLeft(elements, targets) {
+    for (var e = 0; e < elements.length; e++) {
+        $(elements[e]).stop().delay(300 * e).animate({
+            left: [targets[e], "easeOutCubic"]
+        }, 1000, function () { });
+    }
+}
+
 function animateBuildings() {
-    for (var e = 0; e < buildingArray.length; e++) $(buildingArray[e]).stop().delay(300 * e).animate({
-        left: [buildingTargetLeftArray[e], "easeOutCubic"]
-    }, 1000, function () { })
+    animateElementsLeft(buildingArray, buildingTargetLeftArray);
 }
 
 function animateBuildings2() {
-    for (var e = 0; e < building2Array.length; e++) $(building2Array[e]).stop().delay(300 * e).animate({
-        left: [building2TargetLeftArray[e], "easeOutCubic"]
-    }, 1000, function () { })
+    animateElementsLeft(building2Array, building2TargetLeftArray);
+}
+
+function positionElementsLeft(elements, positions) {
+    for (var e = 0; e < elements.length; e++) {
+        elements[e].style.left = positions[e] + "px";
+    }
 }
 
 function positionBuildings() {
-    for (var e = 0; e < buildingArray.length; e++) buildingArray[e].style.left = buildingEarlyPositionArray[e] + "px"
+    positionElementsLeft(buildingArray, buildingEarlyPositionArray);
 }
 
 function positionBuildings2() {
-    for (var e = 0; e < building2Array.length; e++) building2Array[e].style.left = building2EarlyPositionArray[e] + "px"
+    positionElementsLeft(building2Array, building2EarlyPositionArray);
 }
 
 // ─── Sea animals ─────────────────────────────────────────────────────────────
@@ -155,37 +165,40 @@ function animateExperienceTextContainer(e) {
     }, 1000, function () { })
 }
 
+function hidePiechartElements(frontDiv, textDivs) {
+    for (var i = 0; i < textDivs.length; i++) {
+        $(textDivs[i]).fadeTo(0, 0);
+    }
+    if (!(browserName === "internet explorer" && browserVersion <= 8)) {
+        $(frontDiv).fadeTo(0, 0);
+    }
+}
+
 function positionExperience1Elements() {
     robotDiv.style.left = experience1ContainerDiv.offsetWidth + "px";
-    $(piechartRobotTextGraphic1Div).fadeTo(0, 0);
-    $(piechartRobotTextGraphic2Div).fadeTo(0, 0);
-    $(piechartRobotTextAnimation1Div).fadeTo(0, 0);
-    $(piechartRobotTextAnimation2Div).fadeTo(0, 0);
-    $(piechartRobotTextCode1Div).fadeTo(0, 0);
-    $(piechartRobotTextCode2Div).fadeTo(0, 0);
-    if (!(browserName === "internet explorer" && browserVersion <= 8)) $(piechartRobotFrontDiv).fadeTo(0, 0)
+    hidePiechartElements(piechartRobotFrontDiv, [
+        piechartRobotTextGraphic1Div, piechartRobotTextGraphic2Div,
+        piechartRobotTextAnimation1Div, piechartRobotTextAnimation2Div,
+        piechartRobotTextCode1Div, piechartRobotTextCode2Div
+    ]);
 }
 
 function positionExperience2Elements() {
     squidDiv.style.left = experience2ContainerDiv.offsetWidth + "px";
-    $(piechartSquidTextGraphic1Div).fadeTo(0, 0);
-    $(piechartSquidTextGraphic2Div).fadeTo(0, 0);
-    $(piechartSquidTextAnimation1Div).fadeTo(0, 0);
-    $(piechartSquidTextAnimation2Div).fadeTo(0, 0);
-    $(piechartSquidTextCode1Div).fadeTo(0, 0);
-    $(piechartSquidTextCode2Div).fadeTo(0, 0);
-    if (!(browserName === "internet explorer" && browserVersion <= 8)) $(piechartSquidFrontDiv).fadeTo(0, 0)
+    hidePiechartElements(piechartSquidFrontDiv, [
+        piechartSquidTextGraphic1Div, piechartSquidTextGraphic2Div,
+        piechartSquidTextAnimation1Div, piechartSquidTextAnimation2Div,
+        piechartSquidTextCode1Div, piechartSquidTextCode2Div
+    ]);
 }
 
 function positionExperience3Elements() {
     alienDiv.style.left = experience3ContainerDiv.offsetWidth + "px";
-    $(piechartAlienTextGraphic1Div).fadeTo(0, 0);
-    $(piechartAlienTextGraphic2Div).fadeTo(0, 0);
-    $(piechartAlienTextAnimation1Div).fadeTo(0, 0);
-    $(piechartAlienTextAnimation2Div).fadeTo(0, 0);
-    $(piechartAlienTextCode1Div).fadeTo(0, 0);
-    $(piechartAlienTextCode2Div).fadeTo(0, 0);
-    if (!(browserName === "internet explorer" && browserVersion <= 8)) $(piechartAlienFrontDiv).fadeTo(0, 0)
+    hidePiechartElements(piechartAlienFrontDiv, [
+        piechartAlienTextGraphic1Div, piechartAlienTextGraphic2Div,
+        piechartAlienTextAnimation1Div, piechartAlienTextAnimation2Div,
+        piechartAlienTextCode1Div, piechartAlienTextCode2Div
+    ]);
 }
 
 // ─── Experience: animation dispatch ──────────────────────────────────────────
@@ -335,18 +348,21 @@ function setRobotHandsToDefault() {
     }
 }
 
+function setElementOpacity(element, opacity) {
+    if (element) {
+        element.style.opacity = opacity;
+        element.style.filter = "alpha(opacity=" + (opacity * 100) + ")";
+    }
+}
+
 function setRobotHandsToOpaque(e) {
-    robotHandLeftDiv.children[e].style.opacity = 1;
-    robotHandLeftDiv.children[e].style.filter = "alpha(opacity=100)";
-    robotHandRightDiv.children[e].style.opacity = 1;
-    robotHandRightDiv.children[e].style.filter = "alpha(opacity=100)"
+    setElementOpacity(robotHandLeftDiv.children[e], 1);
+    setElementOpacity(robotHandRightDiv.children[e], 1);
 }
 
 function setRobotHandsToTransparent(e) {
-    robotHandLeftDiv.children[e].style.opacity = 0;
-    robotHandLeftDiv.children[e].style.filter = "alpha(opacity=0)";
-    robotHandRightDiv.children[e].style.opacity = 0;
-    robotHandRightDiv.children[e].style.filter = "alpha(opacity=0)"
+    setElementOpacity(robotHandLeftDiv.children[e], 0);
+    setElementOpacity(robotHandRightDiv.children[e], 0);
 }
 
 // ─── Experience: squid ───────────────────────────────────────────────────────
@@ -392,23 +408,19 @@ function openAndCloseSquidHands() {
 
 function openSquidHands() {
     for (var e = 0; e < squidHandOpenArray.length; e++) {
-        squidHandOpenArray[e].style.opacity = 1;
-        squidHandOpenArray[e].style.filter = "alpha(opacity=100)"
+        setElementOpacity(squidHandOpenArray[e], 1);
     }
     for (e = 0; e < squidHandCloseArray.length; e++) {
-        squidHandCloseArray[e].style.opacity = 0;
-        squidHandCloseArray[e].style.filter = "alpha(opacity=0)"
+        setElementOpacity(squidHandCloseArray[e], 0);
     }
 }
 
 function closeSquidHands() {
     for (var e = 0; e < squidHandOpenArray.length; e++) {
-        squidHandOpenArray[e].style.opacity = 0;
-        squidHandOpenArray[e].style.filter = "alpha(opacity=0)"
+        setElementOpacity(squidHandOpenArray[e], 0);
     }
     for (e = 0; e < squidHandCloseArray.length; e++) {
-        squidHandCloseArray[e].style.opacity = 1;
-        squidHandCloseArray[e].style.filter = "alpha(opacity=100)"
+        setElementOpacity(squidHandCloseArray[e], 1);
     }
 }
 
@@ -457,91 +469,41 @@ function animateAlien() {
 }
 
 // ─── Piecharts ───────────────────────────────────────────────────────────────
-function animatePiechartAolFront() {
-    browserName === "internet explorer" && browserVersion <= 8 ? animatePiechartAolText() : $(piechartRobotFrontDiv).stop().animate({
-        opacity: 1
-    }, 500, function () {
-        animatePiechartAolText()
-    })
+function animatePiechartFront(frontDiv, callback) {
+    if (browserName === "internet explorer" && browserVersion <= 8) {
+        callback();
+    } else {
+        $(frontDiv).stop().animate({ opacity: 1 }, 500, function () {
+            callback();
+        });
+    }
 }
 
-function animatePiechartIncognitoFront() {
-    browserName === "internet explorer" && browserVersion <= 8 ? animatePiechartIncognitoText() : $(piechartSquidFrontDiv).stop().animate({
-        opacity: 1
-    }, 500, function () {
-        animatePiechartIncognitoText()
-    })
-}
+function animatePiechartAolFront() { animatePiechartFront(piechartRobotFrontDiv, animatePiechartAolText); }
+function animatePiechartIncognitoFront() { animatePiechartFront(piechartSquidFrontDiv, animatePiechartIncognitoText); }
+function animatePiechartFoxnewsFront() { animatePiechartFront(piechartAlienFrontDiv, animatePiechartFoxnewsText); }
 
-function animatePiechartFoxnewsFront() {
-    browserName === "internet explorer" && browserVersion <= 8 ? animatePiechartFoxnewsText() : $(piechartAlienFrontDiv).stop().animate({
-        opacity: 1
-    }, 500, function () {
-        animatePiechartFoxnewsText()
-    })
+function animatePiechartTextPair(div1, div2, delayOffset) {
+    $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, function () { });
+    $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, function () { });
 }
 
 function animatePiechartAolText() {
-    animatePiechartAolTextCode();
-    animatePiechartAolTextGraphic();
-    animatePiechartAolTextAnimation()
-}
-
-function animatePiechartAolTextCode() {
-    $(piechartRobotTextCode1Div).stop().animate({ opacity: 1 }, 1000, function () { });
-    $(piechartRobotTextCode2Div).stop().animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartAolTextGraphic() {
-    $(piechartRobotTextGraphic1Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartRobotTextGraphic2Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartAolTextAnimation() {
-    $(piechartRobotTextAnimation1Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartRobotTextAnimation2Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { })
+    animatePiechartTextPair(piechartRobotTextCode1Div, piechartRobotTextCode2Div, 0);
+    animatePiechartTextPair(piechartRobotTextGraphic1Div, piechartRobotTextGraphic2Div, 300);
+    animatePiechartTextPair(piechartRobotTextAnimation1Div, piechartRobotTextAnimation2Div, 600);
 }
 
 function animatePiechartIncognitoText() {
-    animatePiechartIncognitoTextCode();
-    animatePiechartIncognitoTextAnimation();
-    animatePiechartIncognitoTextGraphic()
-}
-
-function animatePiechartIncognitoTextCode() {
-    $(piechartSquidTextCode1Div).stop().animate({ opacity: 1 }, 1000, function () { });
-    $(piechartSquidTextCode2Div).stop().animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartIncognitoTextAnimation() {
-    $(piechartSquidTextAnimation1Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartSquidTextAnimation2Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartIncognitoTextGraphic() {
-    $(piechartSquidTextGraphic1Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartSquidTextGraphic2Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { })
+    animatePiechartTextPair(piechartSquidTextCode1Div, piechartSquidTextCode2Div, 0);
+    animatePiechartTextPair(piechartSquidTextAnimation1Div, piechartSquidTextAnimation2Div, 300);
+    animatePiechartTextPair(piechartSquidTextGraphic1Div, piechartSquidTextGraphic2Div, 600);
 }
 
 function animatePiechartFoxnewsText() {
-    animatePiechartFoxnewsTextGraphic();
-    animatePiechartFoxnewsTextAnimation();
-    animatePiechartFoxnewsTextCode()
-}
-
-function animatePiechartFoxnewsTextCode() {
-    $(piechartAlienTextCode1Div).stop().animate({ opacity: 1 }, 1000, function () { });
-    $(piechartAlienTextCode2Div).stop().animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartFoxnewsTextAnimation() {
-    $(piechartAlienTextAnimation1Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartAlienTextAnimation2Div).stop().delay(300).animate({ opacity: 1 }, 1000, function () { })
-}
-
-function animatePiechartFoxnewsTextGraphic() {
-    $(piechartAlienTextGraphic1Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { });
-    $(piechartAlienTextGraphic2Div).stop().delay(600).animate({ opacity: 1 }, 1000, function () { })
+    animatePiechartTextPair(piechartAlienTextCode1Div, piechartAlienTextCode2Div, 0);
+    animatePiechartTextPair(piechartAlienTextAnimation1Div, piechartAlienTextAnimation2Div, 300);
+    animatePiechartTextPair(piechartAlienTextGraphic1Div, piechartAlienTextGraphic2Div, 600);
 }
 
 // ─── Stars & alien eyes ──────────────────────────────────────────────────────
@@ -549,18 +511,21 @@ function animateStarsAndAlienEyes() {
     clearInterval(starsAndAlienTimer);
     starsAndAlienTimer = setInterval(function () {
         switchStarsColor();
-        switchAlienEyes()
+        switchAlienEyes();
     }, 1000)
 }
 
+function switchElementOpacity(element) {
+    $(element).fadeTo(0, 0);
+    $(element).stop().delay(500).animate({ opacity: 1 }, 0, function () { });
+}
+
 function switchStarsColor() {
-    $(stars).fadeTo(0, 0);
-    $(stars).stop().delay(500).animate({ opacity: 1 }, 0, function () { })
+    switchElementOpacity(stars);
 }
 
 function switchAlienEyes() {
-    $(alienEyes).fadeTo(0, 0);
-    $(alienEyes).stop().delay(500).animate({ opacity: 1 }, 0, function () { })
+    switchElementOpacity(alienEyes);
 }
 
 // ─── Scroll / swipe hint text ────────────────────────────────────────────────
@@ -572,13 +537,16 @@ function animateScrollOrSwipeTextContainer() {
     }
 }
 
+function toggleScrollSwipeText(container) {
+    $(container).fadeTo(0, 1);
+    $(container).stop().delay(500).animate({ opacity: 0 }, 0, function () { });
+}
+
 function turnOnAndOffScrollOrSwipeTextContainer() {
     if (deviceName === "computer") {
-        $(scrollOrSwipeTextContainer1Div).fadeTo(0, 1);
-        $(scrollOrSwipeTextContainer1Div).stop().delay(500).animate({ opacity: 0 }, 0, function () { })
+        toggleScrollSwipeText(scrollOrSwipeTextContainer1Div);
     } else {
-        $(scrollOrSwipeTextContainer2Div).fadeTo(0, 1);
-        $(scrollOrSwipeTextContainer2Div).stop().delay(500).animate({ opacity: 0 }, 0, function () { })
+        toggleScrollSwipeText(scrollOrSwipeTextContainer2Div);
     }
 }
 

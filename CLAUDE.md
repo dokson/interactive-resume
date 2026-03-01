@@ -43,3 +43,24 @@ jQuery, jQuery UI, and `@emailjs/browser` are npm dependencies. The `copy-libs` 
 ### Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci && npm start`, then assembles `deploy/` (merging `dist/`, static assets, and root HTML files) and force-pushes it to `gh-pages` via `peaceiris/actions-gh-pages`. The live site uses CNAME `www.colace.me`.
+
+## Coding Standards & Best Practices
+
+When editing JavaScript files in `src/js/`, please adhere to the following best practices to maintain human-readable code. Avoid writing "minified-style" artifacts directly into the source:
+- **Avoid Yoda conditions**: Write `variable === val` instead of `val === variable`.
+- **Avoid comma operators**: Do not chain multiple distinct expressions with commas (e.g., `doThis(), doThat()`). Write them as separate statements on new lines.
+- **Use standard boolean literals**: Always use `true` and `false` instead of minifier tricks like `!0` and `!1`.
+- **Write clean conditionals**: Expand inline nested ternaries or complex `&&` operator assignments into readable `if/else` blocks. 
+- **DOM Queries**: If a view component selects many DOM elements, group them logically or use helper mappings instead of repetitive isolated `document.getElementById` declarations.
+- **HTML Formatting**: Do not use automatic line-wrapping or formatters that wrap long HTML lines (e.g., in `index.html`). The extensive use of inline classes and IDs for animations means that line breaks mid-tag will destroy the layout. Use settings like `"html.format.wrapLineLength": 0` in VS Code or configure `.prettierrc` (`"printWidth": 9999`) to prevent this.
+
+## Architecture & Maintenance Guidelines
+
+- **SEO & Metadata**: To keep SEO optimal according to most recent standards:
+  - Update `src/json/seo-meta.json` to change the Schema.org `Person` JSON-LD injects.
+  - Update `index.html` `<head>` tags to change Open Graph (`og:*`), Twitter Cards (`twitter:*`), and standard meta descriptions. ALWAYS ensure `og:image` and `twitter:image` are defined.
+  - Update `package.json` -> `config.keywords` to change the site manifest keywords.
+- **Adding External Libraries**: If you `npm install` a new frontend dependency:
+  1. Add it to `package.json` -> `config.build.externalLibs`.
+  2. Reference the copied `.min.js` file in `index.html` or `cv.html`.
+  3. Run `npm run deploy:copy-libs` to sync it to `dist/`.
