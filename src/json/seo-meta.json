@@ -15,9 +15,34 @@
                 "alternateName": [
                     "Colace Alessandro",
                     "Ale Colace",
-                    "Colace"
+                    "Colace",
+                    "dokson GitHub",
+                    "coalesce coach"
                 ],
-                "jobTitle": "Forward Deployed Engineer",
+                "jobTitle": [
+                    "Forward Deployed Engineer",
+                    "AI Engineer",
+                    "GenAI Engineer",
+                    "Machine Learning Engineer",
+                    "LLM Engineer",
+                    "Prompt Engineer",
+                    "MLOps Engineer",
+                    "AI Platform Engineer",
+                    "Data Engineer",
+                    "Cloud Data Engineer",
+                    "Data Architect",
+                    "Cloud Data Architect",
+                    "Data Analyst",
+                    "Data Governance and AI Ethics Specialist",
+                    "Data Governance and Compliance Specialist",
+                    "Business Intelligence Architect",
+                    "AI Product Manager",
+                    "Chief Data Officer as a Service",
+                    "Cloud Engineer",
+                    "DevOps and Platform Engineer",
+                    "Full-Stack Developer",
+                    "Lean Manufacturing Expert"
+                ],
                 "description": "Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments (official Palantir Partner). Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six Google Cloud professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
                 "url": "https://www.colace.me/",
                 "image": "https://www.colace.me/image/web/profile.webp",
@@ -71,11 +96,44 @@
                     "Generative AI",
                     "Retrieval-Augmented Generation",
                     "Large Language Models",
+                    "Small Language Models",
                     "Vector Databases",
+                    "Knowledge Graphs",
+                    "Semantic Search",
+                    "AI Agents",
+                    "Autonomous Agents",
+                    "Agentic AI",
                     "Agentic Workflows",
                     "Multi-Agent Systems",
                     "AI Orchestration",
                     "Model Context Protocol",
+                    "AI Governance",
+                    "AI Safety and Alignment",
+                    "Responsible AI",
+                    "AI Ethics",
+                    "Synthetic Data",
+                    "Feature Stores",
+                    "Real-Time Data Streaming",
+                    "Event-Driven Architecture",
+                    "Edge AI",
+                    "On-Device AI",
+                    "Multimodal AI",
+                    "Computer Vision",
+                    "Natural Language Processing",
+                    "Voice AI",
+                    "Conversational AI",
+                    "AI Search",
+                    "RAG Pipelines",
+                    "Digital Twin",
+                    "Federated Learning",
+                    "AI-Augmented Development",
+                    "Platform Engineering",
+                    "Internal Developer Platform",
+                    "Infrastructure as Code",
+                    "Confidential Computing",
+                    "Zero Trust Architecture",
+                    "Post-Quantum Cryptography",
+                    "Spatial Computing",
                     "n8n",
                     "Workato",
                     "UiPath",
@@ -103,9 +161,12 @@
                     "TypeScript",
                     "JavaScript",
                     "Python",
+                    "Rust",
                     "PowerShell",
                     "npm",
                     "CSS",
+                    "GraphQL",
+                    "WebAssembly",
                     "Database",
                     "Code Quality",
                     "Technical Architecture",
@@ -139,6 +200,7 @@
                     "Terraform",
                     "Docker",
                     "Kubernetes",
+                    "Low-Code and No-Code AI",
                     "Strategic Advisory",
                     "Executive Advisory",
                     "Customer Success",
@@ -146,7 +208,6 @@
                     "Growth Strategy",
                     "Commercial Strategy",
                     "Financial Markets",
-                    "Game Theory",
                     "Poker Analytics",
                     "Data-Driven Strategy",
                     "Tableau",
@@ -243,6 +304,70 @@
             "publisher": {
                 "@id": "https://www.colace.me/#person"
             }
+        },
+        {
+            "@type": "BreadcrumbList",
+            "@id": "https://www.colace.me/#breadcrumb",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.colace.me/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Alessandro Colace — Forward Deployed Engineer",
+                    "item": "https://www.colace.me/#person"
+                }
+            ]
+        },
+        {
+            "@type": "FAQPage",
+            "@id": "https://www.colace.me/#faq",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is a Forward Deployed Engineer?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A Forward Deployed Engineer (FDE) is a technical professional who works directly with clients to deploy and customize enterprise software platforms. At Avatar Investments, an official Palantir partner, Alessandro Colace serves as FDE specializing in Palantir AIP and Foundry deployments, bridging the gap between product engineering and real-world client implementation across data-intensive industries."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What technologies does Alessandro Colace specialize in?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Alessandro Colace specializes in Palantir AIP and Palantir Foundry for enterprise AI platforms, Retrieval-Augmented Generation (RAG) and Large Language Models (LLM) for generative AI, Agentic AI and Multi-Agent Systems, MLOps and LLMOps for ML lifecycle management, and Cloud Data Platforms on Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure. He also works with BigQuery, Databricks, Snowflake, Apache Spark, Apache Airflow, dbt, Terraform, Docker, and Kubernetes."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What certifications does Alessandro Colace hold?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Alessandro Colace holds six professional certifications: Google Cloud Professional Machine Learning Engineer (2024), Google Cloud Professional Cloud Network Engineer (2024), Google Cloud Professional Cloud DevOps Engineer (2024), Google Cloud Professional Cloud Database Engineer (2023), Six Sigma Yellow Belt (2025), and Tableau Desktop Specialist (2018). He also holds a Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Where is Alessandro Colace based?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Alessandro Colace is based in Milan, Italy. He works at Avatar Investments, an official Palantir partner headquartered in Milan, serving enterprise clients across Italy and Europe in AI transformation and data platform engineering."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What career roles does Alessandro Colace cover?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Alessandro Colace covers multiple senior technical roles including Forward Deployed Engineer, AI Engineer, GenAI Engineer, Data Engineer, Cloud Data Engineer, Machine Learning Engineer, Data Architect, MLOps Engineer, AI Platform Engineer, Prompt Engineer, Chief Data Officer as a Service, AI Product Manager, and DevOps and Platform Engineer. With over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership, he operates across both technical execution and strategic advisory."
+                    }
+                }
+            ]
         }
     ]
 }

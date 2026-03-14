@@ -9,7 +9,8 @@ try {
 
     // Define public indexable pages
     const pages = [
-        { file: 'index.html', urlPath: '/' }
+        { file: 'index.html', urlPath: '/' },
+        { file: 'about.html', urlPath: '/about.html' }
     ];
 
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>

@@ -65,7 +65,8 @@ const distDir = path.join(rootDir, packageJson.config.build.outputDir);
 const htmlFiles = [
     { input: path.join(distDir, 'index.html'), output: path.join(distDir, 'index.html') },
     { input: path.join(rootDir, 'cv.html'), output: path.join(distDir, 'cv.html') },
-    { input: path.join(rootDir, '404.html'), output: path.join(distDir, '404.html') }
+    { input: path.join(rootDir, '404.html'), output: path.join(distDir, '404.html') },
+    { input: path.join(rootDir, 'about.html'), output: path.join(distDir, 'about.html') }
 ];
 
 const htmlMinifyOptions = {

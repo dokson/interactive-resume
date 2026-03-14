@@ -1,0 +1,145 @@
+body {
+    margin: 0;
+    padding: 40px 20px;
+    background-color: #00bff3;
+    font-family: frankfurter-medium-plain, Arial, sans-serif;
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+h1 {
+    font-family: frankfurter-plain, Arial, sans-serif;
+    font-size: 36px;
+    color: #ffffff;
+    margin-bottom: 10px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: frankfurter-plain, Arial, sans-serif;
+    font-size: 24px;
+    color: #f26d7d;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #f26d7d;
+    padding-bottom: 5px;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 18px;
+    color: #ffffff;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #f26d7d;
+}
+
+ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+li {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.symbol {
+    font-family: poster-sans-bold, Arial, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 15px;
+}
+
+th {
+    color: #f26d7d;
+    font-weight: bold;
+}
+
+.button {
+    display: inline-block;
+    background-color: #f26d7d;
+    border-radius: 10px;
+    padding: 15px 40px;
+    font-family: frankfurter-plain, Arial, sans-serif;
+    color: #ffffff;
+    font-size: 24px;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.button:hover {
+    background-color: #e55a6a;
+}
+
+.subtitle {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.profile-photo {
+    display: block;
+    margin: 0 auto 30px;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    object-fit: cover;
+}
+
+@font-face {
+    font-family: 'frankfurter-medium-plain';
+    src: url(../font/frankfurter-medium-plain.eot);
+    src: url(../font/frankfurter-medium-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-medium-plain.woff) format('woff'), url(../font/frankfurter-medium-plain.ttf) format('truetype'), url(../font/frankfurter-medium-plain.svg#frankfurter-medium-plain) format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'frankfurter-plain';
+    src: url(../font/frankfurter-plain.eot);
+    src: url(../font/frankfurter-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-plain.woff) format('woff'), url(../font/frankfurter-plain.ttf) format('truetype'), url(../font/frankfurter-plain.svg#frankfurter-plain) format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'poster-sans-bold';
+    src: url(../font/poster-sans-bold.eot);
+    src: url(../font/poster-sans-boldd41d.eot?#iefix) format('embedded-opentype'), url(../font/poster-sans-bold.woff) format('woff'), url(../font/poster-sans-bold.ttf) format('truetype'), url(../font/poster-sans-bold.svg#poster-sans-bold) format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
