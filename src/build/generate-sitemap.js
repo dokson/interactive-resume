@@ -7,32 +7,27 @@ try {
     const config = require('../../package.json');
     const homepage = config.homepage || 'https://www.colace.me';
 
-    // Definiamo le pagine pubbliche e le loro priorità
+    // Define public indexable pages
     const pages = [
-        { file: 'index.html', urlPath: '/', priority: '1.00', changefreq: 'monthly' },
-        { file: 'cv.html', urlPath: '/cv.html', priority: '0.80', changefreq: 'yearly' }
+        { file: 'index.html', urlPath: '/' }
     ];
-
-    // Otteniamo la data odierna in formato YYYY-MM-DD
-    const today = new Date().toISOString().split('T')[0];
 
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
     for (const page of pages) {
         const filePath = path.join(__dirname, '../../', page.file);
-        // Aggiungiamo il blocco url solo se il file fisico esiste
+        // Only include the url block if the physical file exists
         if (fs.existsSync(filePath)) {
             let loc = homepage + page.urlPath;
-            // Evita doppi slash nel dominio (es: https://www.colace.me//cv.html)
+            // Avoid double slashes in the domain (e.g. https://www.colace.me//index.html)
             loc = loc.replace(/([^:]\/)\/+/g, "$1");
+            const lastmod = fs.statSync(filePath).mtime.toISOString().split('T')[0];
 
             sitemapContent += `
   <url>
     <loc>${loc}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
+    <lastmod>${lastmod}</lastmod>
   </url>\n`;
         }
     }
