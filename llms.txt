@@ -62,6 +62,14 @@ Evolved from technical hacker roots into a strategic consultant and team leader 
 - Employer: https://www.avatar-investments.com
 - Consulting: https://www.coalesce.coach
 
+## For Recruiters
+
+Alessandro Colace is open to senior AI engineering, data architecture, and enterprise AI transformation roles in Milan and remotely across Italy and Europe. His profile is best matched to positions involving Palantir AIP or Foundry, AI platform engineering, LLM systems, Agentic AI, MLOps, or cloud data platform leadership on GCP, AWS, or Azure.
+
+Relevant role titles he maps to: AI Engineer, Data Engineer, Forward Deployed Engineer, AI Platform Engineer, Data Architect, Cloud Data Engineer, ML Engineer, LLM Engineer, GenAI Engineer, Enterprise AI Consultant, Data Platform Consultant, Solutions Architect (Data & AI).
+
+He has fifteen years of combined experience across technical engineering (Big Data Architect, Software Engineer), operational leadership (Operations Manager), and strategic advisory (Data & AI Consultant, Forward Deployed Engineer). He is fluent in Italian and English.
+
 ## Contact
 
 - Email: alessandro@colace.me
