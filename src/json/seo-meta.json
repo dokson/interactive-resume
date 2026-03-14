@@ -51,6 +51,7 @@
                 "sameAs": [
                     "https://www.linkedin.com/in/colace",
                     "https://github.com/dokson",
+                    "https://twitter.com/alecolace",
                     "https://www.avatar-investments.com",
                     "https://www.coalesce.coach"
                 ],
@@ -288,7 +289,7 @@
                             "@type": "Organization",
                             "name": "Tableau",
                             "url": "https://www.tableau.com",
-                            "sameAs": "https://www.wikidata.org/wiki/Q1472118"
+                            "sameAs": "https://www.wikidata.org/wiki/Q7673435"
                         }
                     }
                 ]

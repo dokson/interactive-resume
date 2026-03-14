@@ -9,8 +9,8 @@ try {
 
     // Define public indexable pages
     const pages = [
-        { file: 'index.html', urlPath: '/' },
-        { file: 'about.html', urlPath: '/about.html' }
+        { file: 'index.html', urlPath: '/', changefreq: 'weekly', priority: '1.0' },
+        { file: 'about.html', urlPath: '/about.html', changefreq: 'monthly', priority: '0.8' }
     ];
 
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -29,6 +29,8 @@ try {
   <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
   </url>\n`;
         }
     }

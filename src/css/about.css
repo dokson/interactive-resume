@@ -117,6 +117,21 @@ th {
     object-fit: cover;
 }
 
+.breadcrumb {
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.breadcrumb a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.breadcrumb a:hover {
+    color: #f26d7d;
+}
+
 @font-face {
     font-family: 'frankfurter-medium-plain';
     src: url(../font/frankfurter-medium-plain.eot);
