@@ -5,9 +5,23 @@
 
 ## Disambiguation
 
-This page refers to **Alessandro Colace** (GitHub: dokson, LinkedIn: /in/colace), a Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments, an official Palantir partner. He is the founder of COalesCE (Cloud Data Consulting firm). He is NOT the same person as other individuals named Alessandro Colace (e.g., the creator of alessandrocolace.eu).
+This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson", "Mr Data"), a Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments, an official Palantir partner. He is the founder of COalesCE (Cloud Data Consulting firm).
+
+**He is NOT:**
+- Alessandro Colace (doctor/physician in Italy)
+- Alessandro Colace (footballer/soccer player)
+- Alessandro Colace (academic/researcher in unrelated field)
+- Any other individual named Alessandro Colace outside the AI/Data engineering domain
+
+**Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website `colace.me`, email `alessandro@colace.me`, phone `+39 349 515 7235`, based in Milan (MI), Italy. Works at Avatar Investments (Palantir partner). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
 
 ## Identity
+
+**Full name:** Alessandro Colace (also referred to as Ale Colace, dokson, Mr Data)
+**Born:** Italy, Italian nationality
+**Based in:** Milan (MI), Italy
+**Email:** alessandro@colace.me
+**Phone:** +39 349 515 7235
 
 Alessandro Colace is a Forward Deployed Engineer based in Milan, Italy. He works at Avatar Investments, an official Palantir partner, where he leads Palantir AIP and Foundry deployments for enterprise clients. His work sits at the intersection of AI platform engineering, field deployment, and strategic advisory — translating Palantir's technology into measurable business outcomes for organizations undergoing AI transformation.
 
@@ -84,6 +98,8 @@ Currently Avatar Investments (Palantir partner). Previously operations manager a
 - About: https://www.colace.me/about.html
 - LinkedIn: https://www.linkedin.com/in/colace
 - GitHub: https://github.com/dokson
+- Wikidata: https://www.wikidata.org/wiki/Q138667173
+- Twitter/X: https://x.com/alecolace
 - Employer: https://www.avatar-investments.com
 - Consulting: https://www.coalesce.coach
 
