@@ -1,0 +1,69 @@
+# Alessandro Colace
+
+> Forward Deployed Engineer at Avatar Investments (official Palantir Partner), Milan, Italy.
+> Specializing in Palantir AIP, Foundry, enterprise AI transformation, and Cloud Data Platforms.
+
+## Identity
+
+Alessandro Colace is a Forward Deployed Engineer based in Milan, Italy. He works at Avatar Investments, an official Palantir partner, where he leads Palantir AIP and Foundry deployments for enterprise clients. His work sits at the intersection of AI platform engineering, field deployment, and strategic advisory — translating Palantir's technology into measurable business outcomes for organizations undergoing AI transformation.
+
+He is also the founder of Coalesce.coach, a freelance Data & AI consulting brand through which he previously delivered end-to-end cloud and AI architecture engagements before joining Avatar Investments full-time.
+
+## Current Role
+
+- **Title:** Forward Deployed Engineer
+- **Employer:** Avatar Investments (official Palantir Partner)
+- **Location:** Milan, Italy
+- **Focus:** Palantir AIP, Palantir Foundry, enterprise AI deployment, AI Ontology design, Mission Engineering, Mission Execution
+
+## Career Timeline
+
+### Forward Deployed Engineer — Avatar Investments (2022–Present)
+Transitioned from freelance Data & AI consulting to leading Palantir AIP deployments at Avatar Investments. Drives enterprise AI transformations by deploying Palantir Foundry and AIP platforms, designing AI Ontologies, and executing Mission Engineering workflows. Responsible for materializing tangible value for clients operating in financial markets and data-intensive industries.
+
+### Operations Manager — Zenkis (2020–2022)
+Led the operational turnaround of a Ukrainian footwear manufacturer. Applied Lean principles and data-driven optimization to transform production cycles, restoring profitability while navigating high-stakes strategic execution. Managed plant operations, supply chain, and cross-functional teams across a full business restructuring.
+
+### SWE & Big Data Architect — Data Consulting (2008–2009, 2013–2019)
+Evolved from technical hacker roots into a strategic consultant and team leader in data consulting. Orchestrated multi-million euro business development and managed large data engineering teams, while architecting end-to-end platforms from core software engineering to industrial-scale big data architectures on GCP, AWS, and Azure.
+
+## Core Expertise
+
+- **AI Platforms:** Palantir AIP, Palantir Foundry, AI Ontology Design, Mission Engineering
+- **Agentic AI:** Retrieval-Augmented Generation (RAG), Large Language Models, Multi-Agent Systems, AI Orchestration, Model Context Protocol (MCP), Agentic Workflows
+- **AI Tools:** Claude (Anthropic), ChatGPT (OpenAI), Google Gemini, LLaMA, DeepSeek, Mistral, Perplexity, Grok, Copilot, LangChain, Groq, OpenRouter, OpenClaw
+- **Automation:** n8n, Workato, UiPath, MuleSoft, Zapier, Make.com, Dell Boomi
+- **Cloud Platforms:** Google Cloud Platform (GCP), Amazon Web Services (AWS), Microsoft Azure
+- **Data Engineering:** BigQuery, Databricks, Snowflake, Apache Spark, Apache Airflow, dbt
+- **MLOps / DataOps:** MLOps, LLMOps, AIOps, DataOps, GitOps, DevOps, FinOps
+- **Infrastructure:** Terraform, Docker, Kubernetes
+- **Development:** NodeJS, TypeScript, JavaScript, Python, PowerShell, CSS
+- **Visualization:** Tableau, Power BI, Looker Studio
+- **Strategy:** Executive Advisory, Business Development, Growth Strategy, Financial Markets, Game Theory
+
+## Education
+
+- **Master's Degree in Computer Engineering**, Summa Cum Laude — Università di Bologna, Alma Mater Studiorum
+
+## Certifications
+
+- Six Sigma Yellow Belt — Council for Six Sigma Certification (2025)
+- Google Cloud Professional Machine Learning Engineer (2024)
+- Google Cloud Professional Cloud Network Engineer (2024)
+- Google Cloud Professional Cloud DevOps Engineer (2024)
+- Google Cloud Professional Cloud Database Engineer (2023)
+- Tableau Desktop Specialist (2018)
+
+## Online Profiles
+
+- Website: https://www.colace.me
+- LinkedIn: https://www.linkedin.com/in/colace
+- GitHub: https://github.com/dokson
+- Employer: https://www.avatar-investments.com
+- Consulting: https://www.coalesce.coach
+
+## Contact
+
+- Email: alessandro@colace.me
+- Phone: +39 349 515 7235
+- Location: Milan, Italy

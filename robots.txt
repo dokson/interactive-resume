@@ -1,5 +1,4 @@
 User-agent: *
 Disallow: /document/cv.pdf
-Disallow: /cv.html
 
 Sitemap: https://www.colace.me/sitemap.xml
