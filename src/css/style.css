@@ -1318,28 +1318,28 @@ img {
     left: 0px;
     width: 737px;
     height: 638px;
-    background-image: url(../image/layers/mountain-a.png);
+    background-image: url(../image/layers/mountain-a.webp);
 }
 
 #mountain-b {
     left: 1000px;
     width: 405px;
     height: 418px;
-    background-image: url(../image/layers/mountain-b.png);
+    background-image: url(../image/layers/mountain-b.webp);
 }
 
 #mountain-c {
     left: 1100px;
     width: 698px;
     height: 552px;
-    background-image: url(../image/layers/mountain-c.png);
+    background-image: url(../image/layers/mountain-c.webp);
 }
 
 #mountain-d {
     left: 1400px;
     width: 570px;
     height: 476px;
-    background-image: url(../image/layers/mountain-d.png);
+    background-image: url(../image/layers/mountain-d.webp);
 }
 
 #hangar,
