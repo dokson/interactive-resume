@@ -37,7 +37,6 @@
     <meta property=og:image:height content=586>
     <meta property=og:image:type content=image/webp>
     <meta property=og:image:alt content="Alessandro Colace — Mr Data">
-    <link rel=preload href=image/web/profile.webp as=image type=image/webp fetchpriority=high>
 
     <!-- Twitter Card Meta Tags -->
     <meta name=twitter:card content=summary_large_image>
@@ -61,7 +60,7 @@
 
 <body>
     <script src=dist/jquery.min.js></script>
-    <script src=dist/jquery-ui.min.js></script>
+    <script src=dist/easing.min.js></script>
     <script src=dist/detect-browser-device.min.js></script>
     <noscript>
         <div id=javascript-banner-container>
@@ -929,12 +928,15 @@
                     <div id=title-contact></div>
                     <div id=contact-box>
                         <div id=contact-box-email>
+                            <label for=email-address class=visually-hidden>Email address</label>
                             <input id=email-address name=email-address maxlength=75>
                         </div>
                         <div id=contact-box-subject>
+                            <label for=email-subject class=visually-hidden>Subject</label>
                             <input id=email-subject name=email-subject maxlength=150>
                         </div>
                         <div id=contact-box-message>
+                            <label for=email-message class=visually-hidden>Message</label>
                             <textarea id=email-message name=email-message></textarea>
                         </div>
                     </div>

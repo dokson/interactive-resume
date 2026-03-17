@@ -22,8 +22,7 @@
     },
     "dependencies": {
         "@emailjs/browser": "^4.4.1",
-        "jquery": "^4.0.0",
-        "jquery-ui-dist": "^1.12.1"
+        "jquery": "^4.0.0"
     },
     "devDependencies": {
         "clean-css": "^5.3.3",
@@ -67,10 +66,6 @@
                 {
                     "from": "jquery",
                     "file": "dist/jquery.min.js"
-                },
-                {
-                    "from": "jquery-ui-dist",
-                    "file": "jquery-ui.min.js"
                 }
             ]
         },
