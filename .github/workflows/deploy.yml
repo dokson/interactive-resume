@@ -53,8 +53,15 @@ jobs:
           enable_jekyll: false
           disable_nojekyll: false
 
+      - name: Purge Cloudflare cache
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/a2f818496ab3200fc550c2e25c9ed426/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+
       - name: Clean up deployment files
-        if: always() # Run even if previous steps fail
+        if: always()
         run: |
           rm -rf deploy
           echo "Cleaned up deploy folder"
