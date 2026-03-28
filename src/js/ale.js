@@ -2,27 +2,27 @@
 function shiftAleToGroundLevel() {
     $(aleContainerDiv).stop().animate({
         bottom: containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + "px"
-    }, 300, function () { })
+    }, 300, () => { })
 }
 
 function shiftAleToSeaFloor() {
     $(aleContainerDiv).stop().animate({
         bottom: seaFloorDiv.offsetHeight + "px"
-    }, 300, function () { })
+    }, 300, () => { })
 }
 
 function positionLayerHorizontalToTop() {
     if (isAleSwimming) {
         setShiftUpLayerHorizontalDistance();
-        for (var i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = -shiftUpLayerHorizontalDistance + "px";
-        for (i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = shiftUpLayerHorizontalDistance + "px"
+        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = -shiftUpLayerHorizontalDistance + "px";
+        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = shiftUpLayerHorizontalDistance + "px"
     }
 }
 
 function positionLayerHorizontalToBottom() {
     if (!isAleSwimming) {
-        for (var i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = "0px";
-        for (i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = "0px"
+        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = "0px";
+        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = "0px"
     }
 }
 
@@ -32,7 +32,7 @@ function checkAleJumpFallSwim() {
         if (isAleSwimming) {
             if (isAleBelowSeaLevel) aleSwimUp()
         } else {
-            for (var i = 0; i < elevationArray.length; i++) {
+            for (let i = 0; i < elevationArray.length; i++) {
                 aleJumpUp(i);
                 aleFall(i)
             }
@@ -50,7 +50,7 @@ function aleJumpUp(elevationIndex) {
         positionAleAtGroundLevel();
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + 300, "easeOutCubic"]
-        }, 300, function () {
+        }, 300, () => {
             aleJumpDown(elevationIndex);
         });
         setAleJumpUpFrame();
@@ -61,7 +61,7 @@ function aleJumpDown(elevationIndex) {
     if (pageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge && pageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge) {
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - elevationArray[elevationIndex].offsetTop, "easeInCubic"]
-        }, 300, function () {
+        }, 300, () => {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
         });
@@ -78,7 +78,7 @@ function aleFall(elevationIndex) {
         setAleJumpDownAndFallFrame();
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop, "easeInCubic"]
-        }, 300, function () {
+        }, 300, () => {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
         })
@@ -107,12 +107,12 @@ function disableIsAleJumpingAndFalling() {
 function aleSwimUp() {
     getSwimUpHeight();
     if (swimUpHeight > 0) {
-        var targetBottom = seaFloorDiv.offsetHeight + swimUpHeight + "px",
+        const targetBottom = seaFloorDiv.offsetHeight + swimUpHeight + "px",
             swimUpDuration = 3 * swimUpHeight,
             swimDownDuration = 6 * swimUpHeight;
         $(aleContainerDiv).stop().animate({
             bottom: targetBottom
-        }, swimUpDuration, function () {
+        }, swimUpDuration, () => {
             aleSwimDown(swimDownDuration)
         })
     }
@@ -121,7 +121,7 @@ function aleSwimUp() {
 function aleSwimDown(duration) {
     $(aleContainerDiv).stop().animate({
         bottom: seaFloorDiv.offsetHeight + "px"
-    }, duration, function () {
+    }, duration, () => {
         setAleStaticFrame()
     });
     if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - minimumVerticalDistanceToTriggerAleSwimDownFrame) {
@@ -136,7 +136,7 @@ function animateAleRunSwim() {
     if (canAnimateAleRunSwim && !isAleJumping && !isAleFalling && layersMovement !== "vertical") {
         disableAnimateAleRunSwim();
         clearInterval(shiftAleFrameTimer);
-        shiftAleFrameTimer = setInterval(function () {
+        shiftAleFrameTimer = setInterval(() => {
             shiftAleFrame()
         }, shiftAleFrameTimeInterval)
     }
@@ -201,7 +201,7 @@ function disableAnimateAleRunSwim() {
 // ─── Ale: eyes & blink ───────────────────────────────────────────────────────
 function animateAleEyes() {
     clearInterval(blinkAleEyesTimer);
-    blinkAleEyesTimer = setInterval(function () {
+    blinkAleEyesTimer = setInterval(() => {
         blinkAleEyes()
     }, 4000)
 }
@@ -209,7 +209,7 @@ function animateAleEyes() {
 function blinkAleEyes() {
     if (layersMovement !== "not moving 2") {
         $(aleEyesCloseDiv).fadeTo(0, 1);
-        $(aleEyesCloseDiv).stop().delay(300).animate({ opacity: 0 }, 0, function () { })
+        $(aleEyesCloseDiv).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
     }
 }
 
@@ -219,7 +219,7 @@ function hideAleEyesClose() {
 
 function getSwimUpHeight() {
     swimUpHeight = Math.abs(deltaPageVerticalPosition);
-    var maxSwimHeight = sea1Div.offsetHeight - aleDiv.offsetHeight;
+    const maxSwimHeight = sea1Div.offsetHeight - aleDiv.offsetHeight;
     if (maxSwimHeight < swimUpHeight) {
         swimUpHeight = maxSwimHeight;
     }
@@ -241,7 +241,7 @@ function orientAle() {
 function happyAle() {
     if (!isAleHappy) {
         clearInterval(happyAleTimer);
-        happyAleTimer = setInterval(function () { aleHandsUp() }, 3000);
+        happyAleTimer = setInterval(() => { aleHandsUp() }, 3000);
         isAleHappy = true
     }
 }
@@ -255,7 +255,7 @@ function clearHappyAleTimer() {
 
 function aleHandsUp() {
     aleFramesDiv.style.left = "-1600px";
-    setTimeout(function () { setAleStaticFrame() }, 1000)
+    setTimeout(() => { setAleStaticFrame() }, 1000)
 }
 
 // ─── Ale: vertical positioning ───────────────────────────────────────────────
@@ -289,7 +289,7 @@ function positionAleAtSeaFloorLevel() {
 }
 
 function checkElevationNumberBelowAle() {
-    for (var i = 0; i < elevationArray.length; i++) {
+    for (let i = 0; i < elevationArray.length; i++) {
         if (pageVerticalPosition < elevationArray[i].offsetLeft + elevationArray[i].offsetWidth - aleLeftEdge && pageVerticalPosition > elevationArray[i].offsetLeft - aleRightEdge) {
             elevationNumberBelowAle = i;
             break

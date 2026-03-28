@@ -1,29 +1,30 @@
 // ─── DOM collection ──────────────────────────────────────────────────────────
+function collectElements(selector, targetArray) {
+    const elements = document.querySelectorAll(selector);
+    for (let i = 0; i < elements.length; i++) targetArray.push(elements[i]);
+}
+
 function storeDivs() {
-    var allDivs = document.getElementsByTagName("div");
-    for (var i = 0; i < allDivs.length; i++) {
-        var cls = allDivs[i].getAttribute("class");
-        if (cls === "fish") fishArray.push(allDivs[i]);
-        if (cls === "fish-eyes") fishEyeArray.push(allDivs[i]);
-        if (cls === "crab") crabArray.push(allDivs[i]);
-        if (cls === "crab-eyes") crabEyeArray.push(allDivs[i]);
-        if (cls === "turtle") turtleArray.push(allDivs[i]);
-        if (cls === "turtle-eyes") turtleEyeArray.push(allDivs[i]);
-        if (cls === "elevation") elevationArray.push(allDivs[i]);
-        if (cls === "plant") plantArray.push(allDivs[i]);
-        if (cls === "building") buildingArray.push(allDivs[i]);
-        if (cls === "building2") building2Array.push(allDivs[i]);
-        if (cls === "contact-confirmation-container") contactConfirmationContainerArray.push(allDivs[i]);
-        if (cls === "experience-text-container") experienceTextContainerArray.push(allDivs[i]);
-        if (cls === "chain-block-and-string-container") chainBlockAndStringContainerArray.push(allDivs[i]);
-        if (cls === "layer-horizontal") layerHorizontalArray.push(allDivs[i]);
-        if (cls === "layer-vertical") layerVerticalArray.push(allDivs[i]);
-        if (cls === "algae-a" || cls === "algae-b" || cls === "title-skills-class") seaFloorFrontObjectArray.push(allDivs[i]);
-        if (cls === "coral" || cls === "coral-big") seaFloorBackObjectArray.push(allDivs[i]);
-        if (cls === "squid-hand-close") squidHandCloseArray.push(allDivs[i]);
-        if (cls === "squid-hand-open") squidHandOpenArray.push(allDivs[i]);
-        if (cls === "firework") fireworkArray.push(allDivs[i])
-    }
+    collectElements(".fish", fishArray);
+    collectElements(".fish-eyes", fishEyeArray);
+    collectElements(".crab", crabArray);
+    collectElements(".crab-eyes", crabEyeArray);
+    collectElements(".turtle", turtleArray);
+    collectElements(".turtle-eyes", turtleEyeArray);
+    collectElements(".elevation", elevationArray);
+    collectElements(".plant", plantArray);
+    collectElements(".building", buildingArray);
+    collectElements(".building2", building2Array);
+    collectElements(".contact-confirmation-container", contactConfirmationContainerArray);
+    collectElements(".experience-text-container", experienceTextContainerArray);
+    collectElements(".chain-block-and-string-container", chainBlockAndStringContainerArray);
+    collectElements(".layer-horizontal", layerHorizontalArray);
+    collectElements(".layer-vertical", layerVerticalArray);
+    collectElements(".algae-a, .algae-b, .title-skills-class", seaFloorFrontObjectArray);
+    collectElements(".coral, .coral-big", seaFloorBackObjectArray);
+    collectElements(".squid-hand-close", squidHandCloseArray);
+    collectElements(".squid-hand-open", squidHandOpenArray);
+    collectElements(".firework", fireworkArray);
 }
 
 // ─── Initialisation & reset ──────────────────────────────────────────────────

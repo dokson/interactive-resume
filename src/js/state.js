@@ -253,11 +253,11 @@ var seaInformationContainerArray = [skill1ContainerDiv, skill2ContainerDiv, skil
 disableScrollOrSwipe();
 
 // ─── Event handlers ──────────────────────────────────────────────────────────
-$(window).on("beforeunload", function () {
+$(window).on("beforeunload", () => {
     $(window).scrollTop(0);
 });
 
-window.onload = function () {
+window.onload = () => {
     if (deviceName !== "computer") initTouchEvents();
     storeDivs();
     setFrontLayerVerticalHeight();
@@ -290,14 +290,14 @@ window.onload = function () {
     appendFireworkSvgToContainer();
 };
 
-window.onscroll = function () {
+window.onscroll = () => {
     if (canScrollOrSwipe) {
         detectPageVerticalPosition();
         runTheseFunctionsAfterScrollOrSwipe();
     }
 };
 
-window.onresize = function () {
+window.onresize = () => {
     setFrontLayerVerticalHeight();
     setBannersContainerVerticalPosition();
     setPageHeight();

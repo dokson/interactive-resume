@@ -1,20 +1,20 @@
 // ─── About: plants ───────────────────────────────────────────────────────────
 function animatePlants() {
-    for (var i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(300 * i).animate({
+    for (let i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(300 * i).animate({
         top: [plantTargetTopObjectArray[i].offsetTop, "easeOutElastic"]
-    }, 800, function () { })
+    }, 800, () => { })
 }
 
 function positionPlants() {
-    for (var i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : plantTargetTopObjectArray[i].offsetTop + "px"
+    for (let i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : plantTargetTopObjectArray[i].offsetTop + "px"
 }
 
 // ─── About: buildings ────────────────────────────────────────────────────────
 function animateElementsLeft(elements, targets) {
-    for (var i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elements.length; i++) {
         $(elements[i]).stop().delay(300 * i).animate({
             left: [targets[i], "easeOutCubic"]
-        }, 1000, function () { });
+        }, 1000, () => { });
     }
 }
 
@@ -27,7 +27,7 @@ function animateBuildings2() {
 }
 
 function positionElementsLeft(elements, positions) {
-    for (var i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elements.length; i++) {
         elements[i].style.left = positions[i] + "px";
     }
 }
@@ -42,8 +42,8 @@ function positionBuildings2() {
 
 // ─── Sea animals ─────────────────────────────────────────────────────────────
 function positionSeaAnimals(animals, animalsPerRow, colSpacing, rowSpacing) {
-    for (var animalIndex = 0, row = 0; row < animalsPerRow.length; row++)
-        for (var col = 0; col < animalsPerRow[row]; col++) {
+    for (let animalIndex = 0, row = 0; row < animalsPerRow.length; row++)
+        for (let col = 0; col < animalsPerRow[row]; col++) {
             animals[animalIndex].style.left = seaAnimalSwimDistance + col * colSpacing + "px";
             animals[animalIndex].style.top = row * rowSpacing + "px";
             animalIndex += 1
@@ -54,9 +54,9 @@ function animateSeaAnimals(animalArray) {
     if (animalArray == fishArray) isFishStillAnimating = true;
     if (animalArray == crabArray) isCrabStillAnimating = true;
     if (animalArray == turtleArray) isTurtleStillAnimating = true;
-    for (var i = 0; i < animalArray.length; i++) $(animalArray[i]).stop().delay(100 * i).animate({
+    for (let i = 0; i < animalArray.length; i++) $(animalArray[i]).stop().delay(100 * i).animate({
         left: [animalArray[i].offsetLeft - seaAnimalSwimDistance, "easeOutCubic"]
-    }, 600, function () {
+    }, 600, () => {
         disableIsSeaAnimalStillAnimating(animalArray)
     })
 }
@@ -79,14 +79,14 @@ function disableIsSeaAnimalStillAnimating(animalArray) {
 // ─── Sea: bubble ─────────────────────────────────────────────────────────────
 function createBubble() {
     clearInterval(bubbleTimer);
-    bubbleTimer = setInterval(function () { animateBubble() }, 3000)
+    bubbleTimer = setInterval(() => { animateBubble() }, 3000)
 }
 
 function animateBubble() {
-    var topOffset = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
+    const topOffset = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
     positionBubble(topOffset);
     showBubble();
-    $(bubbleDiv).stop().animate({ top: "0px" }, 2 * topOffset, function () { hideBubble() })
+    $(bubbleDiv).stop().animate({ top: "0px" }, 2 * topOffset, () => { hideBubble() })
 }
 
 function hideBubble() {
@@ -104,34 +104,34 @@ function positionBubble(topOffset) {
 
 // ─── Sea animals: blink ──────────────────────────────────────────────────────
 function blinkSeaAnimals(eyeArray) {
-    var selectedEyes = [];
-    var blinkCount = Math.ceil(5 * Math.random());
-    for (var i = 0; i < blinkCount; i++) {
-        var randomIndex = Math.floor(Math.random() * eyeArray.length);
+    const selectedEyes = [];
+    const blinkCount = Math.ceil(5 * Math.random());
+    for (let i = 0; i < blinkCount; i++) {
+        const randomIndex = Math.floor(Math.random() * eyeArray.length);
         selectedEyes.push(eyeArray[randomIndex])
     }
-    for (i = 0; i < selectedEyes.length; i++) {
+    for (let i = 0; i < selectedEyes.length; i++) {
         $(selectedEyes[i]).fadeTo(0, 1);
-        $(selectedEyes[i]).stop().delay(300).animate({ opacity: 0 }, 0, function () { })
+        $(selectedEyes[i]).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
     }
 }
 
 function makeSeaAnimalsBlinking(eyeArray) {
     clearInterval(blinkSeaAnimalsTimer);
-    blinkSeaAnimalsTimer = setInterval(function () { blinkSeaAnimals(eyeArray) }, 3000)
+    blinkSeaAnimalsTimer = setInterval(() => { blinkSeaAnimals(eyeArray) }, 3000)
 }
 
 // ─── Sea floor ───────────────────────────────────────────────────────────────
 function positionSeaFloorObjectsVertically() {
-    for (var i = 0; i < seaFloorFrontObjectArray.length; i++)
+    for (let i = 0; i < seaFloorFrontObjectArray.length; i++)
         seaFloorFrontObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[i].style.bottom = -1 * (seaFloorFrontObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[i].style.bottom = "0px";
-    for (i = 0; i < seaFloorBackObjectArray.length; i++)
+    for (let i = 0; i < seaFloorBackObjectArray.length; i++)
         seaFloorBackObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[i].style.bottom = -.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorBackObjectArray[i].style.bottom = "-70%"
 }
 
 // ─── Experience: containers & text ───────────────────────────────────────────
 function positionChainBlockAndStringContainer() {
-    for (var i = 0; i < chainBlockAndStringContainerArray.length; i++) {
+    for (let i = 0; i < chainBlockAndStringContainerArray.length; i++) {
         if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
         if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
         if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
@@ -145,11 +145,11 @@ function positionChainBlockAndStringContainer() {
 function animateChainBlockAndStringContainer(index) {
     $(chainBlockAndStringContainerArray[index]).stop().animate({
         bottom: [experienceTextContainerDistanceFromFloor + experienceTextContainerArray[index].offsetHeight, "easeOutCubic"]
-    }, 1000, function () { })
+    }, 1000, () => { })
 }
 
 function positionExperienceTextContainer() {
-    for (var i = 0; i < experienceTextContainerArray.length; i++) {
+    for (let i = 0; i < experienceTextContainerArray.length; i++) {
         if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
         if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
         if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
@@ -162,11 +162,11 @@ function positionExperienceTextContainer() {
 function animateExperienceTextContainer(index) {
     $(experienceTextContainerArray[index]).stop().animate({
         bottom: [experienceTextContainerDistanceFromFloor, "easeOutCubic"]
-    }, 1000, function () { })
+    }, 1000, () => { })
 }
 
 function hidePiechartElements(frontDiv, textDivs) {
-    for (var i = 0; i < textDivs.length; i++) {
+    for (let i = 0; i < textDivs.length; i++) {
         $(textDivs[i]).fadeTo(0, 0);
     }
     $(frontDiv).fadeTo(0, 0);
@@ -205,7 +205,7 @@ function animateInformationAndEnemiesElements() {
         return;
 
     if (!isAleSwimming) {
-        for (var i = 0; i < landInformationContainerArray.length; i++) {
+        for (let i = 0; i < landInformationContainerArray.length; i++) {
             const container = landInformationContainerArray[i];
             const containerLeft = container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
@@ -261,7 +261,7 @@ function animateInformationAndEnemiesElements() {
         }
     }
     if (isAleSwimming) {
-        for (i = 0; i < seaInformationContainerArray.length; i++) {
+        for (let i = 0; i < seaInformationContainerArray.length; i++) {
             const container = seaInformationContainerArray[i];
             const containerLeft = sea1Div.offsetLeft + container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
@@ -301,7 +301,7 @@ function animateInformationAndEnemiesElements() {
 function animateRobot() {
     $(robotDiv).stop().animate({
         left: "420px"
-    }, 1000, function () {
+    }, 1000, () => {
         animatePiechartAolFront();
         animateRobotHands()
     })
@@ -310,14 +310,14 @@ function animateRobot() {
 function animateRobotHands() {
     spinRobotHands();
     clearInterval(animateRobotHandsTimer);
-    animateRobotHandsTimer = setInterval(function () {
+    animateRobotHandsTimer = setInterval(() => {
         spinRobotHands()
     }, 4000)
 }
 
 function spinRobotHands() {
     clearInterval(spinRobotHandsTimer);
-    spinRobotHandsTimer = setInterval(function () {
+    spinRobotHandsTimer = setInterval(() => {
         changeRobotHands()
     }, 100)
 }
@@ -331,7 +331,7 @@ function changeRobotHands() {
             pageVerticalPosition + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
             clearInterval(animateRobotHandsTimer)
     } else {
-        for (var i = 0; i < robotHandChildrenLength; i++) {
+        for (let i = 0; i < robotHandChildrenLength; i++) {
             if (i === changeRobotHandsCounter) setRobotHandsToOpaque(i);
             else setRobotHandsToTransparent(i)
         }
@@ -340,7 +340,7 @@ function changeRobotHands() {
 }
 
 function setRobotHandsToDefault() {
-    for (var i = 0; i < robotHandChildrenLength; i++) {
+    for (let i = 0; i < robotHandChildrenLength; i++) {
         if (i === 0) setRobotHandsToOpaque(i);
         else setRobotHandsToTransparent(i)
     }
@@ -366,7 +366,7 @@ function setRobotHandsToTransparent(index) {
 function animateSquid() {
     $(squidDiv).stop().animate({
         left: "430px"
-    }, 1000, function () {
+    }, 1000, () => {
         animatePiechartIncognitoFront();
         animateSquidHands()
     })
@@ -375,14 +375,14 @@ function animateSquid() {
 function animateSquidHands() {
     moveSquidHands();
     clearInterval(animateSquidHandsTimer);
-    animateSquidHandsTimer = setInterval(function () {
+    animateSquidHandsTimer = setInterval(() => {
         moveSquidHands()
     }, 4000)
 }
 
 function moveSquidHands() {
     clearInterval(moveSquidHandsTimer);
-    moveSquidHandsTimer = setInterval(function () {
+    moveSquidHandsTimer = setInterval(() => {
         openAndCloseSquidHands()
     }, 200)
 }
@@ -404,19 +404,19 @@ function openAndCloseSquidHands() {
 }
 
 function openSquidHands() {
-    for (var i = 0; i < squidHandOpenArray.length; i++) {
+    for (let i = 0; i < squidHandOpenArray.length; i++) {
         setElementOpacity(squidHandOpenArray[i], 1);
     }
-    for (i = 0; i < squidHandCloseArray.length; i++) {
+    for (let i = 0; i < squidHandCloseArray.length; i++) {
         setElementOpacity(squidHandCloseArray[i], 0);
     }
 }
 
 function closeSquidHands() {
-    for (var i = 0; i < squidHandOpenArray.length; i++) {
+    for (let i = 0; i < squidHandOpenArray.length; i++) {
         setElementOpacity(squidHandOpenArray[i], 0);
     }
-    for (i = 0; i < squidHandCloseArray.length; i++) {
+    for (let i = 0; i < squidHandCloseArray.length; i++) {
         setElementOpacity(squidHandCloseArray[i], 1);
     }
 }
@@ -424,7 +424,7 @@ function closeSquidHands() {
 // ─── Experience: alien ───────────────────────────────────────────────────────
 function animateAlienHand() {
     clearInterval(animateAlienHandsTimer);
-    animateAlienHandsTimer = setInterval(function () {
+    animateAlienHandsTimer = setInterval(() => {
         rotateAlienHands()
     }, 100)
 }
@@ -451,7 +451,7 @@ function rotateAlienHands() {
 function animateAlien() {
     $(alienDiv).stop().animate({
         left: "450px"
-    }, 1000, function () {
+    }, 1000, () => {
         animatePiechartFoxnewsFront();
         animateAlienHand()
     })
@@ -459,7 +459,7 @@ function animateAlien() {
 
 // ─── Piecharts ───────────────────────────────────────────────────────────────
 function animatePiechartFront(frontDiv, callback) {
-    $(frontDiv).stop().animate({ opacity: 1 }, 500, function () {
+    $(frontDiv).stop().animate({ opacity: 1 }, 500, () => {
         callback();
     });
 }
@@ -469,8 +469,8 @@ function animatePiechartIncognitoFront() { animatePiechartFront(piechartSquidFro
 function animatePiechartFoxnewsFront() { animatePiechartFront(piechartAlienFrontDiv, animatePiechartFoxnewsText); }
 
 function animatePiechartTextPair(div1, div2, delayOffset) {
-    $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, function () { });
-    $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, function () { });
+    $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
+    $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
 }
 
 function animatePiechartAolText() {
@@ -494,7 +494,7 @@ function animatePiechartFoxnewsText() {
 // ─── Stars & alien eyes ──────────────────────────────────────────────────────
 function animateStarsAndAlienEyes() {
     clearInterval(starsAndAlienTimer);
-    starsAndAlienTimer = setInterval(function () {
+    starsAndAlienTimer = setInterval(() => {
         switchStarsColor();
         switchAlienEyes();
     }, 1000)
@@ -502,7 +502,7 @@ function animateStarsAndAlienEyes() {
 
 function switchElementOpacity(element) {
     $(element).fadeTo(0, 0);
-    $(element).stop().delay(500).animate({ opacity: 1 }, 0, function () { });
+    $(element).stop().delay(500).animate({ opacity: 1 }, 0, () => { });
 }
 
 function switchStarsColor() {
@@ -518,13 +518,13 @@ function animateScrollOrSwipeTextContainer() {
     if (canAnimateScrollOrSwipeTextContainer) {
         canAnimateScrollOrSwipeTextContainer = false;
         clearInterval(scrollOrSwipeTextContainerTimer);
-        scrollOrSwipeTextContainerTimer = setInterval(function () { turnOnAndOffScrollOrSwipeTextContainer() }, 1000)
+        scrollOrSwipeTextContainerTimer = setInterval(() => { turnOnAndOffScrollOrSwipeTextContainer() }, 1000)
     }
 }
 
 function toggleScrollSwipeText(container) {
     $(container).fadeTo(0, 1);
-    $(container).stop().delay(500).animate({ opacity: 0 }, 0, function () { });
+    $(container).stop().delay(500).animate({ opacity: 0 }, 0, () => { });
 }
 
 function turnOnAndOffScrollOrSwipeTextContainer() {
