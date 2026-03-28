@@ -59,7 +59,7 @@ function deviceFunctionScrollSwipe() {
 
 // ─── Container & preloader ───────────────────────────────────────────────────
 function showContainer() {
-    containerDiv.setAttribute("class", "")
+    containerDiv.className = ""
 }
 
 function shiftUpHorizontalLayersAfterEverythingLoaded() {
@@ -91,21 +91,21 @@ function shiftDownAleContainer() {
 }
 
 function makePageScrollable() {
-    contentDiv.setAttribute("class", "");
+    contentDiv.className = "";
     enableScrollOrSwipe()
 }
 
 // ─── Page dimensions ─────────────────────────────────────────────────────────
 function setFrontLayerVerticalHeight() {
-    layerVerticalArray[layerVerticalArray.length - 1].style.height = 2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gapBetweenContactCloudAndBannersContainer + "px"
+    layerVerticalArray[layerVerticalArray.length - 1].style.height = `${2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gapBetweenContactCloudAndBannersContainer}px`
 }
 
 function setBannersContainerVerticalPosition() {
-    bannersContainerDiv.style.bottom = containerDiv.offsetHeight + "px"
+    bannersContainerDiv.style.bottom = `${containerDiv.offsetHeight}px`
 }
 
 function setPageHeight() {
-    pageDiv.style.height = layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + distanceBetweenAleAndRocket + "px"
+    pageDiv.style.height = `${layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + distanceBetweenAleAndRocket}px`
 }
 
 function setLayerSpeed() {
@@ -146,7 +146,7 @@ function moveLayers() {
     if (layersMovement === "horizontal") {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
             const layerOffset = -1 * layerHorizontalSpeedArray[i] * pageVerticalPosition;
-            layerHorizontalArray[i].style.left = layerOffset + "px";
+            layerHorizontalArray[i].style.left = `${layerOffset}px`;
         }
         positionLayerHorizontalToBottom();
         clearHappyAleTimer();
@@ -158,7 +158,7 @@ function moveLayers() {
 
         for (let i = 0; i < layerVerticalArray.length; i++) {
             const layerOffset = -1 * layerVerticalSpeedArray[i] * horizontalOffset;
-            layerVerticalArray[i].style.bottom = layerOffset + "px";
+            layerVerticalArray[i].style.bottom = `${layerOffset}px`;
         }
         positionVerticalLayersAtLeftMost();
         positionHorizontalLayersToHaveSameRightPosition();
@@ -208,17 +208,17 @@ function positionVerticalLayersAtLeftMost() {
 
 function positionHorizontalLayersToHaveSameRightPosition() {
     for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.left = containerDiv.offsetWidth - layerHorizontalArray[i].offsetWidth + "px"
+        layerHorizontalArray[i].style.left = `${containerDiv.offsetWidth - layerHorizontalArray[i].offsetWidth}px`
 }
 
 function positionHorizontalLayersVertically() {
     for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
+        layerHorizontalArray[i].style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetTop + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight}px`
 }
 
 function positionHorizontalLayersAtBottomMost() {
     for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
+        layerHorizontalArray[i].style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight}px`
 }
 
 function setAleLeftAndRightEdge() {
@@ -228,12 +228,12 @@ function setAleLeftAndRightEdge() {
 
 function positionVerticalLayersToHaveSameTopPosition() {
     for (let i = 0; i < layerVerticalArray.length; i++)
-        layerVerticalArray[i].style.bottom = containerDiv.offsetHeight - layerVerticalArray[i].offsetHeight + "px"
+        layerVerticalArray[i].style.bottom = `${containerDiv.offsetHeight - layerVerticalArray[i].offsetHeight}px`
 }
 
 function positionVerticalLayersBottomToHorizontalLayersBottom() {
     for (let i = 0; i < layerVerticalArray.length; i++)
-        layerVerticalArray[i].style.bottom = -1 * layerHorizontalArray[i].offsetTop + "px"
+        layerVerticalArray[i].style.bottom = `${-1 * layerHorizontalArray[i].offsetTop}px`
 }
 
 // ─── Horizontal layer shift ──────────────────────────────────────────────────
@@ -311,10 +311,10 @@ function moveUpLayerHorizontal() {
             let newTop = layerHorizontalArray[i].offsetTop - shiftUpDownLayerHorizontalIncrement;
             if (newTop <= -shiftUpLayerHorizontalDistance) {
                 newTop = -shiftUpLayerHorizontalDistance;
-                layerHorizontalArray[i].style.top = newTop + "px";
+                layerHorizontalArray[i].style.top = `${newTop}px`;
                 clearInterval(shiftUpLayerHorizontalTimer)
             } else {
-                layerHorizontalArray[i].style.top = newTop + "px"
+                layerHorizontalArray[i].style.top = `${newTop}px`
             }
             if (aleContainerDiv.offsetTop > sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
                 isAleBelowSeaLevel = true
@@ -338,10 +338,10 @@ function moveDownLayerHorizontal() {
             let newTop = layerHorizontalArray[i].offsetTop + shiftUpDownLayerHorizontalIncrement;
             if (newTop >= 0) {
                 newTop = 0;
-                layerHorizontalArray[i].style.top = newTop + "px";
+                layerHorizontalArray[i].style.top = `${newTop}px`;
                 clearInterval(shiftDownLayerHorizontalTimer)
             } else {
-                layerHorizontalArray[i].style.top = newTop + "px"
+                layerHorizontalArray[i].style.top = `${newTop}px`
             }
             if (aleContainerDiv.offsetTop < sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
                 isAleBelowSeaLevel = false
@@ -366,7 +366,7 @@ function clearShiftUpDownLayerHorizontalTimer() {
 
 // ─── Layer & rocket positioning ──────────────────────────────────────────────
 function positionVerticalLayersHorizontally() {
-    for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.left = layerHorizontalArray[i].offsetLeft + layerHorizontalArray[i].offsetWidth - containerDiv.offsetWidth + "px"
+    for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.left = `${layerHorizontalArray[i].offsetLeft + layerHorizontalArray[i].offsetWidth - containerDiv.offsetWidth}px`
 }
 
 function positionRocketAndAleContainerHorizontally() {
@@ -392,8 +392,8 @@ function positionRocketAndAleContainerHorizontally() {
 
     switch (layersMovement) {
         case "vertical":
-            rocketDiv.style.left = rocketPosition + "px";
-            aleContainerDiv.style.left = alePosition + "px";
+            rocketDiv.style.left = `${rocketPosition}px`;
+            aleContainerDiv.style.left = `${alePosition}px`;
             aleContainerDiv.style.padding = "0px 0px 150px 0px";
             break;
 
@@ -402,9 +402,9 @@ function positionRocketAndAleContainerHorizontally() {
             const pageOffset = pageVerticalPosition -
                 (pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket);
 
-            aleContainerDiv.style.left = (alePosition + pageOffset) + "px";
+            aleContainerDiv.style.left = `${alePosition + pageOffset}px`;
             aleContainerDiv.style.padding = "0px 0px 0px 0px";
-            rocketDiv.style.left = rocketPosition + "px";
+            rocketDiv.style.left = `${rocketPosition}px`;
             break;
 
         default:
@@ -412,7 +412,7 @@ function positionRocketAndAleContainerHorizontally() {
                 lastLayer.offsetWidth -
                 (containerDiv.offsetWidth + rocketDiv.offsetWidth) * 0.5;
 
-            rocketDiv.style.left = rocketFollowPosition + "px";
+            rocketDiv.style.left = `${rocketFollowPosition}px`;
             aleContainerDiv.style.left = "50%";
             aleContainerDiv.style.padding = "0px 0px 0px 0px";
             break;

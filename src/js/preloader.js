@@ -1,12 +1,12 @@
 var preloaderDiv = document.getElementById("preloader");
-preloaderDiv.setAttribute("class", "transparent");
+preloaderDiv.className = "transparent";
 
 function hidePreloader() {
-    preloaderDiv.setAttribute("class", "displaynone")
+    preloaderDiv.className = "displaynone"
 }
 
 function showPreloader() {
-    preloaderDiv.setAttribute("class", "")
+    preloaderDiv.className = ""
 }
 
 function shiftUpPreloader() {
@@ -19,7 +19,7 @@ function shiftUpPreloader() {
 }
 
 function turnOffPreloaderDotsAnimation() {
-    preloaderDotsDiv.setAttribute("class", "preloader-dots-static")
+    preloaderDotsDiv.className = "preloader-dots-static"
 }
 
 var preloaderDotsDiv = document.getElementById("preloader-dots");

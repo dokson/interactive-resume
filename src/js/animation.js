@@ -32,7 +32,7 @@ function animatePlants() {
 }
 
 function positionPlants() {
-    for (let i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : plantTargetTopObjectArray[i].offsetTop + "px"
+    for (let i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : `${plantTargetTopObjectArray[i].offsetTop}px`
 }
 
 // ─── About: buildings ────────────────────────────────────────────────────────
@@ -54,7 +54,7 @@ function animateBuildings2() {
 
 function positionElementsLeft(elements, positions) {
     for (let i = 0; i < elements.length; i++) {
-        elements[i].style.left = positions[i] + "px";
+        elements[i].style.left = `${positions[i]}px`;
     }
 }
 
@@ -70,8 +70,8 @@ function positionBuildings2() {
 function positionSeaAnimals(animals, animalsPerRow, colSpacing, rowSpacing) {
     for (let animalIndex = 0, row = 0; row < animalsPerRow.length; row++)
         for (let col = 0; col < animalsPerRow[row]; col++) {
-            animals[animalIndex].style.left = seaAnimalSwimDistance + col * colSpacing + "px";
-            animals[animalIndex].style.top = row * rowSpacing + "px";
+            animals[animalIndex].style.left = `${seaAnimalSwimDistance + col * colSpacing}px`;
+            animals[animalIndex].style.top = `${row * rowSpacing}px`;
             animalIndex += 1
         }
 }
@@ -124,8 +124,8 @@ function showBubble() {
 }
 
 function positionBubble(topOffset) {
-    bubbleDiv.style.left = pageVerticalPosition + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft + "px";
-    bubbleDiv.style.top = topOffset + "px"
+    bubbleDiv.style.left = `${pageVerticalPosition + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft}px`;
+    bubbleDiv.style.top = `${topOffset}px`
 }
 
 // ─── Sea animals: blink ──────────────────────────────────────────────────────
@@ -150,9 +150,9 @@ function makeSeaAnimalsBlinking(eyeArray) {
 // ─── Sea floor ───────────────────────────────────────────────────────────────
 function positionSeaFloorObjectsVertically() {
     for (let i = 0; i < seaFloorFrontObjectArray.length; i++)
-        seaFloorFrontObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[i].style.bottom = -1 * (seaFloorFrontObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[i].style.bottom = "0px";
+        seaFloorFrontObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[i].style.bottom = `${-1 * (seaFloorFrontObjectArray[i].offsetHeight - sea1Div.offsetHeight)}px` : seaFloorFrontObjectArray[i].style.bottom = "0px";
     for (let i = 0; i < seaFloorBackObjectArray.length; i++)
-        seaFloorBackObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[i].style.bottom = -.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorBackObjectArray[i].style.bottom = "-70%"
+        seaFloorBackObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[i].style.bottom = `${-.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[i].offsetHeight - sea1Div.offsetHeight)}px` : seaFloorBackObjectArray[i].style.bottom = "-70%"
 }
 
 // ─── Experience: containers & text ───────────────────────────────────────────
@@ -161,10 +161,10 @@ function positionChainBlockAndStringContainer() {
         if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
         if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
         if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
-        chainBlockAndStringContainerArray[i].style.left = .5 * experienceTextContainerArray[i].offsetWidth - .5 * chainBlockAndStringContainerArray[i].offsetWidth + "px";
+        chainBlockAndStringContainerArray[i].style.left = `${.5 * experienceTextContainerArray[i].offsetWidth - .5 * chainBlockAndStringContainerArray[i].offsetWidth}px`;
         chainBlockAndStringContainerArray[i].style.bottom = canAnimateBossInformation ?
-            .8 * containerDiv.offsetHeight + experienceTextContainerArray[i].offsetHeight + "px" :
-            experienceTextContainerDistanceFromFloor + experienceTextContainerArray[i].offsetHeight + "px"
+            `${.8 * containerDiv.offsetHeight + experienceTextContainerArray[i].offsetHeight}px` :
+            `${experienceTextContainerDistanceFromFloor + experienceTextContainerArray[i].offsetHeight}px`
     }
 }
 
@@ -180,8 +180,8 @@ function positionExperienceTextContainer() {
         if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
         if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
         experienceTextContainerArray[i].style.bottom = canAnimateBossInformation ?
-            .8 * containerDiv.offsetHeight + "px" :
-            experienceTextContainerDistanceFromFloor + "px"
+            `${.8 * containerDiv.offsetHeight}px` :
+            `${experienceTextContainerDistanceFromFloor}px`
     }
 }
 
@@ -199,7 +199,7 @@ function hidePiechartElements(frontDiv, textDivs) {
 }
 
 function positionExperience1Elements() {
-    robotDiv.style.left = experience1ContainerDiv.offsetWidth + "px";
+    robotDiv.style.left = `${experience1ContainerDiv.offsetWidth}px`;
     hidePiechartElements(piechartRobotFrontDiv, [
         piechartRobotTextGraphic1Div, piechartRobotTextGraphic2Div,
         piechartRobotTextAnimation1Div, piechartRobotTextAnimation2Div,
@@ -208,7 +208,7 @@ function positionExperience1Elements() {
 }
 
 function positionExperience2Elements() {
-    squidDiv.style.left = experience2ContainerDiv.offsetWidth + "px";
+    squidDiv.style.left = `${experience2ContainerDiv.offsetWidth}px`;
     hidePiechartElements(piechartSquidFrontDiv, [
         piechartSquidTextGraphic1Div, piechartSquidTextGraphic2Div,
         piechartSquidTextAnimation1Div, piechartSquidTextAnimation2Div,
@@ -217,7 +217,7 @@ function positionExperience2Elements() {
 }
 
 function positionExperience3Elements() {
-    alienDiv.style.left = experience3ContainerDiv.offsetWidth + "px";
+    alienDiv.style.left = `${experience3ContainerDiv.offsetWidth}px`;
     hidePiechartElements(piechartAlienFrontDiv, [
         piechartAlienTextGraphic1Div, piechartAlienTextGraphic2Div,
         piechartAlienTextAnimation1Div, piechartAlienTextAnimation2Div,
@@ -470,7 +470,7 @@ function rotateAlienHands() {
         clearRafInterval(animateAlienHandsTimer);
         alienSteerDiv.style.transform = "rotate(0deg)";
     } else {
-        alienSteerDiv.style.transform = "rotate(" + alienSteerAngle + "deg)";
+        alienSteerDiv.style.transform = `rotate(${alienSteerAngle}deg)`;
     }
 }
 

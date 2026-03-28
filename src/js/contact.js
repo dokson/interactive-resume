@@ -3,13 +3,13 @@ emailjs.init("H_cQjD2uFvh4WSAUf");
 
 // ─── Contact & Links ────────────────────────────────────────────────────────
 function positionContactContainer() {
-    contactContainerDiv.style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + "px";
-    contactContainerDiv.style.left = layerVerticalArray[layerVerticalArray.length - 1].offsetLeft + "px"
+    contactContainerDiv.style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetTop}px`;
+    contactContainerDiv.style.left = `${layerVerticalArray[layerVerticalArray.length - 1].offsetLeft}px`
 }
 
 function positionFireworksContainer() {
-    fireworksContainerDiv.style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + "px";
-    fireworksContainerDiv.style.left = layerVerticalArray[layerVerticalArray.length - 1].offsetLeft + "px"
+    fireworksContainerDiv.style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetTop}px`;
+    fireworksContainerDiv.style.left = `${layerVerticalArray[layerVerticalArray.length - 1].offsetLeft}px`
 }
 
 function positionLinksContainer() {
@@ -48,8 +48,8 @@ function positionContactConfirmationContainer() {
         aleContainerDiv.offsetLeft : aleMaxHorizontalDistance;
 
     for (let i = 0; i < contactConfirmationContainerArray.length; i++) {
-        contactConfirmationContainerArray[i].style.left = leftPosition + "px";
-        contactConfirmationContainerArray[i].style.top = (.8 * containerDiv.offsetHeight - 370) + "px";
+        contactConfirmationContainerArray[i].style.left = `${leftPosition}px`;
+        contactConfirmationContainerArray[i].style.top = `${.8 * containerDiv.offsetHeight - 370}px`;
     }
 }
 
@@ -136,8 +136,8 @@ function drawOneLayerOfFirework() {
         fireworkLayerNumber += 1;
         for (let i = 0; i < fireworkColumnNumber; i++) {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", String(fireworkCenterX + Math.cos(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
-            circle.setAttribute("cy", String(fireworkCenterY + Math.sin(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
+            circle.setAttribute("cx", `${fireworkCenterX + Math.cos(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)}`);
+            circle.setAttribute("cy", `${fireworkCenterY + Math.sin(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)}`);
             circle.setAttribute("r", fireworkDotRadius);
             circle.setAttribute("fill", "#ffffff");
             fireworkSvgArray[drawFireworkCounter].appendChild(circle)

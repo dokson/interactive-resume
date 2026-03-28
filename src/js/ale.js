@@ -1,21 +1,21 @@
 // ─── Ale: layer snapping ─────────────────────────────────────────────────────
 function shiftAleToGroundLevel() {
     $(aleContainerDiv).stop().animate({
-        bottom: containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + "px"
+        bottom: `${containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop}px`
     }, 300, () => { })
 }
 
 function shiftAleToSeaFloor() {
     $(aleContainerDiv).stop().animate({
-        bottom: seaFloorDiv.offsetHeight + "px"
+        bottom: `${seaFloorDiv.offsetHeight}px`
     }, 300, () => { })
 }
 
 function positionLayerHorizontalToTop() {
     if (isAleSwimming) {
         setShiftUpLayerHorizontalDistance();
-        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = -shiftUpLayerHorizontalDistance + "px";
-        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = shiftUpLayerHorizontalDistance + "px"
+        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = `${-shiftUpLayerHorizontalDistance}px`;
+        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = `${shiftUpLayerHorizontalDistance}px`
     }
 }
 
@@ -88,11 +88,11 @@ function aleFall(elevationIndex) {
 function setAleJumpUpFrame() {
     clearShiftAleFrameTimer();
     isAleJumping = true;
-    aleFramesDiv.style.left = -1 * aleStartJumpFrame * aleOneFrameWidth + "px"
+    aleFramesDiv.style.left = `${-1 * aleStartJumpFrame * aleOneFrameWidth}px`
 }
 
 function setAleJumpDownAndFallFrame() {
-    aleFramesDiv.style.left = -1 * aleStopJumpFrame * aleOneFrameWidth + "px"
+    aleFramesDiv.style.left = `${-1 * aleStopJumpFrame * aleOneFrameWidth}px`
 }
 
 function setAleStaticFrame() {
@@ -107,7 +107,7 @@ function disableIsAleJumpingAndFalling() {
 function aleSwimUp() {
     getSwimUpHeight();
     if (swimUpHeight > 0) {
-        const targetBottom = seaFloorDiv.offsetHeight + swimUpHeight + "px",
+        const targetBottom = `${seaFloorDiv.offsetHeight + swimUpHeight}px`,
             swimUpDuration = 3 * swimUpHeight,
             swimDownDuration = 6 * swimUpHeight;
         $(aleContainerDiv).stop().animate({
@@ -120,12 +120,12 @@ function aleSwimUp() {
 
 function aleSwimDown(duration) {
     $(aleContainerDiv).stop().animate({
-        bottom: seaFloorDiv.offsetHeight + "px"
+        bottom: `${seaFloorDiv.offsetHeight}px`
     }, duration, () => {
         setAleStaticFrame()
     });
     if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - minimumVerticalDistanceToTriggerAleSwimDownFrame) {
-        aleFramesDiv.style.left = -1 * aleSwimDownFrame * aleOneFrameWidth + "px"
+        aleFramesDiv.style.left = `${-1 * aleSwimDownFrame * aleOneFrameWidth}px`
     } else {
         setAleStaticFrame()
     }
@@ -157,7 +157,7 @@ function shiftAleFrame() {
         aleStopFrame = aleStopRunFrame;
     }
 
-    aleFramesDiv.style.left = -1 * aleOneFrameWidth * (aleStartFrame + aleFrameIndex) + "px";
+    aleFramesDiv.style.left = `${-1 * aleOneFrameWidth * (aleStartFrame + aleFrameIndex)}px`;
 
     if (aleStopFrame < aleStartFrame + aleFrameIndex + aleFrameDirection) {
         aleFrameDirection *= -1;
@@ -260,7 +260,7 @@ function aleHandsUp() {
 
 // ─── Ale: vertical positioning ───────────────────────────────────────────────
 function positionSplashContainer() {
-    splashContainerDiv.style.left = .5 * (containerDiv.offsetWidth - splashContainerDiv.offsetWidth) + "px"
+    splashContainerDiv.style.left = `${.5 * (containerDiv.offsetWidth - splashContainerDiv.offsetWidth)}px`
 }
 
 function positionAleContainerVertically() {
@@ -272,7 +272,7 @@ function positionAleContainerVertically() {
         } else {
             checkElevationNumberBelowAle();
             if (elevationNumberBelowAle != null) {
-                aleContainerDiv.style.bottom = containerDiv.offsetHeight - elevationArray[elevationNumberBelowAle].offsetTop + "px"
+                aleContainerDiv.style.bottom = `${containerDiv.offsetHeight - elevationArray[elevationNumberBelowAle].offsetTop}px`
             } else {
                 positionAleAtGroundLevel()
             }
@@ -281,11 +281,11 @@ function positionAleContainerVertically() {
 }
 
 function positionAleAtGroundLevel() {
-    aleContainerDiv.style.bottom = .2 * containerDiv.offsetHeight + "px"
+    aleContainerDiv.style.bottom = `${.2 * containerDiv.offsetHeight}px`
 }
 
 function positionAleAtSeaFloorLevel() {
-    aleContainerDiv.style.bottom = seaFloorDiv.offsetHeight + "px"
+    aleContainerDiv.style.bottom = `${seaFloorDiv.offsetHeight}px`
 }
 
 function checkElevationNumberBelowAle() {
