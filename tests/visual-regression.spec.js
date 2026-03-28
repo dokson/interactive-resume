@@ -49,16 +49,27 @@ const sections = [
 ];
 
 test.describe('Visual Regression', () => {
-    test.beforeEach(async ({ page }) => {
+    test('00-preloader', async ({ page }) => {
+        // Block a JS file to keep preloader visible
+        await page.route('**/state.min.js', route => route.abort());
         await page.goto('/index.html');
-        await waitForSiteReady(page);
-        await disableAnimations(page);
+        await page.waitForSelector('#preloader', { state: 'visible' });
+        await page.waitForTimeout(500);
+        await expect(page).toHaveScreenshot('00-preloader.png');
     });
 
-    for (const section of sections) {
-        test(`section ${section.name}`, async ({ page }) => {
-            await scrollToPercent(page, section.percent);
-            await expect(page).toHaveScreenshot(`${section.name}.png`);
+    test.describe('Sections', () => {
+        test.beforeEach(async ({ page }) => {
+            await page.goto('/index.html');
+            await waitForSiteReady(page);
+            await disableAnimations(page);
         });
-    }
+
+        for (const section of sections) {
+            test(`section ${section.name}`, async ({ page }) => {
+                await scrollToPercent(page, section.percent);
+                await expect(page).toHaveScreenshot(`${section.name}.png`);
+            });
+        }
+    });
 });

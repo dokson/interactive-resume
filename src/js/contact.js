@@ -13,7 +13,7 @@ function positionFireworksContainer() {
 }
 
 function positionLinksContainer() {
-    if (canAnimateLinksContainer) {
+    if (flags.canAnimateLinks) {
         setLinksContainerOpacity(0);
         linksContainerDiv.style.top = "80%"
     } else {
@@ -22,10 +22,10 @@ function positionLinksContainer() {
 }
 
 function animateLinksContainer() {
-    if (canAnimateLinksContainer) {
+    if (flags.canAnimateLinks) {
         $(linksContainerDiv).stop().animate({ top: [0, "easeOutCubic"] }, 1000, () => { });
         setLinksContainerOpacity(1);
-        canAnimateLinksContainer = false
+        flags.canAnimateLinks = false
     }
 }
 
@@ -44,8 +44,8 @@ function setLinksContainerOpacity(opacity) {
 
 // ─── Contact confirmation & form ─────────────────────────────────────────────
 function positionContactConfirmationContainer() {
-    const leftPosition = (layersMovement === "not moving 1" || layersMovement === "not moving 2") ?
-        aleContainerDiv.offsetLeft : aleMaxHorizontalDistance;
+    const leftPosition = (scrollState.layersMovement === "not moving 1" || scrollState.layersMovement === "not moving 2") ?
+        aleContainerDiv.offsetLeft : ale.maxHorizontalDistance;
 
     for (let i = 0; i < contactConfirmationContainerArray.length; i++) {
         contactConfirmationContainerArray[i].style.left = `${leftPosition}px`;
@@ -61,11 +61,11 @@ function toggleContactConfirmationContainer(isVisible) {
             $(containerChildren[j]).fadeTo(0, opacity);
         }
     }
-    isContactConfirmationContainerVisible = isVisible;
+    flags.contactConfirmationVisible = isVisible;
 }
 
 function hideContactConfirmationContainer() {
-    if (isContactConfirmationContainerVisible) {
+    if (flags.contactConfirmationVisible) {
         toggleContactConfirmationContainer(false);
     }
 }
@@ -75,7 +75,7 @@ function showContactConfirmationContainer(index) {
     for (const child of containerChildren) {
         $(child).fadeTo(0, 1);
     }
-    isContactConfirmationContainerVisible = true;
+    flags.contactConfirmationVisible = true;
 }
 
 function focusEmail() {
@@ -114,10 +114,10 @@ function appendFireworkSvgToContainer() {
 }
 
 function drawManyFireworks() {
-    if (canDrawManyFireworks) {
-        clearInterval(drawFireworkTimer);
-        drawFireworkTimer = setInterval(() => { drawFirework() }, 1000);
-        canDrawManyFireworks = false
+    if (flags.canDrawFireworks) {
+        clearInterval(timers.drawFirework);
+        timers.drawFirework = setInterval(() => { drawFirework() }, 1000);
+        flags.canDrawFireworks = false
     }
 }
 
@@ -126,8 +126,8 @@ function drawFirework() {
         drawFireworkCounter = 0;
         resetFireworkSvg();
     } else {
-        clearRafInterval(drawOneLayerOfFireworkTimer);
-        drawOneLayerOfFireworkTimer = setRafInterval(() => { drawOneLayerOfFirework() }, 40)
+        clearRafInterval(timers.drawOneLayerFirework);
+        timers.drawOneLayerFirework = setRafInterval(() => { drawOneLayerOfFirework() }, 40)
     }
 }
 
@@ -144,7 +144,7 @@ function drawOneLayerOfFirework() {
         }
     } else {
         fireworkLayerNumber = 0;
-        clearRafInterval(drawOneLayerOfFireworkTimer);
+        clearRafInterval(timers.drawOneLayerFirework);
         makeFireworkDisappear(drawFireworkCounter);
         drawFireworkCounter += 1
     }

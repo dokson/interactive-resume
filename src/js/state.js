@@ -2,6 +2,96 @@
 // GLOBAL STATE — all shared variables used across JS modules
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// ─── Namespace: Ale character state ─────────────────────────────────────────
+var ale = {
+    isJumping: false,
+    isFalling: false,
+    isSwimming: false,
+    isBelowSeaLevel: false,
+    isHappy: false,
+    swimUpHeight: undefined,
+    canRunSwim: undefined,
+    startFrame: undefined,
+    stopFrame: undefined,
+    rightEdge: undefined,
+    leftEdge: undefined,
+    maxHorizontalDistance: undefined,
+    elevations: [],
+    elevationBelow: null,
+    frameIndex: 0,
+    frameDirection: 1,
+    staticFrame: 0,
+    startRunFrame: 1,
+    stopRunFrame: 2,
+    startSwimFrame: 3,
+    stopSwimFrame: 4,
+    swimDownFrame: 5,
+    startJumpFrame: 6,
+    stopJumpFrame: 7,
+    oneFrameWidth: 200,
+    frameTimeInterval: 200,
+    minSwimDownDistance: 100,
+    animatePosition1: undefined,
+    animatePosition2: undefined
+};
+
+// ─── Namespace: scroll / page position ──────────────────────────────────────
+var scrollState = {
+    position: 0,
+    positionOnTouch: 0,
+    previousPosition: 0,
+    delta: 0,
+    layersMovement: undefined,
+    canScrollOrSwipe: undefined,
+    touchStartX: 0,
+    touchCurrentX: 0,
+    touchEndX: 0
+};
+
+// ─── Namespace: animation flags ─────────────────────────────────────────────
+var flags = {
+    preloadShiftUpDone: false,
+    canFinishShiftUp: true,
+    canAnimatePlant: undefined,
+    canAnimateBuilding: undefined,
+    canAnimateBuilding2: undefined,
+    canAnimateRobot: undefined,
+    canAnimateSquid: undefined,
+    canAnimateAlien: undefined,
+    canAnimateBoss: undefined,
+    canAnimateFish: undefined,
+    canAnimateCrab: undefined,
+    canAnimateTurtle: undefined,
+    canAnimateLinks: undefined,
+    canHideScrollText: true,
+    canAnimateScrollText: true,
+    contactConfirmationVisible: true,
+    canDrawFireworks: true
+};
+
+// ─── Namespace: timer IDs ───────────────────────────────────────────────────
+var timers = {
+    blinkAleEyes: undefined,
+    shiftAleFrame: undefined,
+    happyAle: undefined,
+    animateRobotHands: undefined,
+    spinRobotHands: undefined,
+    animateSquidHands: undefined,
+    moveSquidHands: undefined,
+    animateAlienHands: undefined,
+    bubble: undefined,
+    blinkSeaAnimals: undefined,
+    stars: undefined,
+    alienEyes: undefined,
+    scrollText: undefined,
+    buildingBlink: undefined,
+    building2Blink: undefined,
+    shiftUpLayer: undefined,
+    shiftDownLayer: undefined,
+    drawFirework: undefined,
+    drawOneLayerFirework: undefined
+};
+
 // ─── DOM elements: page structure ───────────────────────────────────────────
 var contentDiv = document.getElementById("content");
 var pageDiv = document.getElementById("page");
@@ -128,91 +218,6 @@ var fireworksContainerDiv = document.getElementById("fireworks-container");
 var fireworkArray = [];
 var fireworkSvgArray = [];
 
-// ─── Ale: physics & sprite frames ───────────────────────────────────────────
-var isAleJumping;
-var isAleFalling;
-var isAleSwimming = false;
-var isAleBelowSeaLevel = false;
-var isAleHappy = false;
-var swimUpHeight;
-var canAnimateAleRunSwim;
-var aleStartFrame;
-var aleStopFrame;
-var aleRightEdge;
-var aleLeftEdge;
-var aleMaxHorizontalDistance;
-var elevationArray = [];
-var elevationNumberBelowAle = null;
-
-var aleFrameIndex = 0;
-var aleFrameDirection = 1;
-var aleStaticFrame = 0;
-var aleStartRunFrame = 1;
-var aleStopRunFrame = 2;
-var aleStartSwimFrame = 3;
-var aleStopSwimFrame = 4;
-var aleSwimDownFrame = 5;
-var aleStartJumpFrame = 6;
-var aleStopJumpFrame = 7;
-var aleOneFrameWidth = 200;
-var shiftAleFrameTimeInterval = 200;
-var minimumVerticalDistanceToTriggerAleSwimDownFrame = 100;
-
-// ─── Scroll / page position ─────────────────────────────────────────────────
-var pageVerticalPosition = 0;
-var pageVerticalPositionOnTouch = 0;
-var previousPageVerticalPosition = 0;
-var deltaPageVerticalPosition = 0;
-var pageVerticalPositionWhenAnimateAle1;
-var pageVerticalPositionWhenAnimateAle2;
-var layersMovement;
-var canScrollOrSwipe;
-var touchStartX = 0;
-var touchCurrentX = 0;
-var touchEndX = 0;
-var distanceBetweenAleAndRocket = 300;
-
-// ─── Animation flags ────────────────────────────────────────────────────────
-var isPreloadShiftUpAnimationFinish = false;
-var canFinishShiftUpHorizontalLayersAfterEverythingLoaded = true;
-var canAnimatePlantInformation;
-var canAnimateBuildingInformation;
-var canAnimateBuilding2Information;
-var canAnimateRobotInformation;
-var canAnimateSquidInformation;
-var canAnimateAlienInformation;
-var canAnimateBossInformation;
-var canAnimateFishInformation;
-var canAnimateCrabInformation;
-var canAnimateTurtleInformation;
-var canAnimateLinksContainer;
-var canHideScrollOrSwipeTextContainer = true;
-var canAnimateScrollOrSwipeTextContainer = true;
-var isContactConfirmationContainerVisible = true;
-var canDrawManyFireworks = true;
-
-// ─── Timer IDs ──────────────────────────────────────────────────────────────
-var blinkAleEyesTimer;
-var shiftAleFrameTimer;
-var happyAleTimer;
-var animateRobotHandsTimer;
-var spinRobotHandsTimer;
-var animateSquidHandsTimer;
-var moveSquidHandsTimer;
-var animateAlienHandsTimer;
-var bubbleTimer;
-var blinkSeaAnimalsTimer;
-var starsTimer;
-var alienEyesTimer;
-var scrollOrSwipeTextContainerTimer;
-var buildingBlinkTimer;
-var building2BlinkTimer;
-var shiftUpLayerHorizontalDistance;
-var shiftUpLayerHorizontalTimer;
-var shiftDownLayerHorizontalTimer;
-var drawFireworkTimer;
-var drawOneLayerOfFireworkTimer;
-
 // ─── Firework config ────────────────────────────────────────────────────────
 var drawFireworkCounter = 0;
 var fireworkRowNumber = 8;
@@ -225,10 +230,12 @@ var fireworkOneRadiusDistance;
 var fireworkOneRotationAngle;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
+var distanceBetweenAleAndRocket = 300;
 var gapBetweenContactCloudAndBannersContainer = 400;
 var shiftUpDownLayerHorizontalIncrement = 40;
 var shiftUpDownLayerHorizontalInterval = 40;
 var seaAnimalSwimDistance = 900;
+var shiftUpLayerHorizontalDistance;
 
 // ─── Section container arrays (built after DOM elements are declared) ───────
 var landInformationContainerArray = [about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv];
@@ -278,7 +285,7 @@ window.onload = () => {
 };
 
 window.onscroll = () => {
-    if (canScrollOrSwipe) {
+    if (scrollState.canScrollOrSwipe) {
         detectPageVerticalPosition();
         runTheseFunctionsAfterScrollOrSwipe();
     }

@@ -11,7 +11,7 @@ function storeDivs() {
     collectElements(".crab-eyes", crabEyeArray);
     collectElements(".turtle", turtleArray);
     collectElements(".turtle-eyes", turtleEyeArray);
-    collectElements(".elevation", elevationArray);
+    collectElements(".elevation", ale.elevations);
     collectElements(".plant", plantArray);
     collectElements(".building", buildingArray);
     collectElements(".building2", building2Array);
@@ -36,18 +36,18 @@ function initVariablesAfterShowContainer() {
 }
 
 function resetVariables() {
-    pageVerticalPosition = 0;
-    canAnimatePlantInformation = true;
-    canAnimateBuildingInformation = true;
-    canAnimateBuilding2Information = true;
-    canAnimateRobotInformation = true;
-    canAnimateSquidInformation = true;
-    canAnimateAlienInformation = true;
-    canAnimateLinksContainer = true;
-    canDrawManyFireworks = true;
-    if (!isFishStillAnimating) canAnimateFishInformation = true;
-    if (!isCrabStillAnimating) canAnimateCrabInformation = true;
-    if (!isTurtleStillAnimating) canAnimateTurtleInformation = true;
+    scrollState.position = 0;
+    flags.canAnimatePlant = true;
+    flags.canAnimateBuilding = true;
+    flags.canAnimateBuilding2 = true;
+    flags.canAnimateRobot = true;
+    flags.canAnimateSquid = true;
+    flags.canAnimateAlien = true;
+    flags.canAnimateLinks = true;
+    flags.canDrawFireworks = true;
+    if (!isFishStillAnimating) flags.canAnimateFish = true;
+    if (!isCrabStillAnimating) flags.canAnimateCrab = true;
+    if (!isTurtleStillAnimating) flags.canAnimateTurtle = true;
 }
 
 function resetFunctions() {

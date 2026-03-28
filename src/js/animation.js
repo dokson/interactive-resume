@@ -32,7 +32,7 @@ function animatePlants() {
 }
 
 function positionPlants() {
-    for (let i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : `${plantTargetTopObjectArray[i].offsetTop}px`
+    for (let i = 0; i < plantArray.length; i++) plantArray[i].style.top = flags.canAnimatePlant ? "100%" : `${plantTargetTopObjectArray[i].offsetTop}px`
 }
 
 // ─── About: buildings ────────────────────────────────────────────────────────
@@ -104,8 +104,8 @@ function disableIsSeaAnimalStillAnimating(animalArray) {
 
 // ─── Sea: bubble ─────────────────────────────────────────────────────────────
 function createBubble() {
-    clearInterval(bubbleTimer);
-    bubbleTimer = setInterval(() => { animateBubble() }, 3000)
+    clearInterval(timers.bubble);
+    timers.bubble = setInterval(() => { animateBubble() }, 3000)
 }
 
 function animateBubble() {
@@ -124,7 +124,7 @@ function showBubble() {
 }
 
 function positionBubble(topOffset) {
-    bubbleDiv.style.left = `${pageVerticalPosition + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft}px`;
+    bubbleDiv.style.left = `${scrollState.position + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft}px`;
     bubbleDiv.style.top = `${topOffset}px`
 }
 
@@ -143,8 +143,8 @@ function blinkSeaAnimals(eyeArray) {
 }
 
 function makeSeaAnimalsBlinking(eyeArray) {
-    clearInterval(blinkSeaAnimalsTimer);
-    blinkSeaAnimalsTimer = setInterval(() => { blinkSeaAnimals(eyeArray) }, 3000)
+    clearInterval(timers.blinkSeaAnimals);
+    timers.blinkSeaAnimals = setInterval(() => { blinkSeaAnimals(eyeArray) }, 3000)
 }
 
 // ─── Sea floor ───────────────────────────────────────────────────────────────
@@ -158,11 +158,11 @@ function positionSeaFloorObjectsVertically() {
 // ─── Experience: containers & text ───────────────────────────────────────────
 function positionChainBlockAndStringContainer() {
     for (let i = 0; i < chainBlockAndStringContainerArray.length; i++) {
-        if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
-        if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
-        if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
+        if (i === 0) flags.canAnimateBoss = flags.canAnimateRobot;
+        if (i === 1) flags.canAnimateBoss = flags.canAnimateSquid;
+        if (i === 2) flags.canAnimateBoss = flags.canAnimateAlien;
         chainBlockAndStringContainerArray[i].style.left = `${.5 * experienceTextContainerArray[i].offsetWidth - .5 * chainBlockAndStringContainerArray[i].offsetWidth}px`;
-        chainBlockAndStringContainerArray[i].style.bottom = canAnimateBossInformation ?
+        chainBlockAndStringContainerArray[i].style.bottom = flags.canAnimateBoss ?
             `${.8 * containerDiv.offsetHeight + experienceTextContainerArray[i].offsetHeight}px` :
             `${experienceTextContainerDistanceFromFloor + experienceTextContainerArray[i].offsetHeight}px`
     }
@@ -176,10 +176,10 @@ function animateChainBlockAndStringContainer(index) {
 
 function positionExperienceTextContainer() {
     for (let i = 0; i < experienceTextContainerArray.length; i++) {
-        if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
-        if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
-        if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
-        experienceTextContainerArray[i].style.bottom = canAnimateBossInformation ?
+        if (i === 0) flags.canAnimateBoss = flags.canAnimateRobot;
+        if (i === 1) flags.canAnimateBoss = flags.canAnimateSquid;
+        if (i === 2) flags.canAnimateBoss = flags.canAnimateAlien;
+        experienceTextContainerArray[i].style.bottom = flags.canAnimateBoss ?
             `${.8 * containerDiv.offsetHeight}px` :
             `${experienceTextContainerDistanceFromFloor}px`
     }
@@ -223,95 +223,95 @@ function positionExperience3Elements() {
 
 // ─── Experience: animation dispatch ──────────────────────────────────────────
 function animateInformationAndEnemiesElements() {
-    if (layersMovement !== "horizontal")
+    if (scrollState.layersMovement !== "horizontal")
         return;
 
-    if (!isAleSwimming) {
+    if (!ale.isSwimming) {
         for (let i = 0; i < landInformationContainerArray.length; i++) {
             const container = landInformationContainerArray[i];
             const containerLeft = container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
-            const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
-            const previousViewportCenter = previousPageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const viewportCenter = scrollState.position + (containerDiv.offsetWidth * 0.5);
+            const previousViewportCenter = scrollState.previousPosition + (containerDiv.offsetWidth * 0.5);
             const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
             const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
 
             if (wasOutsideViewport && isNowInsideViewport) {
-                if (container == about1ContainerDiv && canAnimatePlantInformation) {
+                if (container == about1ContainerDiv && flags.canAnimatePlant) {
                     animatePlants();
-                    canAnimatePlantInformation = false;
+                    flags.canAnimatePlant = false;
                 }
-                if (container == about2ContainerDiv && canAnimateBuildingInformation) {
+                if (container == about2ContainerDiv && flags.canAnimateBuilding) {
                     animateBuildings();
-                    canAnimateBuildingInformation = false;
+                    flags.canAnimateBuilding = false;
                 }
-                if (container == about3ContainerDiv && canAnimateBuilding2Information) {
+                if (container == about3ContainerDiv && flags.canAnimateBuilding2) {
                     animateBuildings2();
-                    canAnimateBuilding2Information = false;
+                    flags.canAnimateBuilding2 = false;
                 }
                 if (container == experience1ContainerDiv) {
-                    if (!canAnimateRobotInformation) {
+                    if (!flags.canAnimateRobot) {
                         animateRobotHands();
                     } else {
                         animateRobot();
                         animateExperienceTextContainer(0);
                         animateChainBlockAndStringContainer(0);
-                        canAnimateRobotInformation = false;
+                        flags.canAnimateRobot = false;
                     }
                 }
                 if (container == experience2ContainerDiv) {
-                    if (!canAnimateSquidInformation) {
+                    if (!flags.canAnimateSquid) {
                         animateSquidHands();
                     } else {
                         animateSquid();
                         animateExperienceTextContainer(1);
                         animateChainBlockAndStringContainer(1);
-                        canAnimateSquidInformation = false;
+                        flags.canAnimateSquid = false;
                     }
                 }
                 if (container == experience3ContainerDiv) {
-                    if (!canAnimateAlienInformation) {
+                    if (!flags.canAnimateAlien) {
                         animateAlienHand();
                     } else {
                         animateAlien();
                         animateExperienceTextContainer(2);
                         animateChainBlockAndStringContainer(2);
-                        canAnimateAlienInformation = false;
+                        flags.canAnimateAlien = false;
                     }
                 }
             }
         }
     }
-    if (isAleSwimming) {
+    if (ale.isSwimming) {
         for (let i = 0; i < seaInformationContainerArray.length; i++) {
             const container = seaInformationContainerArray[i];
             const containerLeft = sea1Div.offsetLeft + container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
-            const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
-            const previousViewportCenter = previousPageVerticalPosition + (containerDiv.offsetWidth * 0.5);
+            const viewportCenter = scrollState.position + (containerDiv.offsetWidth * 0.5);
+            const previousViewportCenter = scrollState.previousPosition + (containerDiv.offsetWidth * 0.5);
             const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
             const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
 
             if (wasOutsideViewport && isNowInsideViewport) {
                 if (container == skill1ContainerDiv) {
                     makeSeaAnimalsBlinking(fishEyeArray);
-                    if (canAnimateFishInformation) {
+                    if (flags.canAnimateFish) {
                         animateSeaAnimals(fishArray);
-                        canAnimateFishInformation = false;
+                        flags.canAnimateFish = false;
                     }
                 }
                 if (container == skill2ContainerDiv) {
                     makeSeaAnimalsBlinking(crabEyeArray);
-                    if (canAnimateCrabInformation) {
+                    if (flags.canAnimateCrab) {
                         animateSeaAnimals(crabArray);
-                        canAnimateCrabInformation = false;
+                        flags.canAnimateCrab = false;
                     }
                 }
                 if (container == skill3ContainerDiv) {
                     makeSeaAnimalsBlinking(turtleEyeArray);
-                    if (canAnimateTurtleInformation) {
+                    if (flags.canAnimateTurtle) {
                         animateSeaAnimals(turtleArray);
-                        canAnimateTurtleInformation = false;
+                        flags.canAnimateTurtle = false;
                     }
                 }
             }
@@ -331,15 +331,15 @@ function animateRobot() {
 
 function animateRobotHands() {
     spinRobotHands();
-    clearInterval(animateRobotHandsTimer);
-    animateRobotHandsTimer = setInterval(() => {
+    clearInterval(timers.animateRobotHands);
+    timers.animateRobotHands = setInterval(() => {
         spinRobotHands()
     }, 4000)
 }
 
 function spinRobotHands() {
-    clearRafInterval(spinRobotHandsTimer);
-    spinRobotHandsTimer = setRafInterval(() => {
+    clearRafInterval(timers.spinRobotHands);
+    timers.spinRobotHands = setRafInterval(() => {
         changeRobotHands()
     }, 100)
 }
@@ -347,11 +347,11 @@ function spinRobotHands() {
 function changeRobotHands() {
     if (changeRobotHandsCounter >= robotHandChildrenLength) {
         changeRobotHandsCounter = 0;
-        clearRafInterval(spinRobotHandsTimer);
+        clearRafInterval(timers.spinRobotHands);
         setRobotHandsToDefault();
-        if (pageVerticalPosition + .5 * containerDiv.offsetWidth < experience1ContainerDiv.offsetLeft ||
-            pageVerticalPosition + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
-            clearInterval(animateRobotHandsTimer)
+        if (scrollState.position + .5 * containerDiv.offsetWidth < experience1ContainerDiv.offsetLeft ||
+            scrollState.position + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
+            clearInterval(timers.animateRobotHands)
     } else {
         for (let i = 0; i < robotHandChildrenLength; i++) {
             if (i === changeRobotHandsCounter) setRobotHandsToOpaque(i);
@@ -396,15 +396,15 @@ function animateSquid() {
 
 function animateSquidHands() {
     moveSquidHands();
-    clearInterval(animateSquidHandsTimer);
-    animateSquidHandsTimer = setInterval(() => {
+    clearInterval(timers.animateSquidHands);
+    timers.animateSquidHands = setInterval(() => {
         moveSquidHands()
     }, 4000)
 }
 
 function moveSquidHands() {
-    clearRafInterval(moveSquidHandsTimer);
-    moveSquidHandsTimer = setRafInterval(() => {
+    clearRafInterval(timers.moveSquidHands);
+    timers.moveSquidHands = setRafInterval(() => {
         openAndCloseSquidHands()
     }, 200)
 }
@@ -412,11 +412,11 @@ function moveSquidHands() {
 function openAndCloseSquidHands() {
     if (openAndCloseSquidHandsCounter >= 8) {
         openAndCloseSquidHandsCounter = 0;
-        clearRafInterval(moveSquidHandsTimer);
+        clearRafInterval(timers.moveSquidHands);
         openSquidHands();
-        if (pageVerticalPosition + .5 * containerDiv.offsetWidth < experience2ContainerDiv.offsetLeft ||
-            pageVerticalPosition + .5 * containerDiv.offsetWidth > experience2ContainerDiv.offsetLeft + experience2ContainerDiv.offsetWidth)
-            clearInterval(animateSquidHandsTimer)
+        if (scrollState.position + .5 * containerDiv.offsetWidth < experience2ContainerDiv.offsetLeft ||
+            scrollState.position + .5 * containerDiv.offsetWidth > experience2ContainerDiv.offsetLeft + experience2ContainerDiv.offsetWidth)
+            clearInterval(timers.animateSquidHands)
     } else if (openAndCloseSquidHandsCounter % 2 === 0) {
         openSquidHands()
     } else {
@@ -437,8 +437,8 @@ function closeSquidHands() {
 
 // ─── Experience: alien ───────────────────────────────────────────────────────
 function animateAlienHand() {
-    clearRafInterval(animateAlienHandsTimer);
-    animateAlienHandsTimer = setRafInterval(() => {
+    clearRafInterval(timers.animateAlienHands);
+    timers.animateAlienHands = setRafInterval(() => {
         rotateAlienHands()
     }, 100)
 }
@@ -452,10 +452,10 @@ function rotateAlienHands() {
         if (alienSteerAngle < alienSteerAngleLimit) { alienSteerAngleIncrement *= -1; alienSteerAngleLimit *= -1 }
     }
     const isOutsideViewport =
-        pageVerticalPosition + .5 * containerDiv.offsetWidth < experience3ContainerDiv.offsetLeft ||
-        pageVerticalPosition + .5 * containerDiv.offsetWidth > experience3ContainerDiv.offsetLeft + experience3ContainerDiv.offsetWidth;
+        scrollState.position + .5 * containerDiv.offsetWidth < experience3ContainerDiv.offsetLeft ||
+        scrollState.position + .5 * containerDiv.offsetWidth > experience3ContainerDiv.offsetLeft + experience3ContainerDiv.offsetWidth;
     if (alienSteerAngle === 0 && isOutsideViewport) {
-        clearRafInterval(animateAlienHandsTimer);
+        clearRafInterval(timers.animateAlienHands);
         alienSteerDiv.style.transform = "rotate(0deg)";
     } else {
         alienSteerDiv.style.transform = `rotate(${alienSteerAngle}deg)`;
@@ -509,15 +509,15 @@ function animatePiechartFoxnewsFront() {
 
 // ─── Stars & alien eyes ──────────────────────────────────────────────────────
 function animateStars() {
-    clearInterval(starsTimer);
-    starsTimer = setInterval(() => {
+    clearRafInterval(timers.stars);
+    timers.stars = setRafInterval(() => {
         switchStarsColor();
     }, 400);
 }
 
 function animateAlienEyes() {
-    clearInterval(alienEyesTimer);
-    alienEyesTimer = setInterval(() => {
+    clearRafInterval(timers.alienEyes);
+    timers.alienEyes = setRafInterval(() => {
         switchAlienEyes();
     }, 700);
 }
@@ -535,10 +535,10 @@ function switchAlienEyes() {
 
 // ─── Scroll / swipe hint text ────────────────────────────────────────────────
 function animateScrollOrSwipeTextContainer() {
-    if (canAnimateScrollOrSwipeTextContainer) {
-        canAnimateScrollOrSwipeTextContainer = false;
-        clearInterval(scrollOrSwipeTextContainerTimer);
-        scrollOrSwipeTextContainerTimer = setInterval(() => { turnOnAndOffScrollOrSwipeTextContainer() }, 1000)
+    if (flags.canAnimateScrollText) {
+        flags.canAnimateScrollText = false;
+        clearInterval(timers.scrollText);
+        timers.scrollText = setInterval(() => { turnOnAndOffScrollOrSwipeTextContainer() }, 1000)
     }
 }
 
@@ -556,10 +556,10 @@ function turnOnAndOffScrollOrSwipeTextContainer() {
 }
 
 function hideScrollOrSwipeTextContainer() {
-    if (canHideScrollOrSwipeTextContainer) {
-        clearInterval(scrollOrSwipeTextContainerTimer);
+    if (flags.canHideScrollText) {
+        clearInterval(timers.scrollText);
         fadeOutScrollOrSwipeTextContainer();
-        canHideScrollOrSwipeTextContainer = false
+        flags.canHideScrollText = false
     }
 }
 

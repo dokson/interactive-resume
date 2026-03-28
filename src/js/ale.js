@@ -12,7 +12,7 @@ function shiftAleToSeaFloor() {
 }
 
 function positionLayerHorizontalToTop() {
-    if (isAleSwimming) {
+    if (ale.isSwimming) {
         setShiftUpLayerHorizontalDistance();
         for (const layer of layerHorizontalArray) layer.style.top = `${-shiftUpLayerHorizontalDistance}px`;
         for (const layer of layerVerticalArray) layer.style.bottom = `${shiftUpLayerHorizontalDistance}px`
@@ -20,7 +20,7 @@ function positionLayerHorizontalToTop() {
 }
 
 function positionLayerHorizontalToBottom() {
-    if (!isAleSwimming) {
+    if (!ale.isSwimming) {
         for (const layer of layerHorizontalArray) layer.style.top = "0px";
         for (const layer of layerVerticalArray) layer.style.bottom = "0px"
     }
@@ -28,11 +28,11 @@ function positionLayerHorizontalToBottom() {
 
 // ─── Ale: jump & fall ────────────────────────────────────────────────────────
 function checkAleJumpFallSwim() {
-    if (layersMovement === "horizontal") {
-        if (isAleSwimming) {
-            if (isAleBelowSeaLevel) aleSwimUp()
+    if (scrollState.layersMovement === "horizontal") {
+        if (ale.isSwimming) {
+            if (ale.isBelowSeaLevel) aleSwimUp()
         } else {
-            for (let i = 0; i < elevationArray.length; i++) {
+            for (let i = 0; i < ale.elevations.length; i++) {
                 aleJumpUp(i);
                 aleFall(i)
             }
@@ -42,10 +42,10 @@ function checkAleJumpFallSwim() {
 
 function aleJumpUp(elevationIndex) {
     if (
-        (previousPageVerticalPosition <= elevationArray[elevationIndex].offsetLeft - aleRightEdge &&
-            pageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge) ||
-        (previousPageVerticalPosition >= elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge &&
-            pageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge)
+        (scrollState.previousPosition <= ale.elevations[elevationIndex].offsetLeft - ale.rightEdge &&
+            scrollState.position > ale.elevations[elevationIndex].offsetLeft - ale.rightEdge) ||
+        (scrollState.previousPosition >= ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge &&
+            scrollState.position < ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge)
     ) {
         positionAleAtGroundLevel();
         $(aleContainerDiv).stop().animate({
@@ -58,9 +58,9 @@ function aleJumpUp(elevationIndex) {
 }
 
 function aleJumpDown(elevationIndex) {
-    if (pageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge && pageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge) {
+    if (scrollState.position > ale.elevations[elevationIndex].offsetLeft - ale.rightEdge && scrollState.position < ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge) {
         $(aleContainerDiv).stop().animate({
-            bottom: [containerDiv.offsetHeight - elevationArray[elevationIndex].offsetTop, "easeInCubic"]
+            bottom: [containerDiv.offsetHeight - ale.elevations[elevationIndex].offsetTop, "easeInCubic"]
         }, 300, () => {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
@@ -71,10 +71,10 @@ function aleJumpDown(elevationIndex) {
 
 function aleFall(elevationIndex) {
     const aleIsLeavingElevation =
-        (previousPageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge && pageVerticalPosition >= elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge) ||
-        (previousPageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge && pageVerticalPosition <= elevationArray[elevationIndex].offsetLeft - aleRightEdge);
+        (scrollState.previousPosition < ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge && scrollState.position >= ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge) ||
+        (scrollState.previousPosition > ale.elevations[elevationIndex].offsetLeft - ale.rightEdge && scrollState.position <= ale.elevations[elevationIndex].offsetLeft - ale.rightEdge);
     if (aleIsLeavingElevation) {
-        isAleFalling = true;
+        ale.isFalling = true;
         setAleJumpDownAndFallFrame();
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop, "easeInCubic"]
@@ -87,12 +87,12 @@ function aleFall(elevationIndex) {
 
 function setAleJumpUpFrame() {
     clearShiftAleFrameTimer();
-    isAleJumping = true;
-    aleFramesDiv.style.left = `${-1 * aleStartJumpFrame * aleOneFrameWidth}px`
+    ale.isJumping = true;
+    aleFramesDiv.style.left = `${-1 * ale.startJumpFrame * ale.oneFrameWidth}px`
 }
 
 function setAleJumpDownAndFallFrame() {
-    aleFramesDiv.style.left = `${-1 * aleStopJumpFrame * aleOneFrameWidth}px`
+    aleFramesDiv.style.left = `${-1 * ale.stopJumpFrame * ale.oneFrameWidth}px`
 }
 
 function setAleStaticFrame() {
@@ -100,16 +100,16 @@ function setAleStaticFrame() {
 }
 
 function disableIsAleJumpingAndFalling() {
-    isAleFalling = isAleJumping = false
+    ale.isFalling = ale.isJumping = false
 }
 
 // ─── Ale: swim ───────────────────────────────────────────────────────────────
 function aleSwimUp() {
     getSwimUpHeight();
-    if (swimUpHeight > 0) {
-        const targetBottom = `${seaFloorDiv.offsetHeight + swimUpHeight}px`,
-            swimUpDuration = 3 * swimUpHeight,
-            swimDownDuration = 6 * swimUpHeight;
+    if (ale.swimUpHeight > 0) {
+        const targetBottom = `${seaFloorDiv.offsetHeight + ale.swimUpHeight}px`,
+            swimUpDuration = 3 * ale.swimUpHeight,
+            swimDownDuration = 6 * ale.swimUpHeight;
         $(aleContainerDiv).stop().animate({
             bottom: targetBottom
         }, swimUpDuration, () => {
@@ -124,8 +124,8 @@ function aleSwimDown(duration) {
     }, duration, () => {
         setAleStaticFrame()
     });
-    if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - minimumVerticalDistanceToTriggerAleSwimDownFrame) {
-        aleFramesDiv.style.left = `${-1 * aleSwimDownFrame * aleOneFrameWidth}px`
+    if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - ale.minSwimDownDistance) {
+        aleFramesDiv.style.left = `${-1 * ale.swimDownFrame * ale.oneFrameWidth}px`
     } else {
         setAleStaticFrame()
     }
@@ -133,81 +133,81 @@ function aleSwimDown(duration) {
 
 // ─── Ale: run frame animation ─────────────────────────────────────────────────
 function animateAleRunSwim() {
-    if (canAnimateAleRunSwim && !isAleJumping && !isAleFalling && layersMovement !== "vertical") {
+    if (ale.canRunSwim && !ale.isJumping && !ale.isFalling && scrollState.layersMovement !== "vertical") {
         disableAnimateAleRunSwim();
-        clearInterval(shiftAleFrameTimer);
-        shiftAleFrameTimer = setInterval(() => {
+        clearInterval(timers.shiftAleFrame);
+        timers.shiftAleFrame = setInterval(() => {
             shiftAleFrame()
-        }, shiftAleFrameTimeInterval)
+        }, ale.frameTimeInterval)
     }
 }
 
 function shiftAleFrame() {
-    if (isAleFalling) {
+    if (ale.isFalling) {
         clearShiftAleFrameTimer();
         setAleJumpDownAndFallFrame();
         return;
     }
 
-    if (isAleSwimming && isAleBelowSeaLevel) {
-        aleStartFrame = aleStartSwimFrame;
-        aleStopFrame = aleStopSwimFrame;
+    if (ale.isSwimming && ale.isBelowSeaLevel) {
+        ale.startFrame = ale.startSwimFrame;
+        ale.stopFrame = ale.stopSwimFrame;
     } else {
-        aleStartFrame = aleStartRunFrame;
-        aleStopFrame = aleStopRunFrame;
+        ale.startFrame = ale.startRunFrame;
+        ale.stopFrame = ale.stopRunFrame;
     }
 
-    aleFramesDiv.style.left = `${-1 * aleOneFrameWidth * (aleStartFrame + aleFrameIndex)}px`;
+    aleFramesDiv.style.left = `${-1 * ale.oneFrameWidth * (ale.startFrame + ale.frameIndex)}px`;
 
-    if (aleStopFrame < aleStartFrame + aleFrameIndex + aleFrameDirection) {
-        aleFrameDirection *= -1;
+    if (ale.stopFrame < ale.startFrame + ale.frameIndex + ale.frameDirection) {
+        ale.frameDirection *= -1;
     }
 
-    if (aleStartFrame + aleFrameIndex + aleFrameDirection === aleStartFrame) {
-        pageVerticalPositionWhenAnimateAle1 = pageVerticalPosition;
+    if (ale.startFrame + ale.frameIndex + ale.frameDirection === ale.startFrame) {
+        ale.animatePosition1 = scrollState.position;
     }
 
-    if (aleStartFrame + aleFrameIndex + aleFrameDirection < aleStartFrame) {
-        if (pageVerticalPositionWhenAnimateAle1 === pageVerticalPosition) {
-            pageVerticalPositionWhenAnimateAle2 = pageVerticalPosition;
+    if (ale.startFrame + ale.frameIndex + ale.frameDirection < ale.startFrame) {
+        if (ale.animatePosition1 === scrollState.position) {
+            ale.animatePosition2 = scrollState.position;
             clearShiftAleFrameTimer();
-            if (layersMovement === "not moving 2") {
+            if (scrollState.layersMovement === "not moving 2") {
                 aleHandsUp();
             }
             return;
         }
-        aleFrameDirection *= -1;
+        ale.frameDirection *= -1;
     }
-    aleFrameIndex += aleFrameDirection;
+    ale.frameIndex += ale.frameDirection;
 }
 
 function clearShiftAleFrameTimer() {
-    clearInterval(shiftAleFrameTimer);
-    if (!isAleSwimming || (isAleSwimming && aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight >= containerDiv.offsetHeight - seaFloorDiv.offsetHeight))
+    clearInterval(timers.shiftAleFrame);
+    if (!ale.isSwimming || (ale.isSwimming && aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight >= containerDiv.offsetHeight - seaFloorDiv.offsetHeight))
         setAleStaticFrame();
-    aleFrameIndex = 0;
-    aleFrameDirection = 1;
+    ale.frameIndex = 0;
+    ale.frameDirection = 1;
     enableAnimateAleRunSwim()
 }
 
 function enableAnimateAleRunSwim() {
-    canAnimateAleRunSwim = true
+    ale.canRunSwim = true
 }
 
 function disableAnimateAleRunSwim() {
-    canAnimateAleRunSwim = false
+    ale.canRunSwim = false
 }
 
 // ─── Ale: eyes & blink ───────────────────────────────────────────────────────
 function animateAleEyes() {
-    clearInterval(blinkAleEyesTimer);
-    blinkAleEyesTimer = setInterval(() => {
+    clearRafInterval(timers.blinkAleEyes);
+    timers.blinkAleEyes = setRafInterval(() => {
         blinkAleEyes()
     }, 4000)
 }
 
 function blinkAleEyes() {
-    if (layersMovement !== "not moving 2") {
+    if (scrollState.layersMovement !== "not moving 2") {
         $(aleEyesCloseDiv).fadeTo(0, 1);
         $(aleEyesCloseDiv).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
     }
@@ -218,20 +218,20 @@ function hideAleEyesClose() {
 }
 
 function getSwimUpHeight() {
-    swimUpHeight = Math.abs(deltaPageVerticalPosition);
+    ale.swimUpHeight = Math.abs(scrollState.delta);
     const maxSwimHeight = sea1Div.offsetHeight - aleDiv.offsetHeight;
-    if (maxSwimHeight < swimUpHeight) {
-        swimUpHeight = maxSwimHeight;
+    if (maxSwimHeight < ale.swimUpHeight) {
+        ale.swimUpHeight = maxSwimHeight;
     }
 }
 
 // ─── Ale: orientation ─────────────────────────────────────────────────────────
 function orientAle() {
-    if (deltaPageVerticalPosition > 0) {
+    if (scrollState.delta > 0) {
         aleFramesDiv.style.top = "0px";
         aleEyesCloseDiv.style.left = "82px"
     }
-    if (deltaPageVerticalPosition < 0) {
+    if (scrollState.delta < 0) {
         aleFramesDiv.style.top = "-200px";
         aleEyesCloseDiv.style.left = "68px"
     }
@@ -239,17 +239,17 @@ function orientAle() {
 
 // ─── Ale: happy state ────────────────────────────────────────────────────────
 function happyAle() {
-    if (!isAleHappy) {
-        clearInterval(happyAleTimer);
-        happyAleTimer = setInterval(() => { aleHandsUp() }, 3000);
-        isAleHappy = true
+    if (!ale.isHappy) {
+        clearInterval(timers.happyAle);
+        timers.happyAle = setInterval(() => { aleHandsUp() }, 3000);
+        ale.isHappy = true
     }
 }
 
 function clearHappyAleTimer() {
-    if (isAleHappy) {
-        clearInterval(happyAleTimer);
-        isAleHappy = false
+    if (ale.isHappy) {
+        clearInterval(timers.happyAle);
+        ale.isHappy = false
     }
 }
 
@@ -264,15 +264,15 @@ function positionSplashContainer() {
 }
 
 function positionAleContainerVertically() {
-    if (isPreloadShiftUpAnimationFinish) {
+    if (flags.preloadShiftUpDone) {
         $(aleContainerDiv).stop(true, false);
         setAleStaticFrame();
-        if (isAleSwimming) {
+        if (ale.isSwimming) {
             positionAleAtSeaFloorLevel()
         } else {
             checkElevationNumberBelowAle();
-            if (elevationNumberBelowAle != null) {
-                aleContainerDiv.style.bottom = `${containerDiv.offsetHeight - elevationArray[elevationNumberBelowAle].offsetTop}px`
+            if (ale.elevationBelow != null) {
+                aleContainerDiv.style.bottom = `${containerDiv.offsetHeight - ale.elevations[ale.elevationBelow].offsetTop}px`
             } else {
                 positionAleAtGroundLevel()
             }
@@ -289,11 +289,11 @@ function positionAleAtSeaFloorLevel() {
 }
 
 function checkElevationNumberBelowAle() {
-    for (let i = 0; i < elevationArray.length; i++) {
-        if (pageVerticalPosition < elevationArray[i].offsetLeft + elevationArray[i].offsetWidth - aleLeftEdge && pageVerticalPosition > elevationArray[i].offsetLeft - aleRightEdge) {
-            elevationNumberBelowAle = i;
+    for (let i = 0; i < ale.elevations.length; i++) {
+        if (scrollState.position < ale.elevations[i].offsetLeft + ale.elevations[i].offsetWidth - ale.leftEdge && scrollState.position > ale.elevations[i].offsetLeft - ale.rightEdge) {
+            ale.elevationBelow = i;
             break
         }
-        elevationNumberBelowAle = null
+        ale.elevationBelow = null
     }
 }

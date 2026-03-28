@@ -7,11 +7,11 @@ function orientationChangeHandler(event) {
 }
 
 function enableScrollOrSwipe() {
-    canScrollOrSwipe = true
+    scrollState.canScrollOrSwipe = true
 }
 
 function disableScrollOrSwipe() {
-    canScrollOrSwipe = false
+    scrollState.canScrollOrSwipe = false
 }
 
 // ─── Touch events ────────────────────────────────────────────────────────────
@@ -22,14 +22,14 @@ function initTouchEvents() {
 }
 
 function handleStart(event) {
-    touchStartX = event.targetTouches[0].pageX;
-    pageVerticalPositionOnTouch = pageVerticalPosition
+    scrollState.touchStartX = event.targetTouches[0].pageX;
+    scrollState.positionOnTouch = scrollState.position
 }
 
 function handleMove(event) {
     event.preventDefault();
-    touchCurrentX = event.targetTouches[0].pageX;
-    if (canScrollOrSwipe) {
+    scrollState.touchCurrentX = event.targetTouches[0].pageX;
+    if (scrollState.canScrollOrSwipe) {
         detectPageVerticalPosition();
         runTheseFunctionsAfterScrollOrSwipe()
     }
@@ -37,7 +37,7 @@ function handleMove(event) {
 
 function handleEnd(event) {
     event.preventDefault();
-    touchEndX = event.changedTouches[0].pageX
+    scrollState.touchEndX = event.changedTouches[0].pageX
 }
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────
@@ -54,7 +54,7 @@ function runTheseFunctionsAfterScrollOrSwipe() {
 }
 
 function deviceFunctionScrollSwipe() {
-    deviceName !== "computer" && layersMovement === "vertical" && positionHorizontalLayersToHaveSameRightPosition()
+    deviceName !== "computer" && scrollState.layersMovement === "vertical" && positionHorizontalLayersToHaveSameRightPosition()
 }
 
 // ─── Container & preloader ───────────────────────────────────────────────────
@@ -72,8 +72,8 @@ function shiftUpHorizontalLayersAfterEverythingLoaded() {
 }
 
 function finishShiftUpHorizontalLayersAfterEverythingLoaded() {
-    if (canFinishShiftUpHorizontalLayersAfterEverythingLoaded) {
-        isPreloadShiftUpAnimationFinish = !(canFinishShiftUpHorizontalLayersAfterEverythingLoaded = false);
+    if (flags.canFinishShiftUp) {
+        flags.preloadShiftUpDone = !(flags.canFinishShiftUp = false);
         makePageScrollable();
         shiftDownAleContainer();
         animateScrollOrSwipeTextContainer()
@@ -125,17 +125,17 @@ function setLayerSpeed() {
 
 // ─── Scroll position & layer movement ────────────────────────────────────────
 function detectPageVerticalPosition() {
-    previousPageVerticalPosition = pageVerticalPosition;
+    scrollState.previousPosition = scrollState.position;
     if (deviceName === "computer") {
-        pageVerticalPosition = window.scrollY
+        scrollState.position = window.scrollY
     } else {
-        pageVerticalPosition = pageVerticalPositionOnTouch + (touchStartX - touchCurrentX);
-        if (pageVerticalPosition < 0) pageVerticalPosition = 0;
-        if (pageVerticalPosition > pageDiv.offsetHeight - containerDiv.offsetHeight)
-            pageVerticalPosition = pageDiv.offsetHeight - containerDiv.offsetHeight
+        scrollState.position = scrollState.positionOnTouch + (scrollState.touchStartX - scrollState.touchCurrentX);
+        if (scrollState.position < 0) scrollState.position = 0;
+        if (scrollState.position > pageDiv.offsetHeight - containerDiv.offsetHeight)
+            scrollState.position = pageDiv.offsetHeight - containerDiv.offsetHeight
     }
-    deltaPageVerticalPosition = pageVerticalPosition - previousPageVerticalPosition;
-    if (pageVerticalPosition <= 0) {
+    scrollState.delta = scrollState.position - scrollState.previousPosition;
+    if (scrollState.position <= 0) {
         resetVariables();
         resetFunctions()
     }
@@ -143,18 +143,18 @@ function detectPageVerticalPosition() {
 
 function moveLayers() {
     setLayersMovement();
-    if (layersMovement === "horizontal") {
+    if (scrollState.layersMovement === "horizontal") {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
-            const layerOffset = -1 * layerHorizontalSpeedArray[i] * pageVerticalPosition;
+            const layerOffset = -1 * layerHorizontalSpeedArray[i] * scrollState.position;
             layerHorizontalArray[i].style.left = `${layerOffset}px`;
         }
         positionLayerHorizontalToBottom();
         clearHappyAleTimer();
         positionVerticalLayersHorizontally();
     }
-    if (layersMovement === "vertical") {
+    if (scrollState.layersMovement === "vertical") {
         const lastHorizontalLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
-        const horizontalOffset = pageVerticalPosition - (lastHorizontalLayer.offsetWidth - containerDiv.offsetWidth);
+        const horizontalOffset = scrollState.position - (lastHorizontalLayer.offsetWidth - containerDiv.offsetWidth);
 
         for (let i = 0; i < layerVerticalArray.length; i++) {
             const layerOffset = -1 * layerVerticalSpeedArray[i] * horizontalOffset;
@@ -166,11 +166,11 @@ function moveLayers() {
         clearShiftAleFrameTimer();
         clearHappyAleTimer();
     }
-    if (layersMovement === "not moving 1") {
+    if (scrollState.layersMovement === "not moving 1") {
         positionLayersWhenNotMoving();
         clearHappyAleTimer();
     }
-    if (layersMovement === "not moving 2") {
+    if (scrollState.layersMovement === "not moving 2") {
         positionLayersWhenNotMoving();
         animateLinksContainer();
         happyAle();
@@ -182,14 +182,14 @@ function moveLayers() {
 }
 
 function setLayersMovement() {
-    if (pageVerticalPosition * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] <= layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth) {
-        layersMovement = "horizontal"
-    } else if (pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket && pageVerticalPosition < pageDiv.offsetHeight - containerDiv.offsetHeight) {
-        layersMovement = "not moving 1"
-    } else if (pageVerticalPosition >= pageDiv.offsetHeight - containerDiv.offsetHeight) {
-        layersMovement = "not moving 2"
+    if (scrollState.position * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] <= layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth) {
+        scrollState.layersMovement = "horizontal"
+    } else if (scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket && scrollState.position < pageDiv.offsetHeight - containerDiv.offsetHeight) {
+        scrollState.layersMovement = "not moving 1"
+    } else if (scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight) {
+        scrollState.layersMovement = "not moving 2"
     } else {
-        layersMovement = "vertical"
+        scrollState.layersMovement = "vertical"
     }
 }
 
@@ -223,8 +223,8 @@ function positionHorizontalLayersAtBottomMost() {
 }
 
 function setAleLeftAndRightEdge() {
-    aleRightEdge = .5 * (containerDiv.offsetWidth + aleDiv.offsetWidth) - 65;
-    aleLeftEdge = .5 * (containerDiv.offsetWidth - aleDiv.offsetWidth) + 65
+    ale.rightEdge = .5 * (containerDiv.offsetWidth + aleDiv.offsetWidth) - 65;
+    ale.leftEdge = .5 * (containerDiv.offsetWidth - aleDiv.offsetWidth) + 65
 }
 
 function positionVerticalLayersToHaveSameTopPosition() {
@@ -240,56 +240,56 @@ function positionVerticalLayersBottomToHorizontalLayersBottom() {
 // ─── Horizontal layer shift ──────────────────────────────────────────────────
 function shiftUpDownHorizontalLayers() {
     const aleIsEnteringSea =
-        (previousPageVerticalPosition < sea1Div.offsetLeft - aleLeftEdge || previousPageVerticalPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge) &&
-        pageVerticalPosition >= sea1Div.offsetLeft - aleLeftEdge &&
-        pageVerticalPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge;
+        (scrollState.previousPosition < sea1Div.offsetLeft - ale.leftEdge || scrollState.previousPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge) &&
+        scrollState.position >= sea1Div.offsetLeft - ale.leftEdge &&
+        scrollState.position <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
     if (aleIsEnteringSea) {
-        isAleSwimming = true;
+        ale.isSwimming = true;
         shiftUpLayerHorizontal();
         shiftAleToSeaFloor();
         createBubble()
     }
 
     const aleIsLeavingSea =
-        previousPageVerticalPosition >= sea1Div.offsetLeft - aleLeftEdge &&
-        previousPageVerticalPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge &&
-        (pageVerticalPosition < sea1Div.offsetLeft - aleLeftEdge || pageVerticalPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge);
+        scrollState.previousPosition >= sea1Div.offsetLeft - ale.leftEdge &&
+        scrollState.previousPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge &&
+        (scrollState.position < sea1Div.offsetLeft - ale.leftEdge || scrollState.position > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge);
     if (aleIsLeavingSea) {
-        isAleSwimming = false;
+        ale.isSwimming = false;
         shiftDownLayerHorizontal();
         shiftAleToGroundLevel();
-        clearInterval(bubbleTimer);
-        clearInterval(blinkSeaAnimalsTimer)
+        clearInterval(timers.bubble);
+        clearInterval(timers.blinkSeaAnimals)
     }
 }
 
 function shiftUpDownHorizontalLayersOnResize() {
     const aleIsInSea =
-        pageVerticalPosition >= sea1Div.offsetLeft - aleLeftEdge &&
-        pageVerticalPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge;
+        scrollState.position >= sea1Div.offsetLeft - ale.leftEdge &&
+        scrollState.position <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
     if (aleIsInSea) {
         clearShiftUpDownLayerHorizontalTimer();
-        isAleSwimming = true;
+        ale.isSwimming = true;
         positionLayerHorizontalToTop();
         positionVerticalLayersBottomToHorizontalLayersBottom();
         createBubble()
     }
 
     const aleIsOutsideSea =
-        pageVerticalPosition < sea1Div.offsetLeft - aleLeftEdge ||
-        pageVerticalPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - aleRightEdge;
+        scrollState.position < sea1Div.offsetLeft - ale.leftEdge ||
+        scrollState.position > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
     if (aleIsOutsideSea) {
         clearShiftUpDownLayerHorizontalTimer();
-        isAleSwimming = false;
-        if (layersMovement === "horizontal") {
+        ale.isSwimming = false;
+        if (scrollState.layersMovement === "horizontal") {
             positionLayerHorizontalToBottom();
             positionVerticalLayersBottomToHorizontalLayersBottom()
         } else {
             positionHorizontalLayersAtBottomMost();
             positionHorizontalLayersToHaveSameRightPosition()
         }
-        clearInterval(bubbleTimer);
-        clearInterval(blinkSeaAnimalsTimer)
+        clearInterval(timers.bubble);
+        clearInterval(timers.blinkSeaAnimals)
     }
 }
 
@@ -300,56 +300,56 @@ function setShiftUpLayerHorizontalDistance() {
 function shiftUpLayerHorizontal() {
     setShiftUpLayerHorizontalDistance();
     clearShiftUpDownLayerHorizontalTimer();
-    shiftUpLayerHorizontalTimer = setInterval(() => {
+    timers.shiftUpLayer = setInterval(() => {
         moveUpLayerHorizontal()
     }, shiftUpDownLayerHorizontalInterval);
     disableIsAleJumpingAndFalling()
 }
 
 function moveUpLayerHorizontal() {
-    if (layersMovement === "horizontal") {
+    if (scrollState.layersMovement === "horizontal") {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
             let newTop = layerHorizontalArray[i].offsetTop - shiftUpDownLayerHorizontalIncrement;
             if (newTop <= -shiftUpLayerHorizontalDistance) {
                 newTop = -shiftUpLayerHorizontalDistance;
                 layerHorizontalArray[i].style.top = `${newTop}px`;
-                clearInterval(shiftUpLayerHorizontalTimer)
+                clearInterval(timers.shiftUpLayer)
             } else {
                 layerHorizontalArray[i].style.top = `${newTop}px`
             }
             if (aleContainerDiv.offsetTop > sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
-                isAleBelowSeaLevel = true
+                ale.isBelowSeaLevel = true
         }
         positionVerticalLayersBottomToHorizontalLayersBottom()
     } else {
-        resetLayersWhenNotHorizontal(shiftUpLayerHorizontalTimer);
+        resetLayersWhenNotHorizontal(timers.shiftUpLayer);
     }
 }
 
 function shiftDownLayerHorizontal() {
     clearShiftUpDownLayerHorizontalTimer();
-    shiftDownLayerHorizontalTimer = setInterval(() => {
+    timers.shiftDownLayer = setInterval(() => {
         moveDownLayerHorizontal()
     }, shiftUpDownLayerHorizontalInterval)
 }
 
 function moveDownLayerHorizontal() {
-    if (layersMovement === "horizontal") {
+    if (scrollState.layersMovement === "horizontal") {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
             let newTop = layerHorizontalArray[i].offsetTop + shiftUpDownLayerHorizontalIncrement;
             if (newTop >= 0) {
                 newTop = 0;
                 layerHorizontalArray[i].style.top = `${newTop}px`;
-                clearInterval(shiftDownLayerHorizontalTimer)
+                clearInterval(timers.shiftDownLayer)
             } else {
                 layerHorizontalArray[i].style.top = `${newTop}px`
             }
             if (aleContainerDiv.offsetTop < sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
-                isAleBelowSeaLevel = false
+                ale.isBelowSeaLevel = false
         }
         positionVerticalLayersBottomToHorizontalLayersBottom()
     } else {
-        resetLayersWhenNotHorizontal(shiftDownLayerHorizontalTimer);
+        resetLayersWhenNotHorizontal(timers.shiftDownLayer);
     }
 }
 
@@ -357,12 +357,12 @@ function resetLayersWhenNotHorizontal(timerToClear) {
     clearInterval(timerToClear);
     positionHorizontalLayersAtBottomMost();
     positionHorizontalLayersToHaveSameRightPosition();
-    isAleBelowSeaLevel = false;
+    ale.isBelowSeaLevel = false;
 }
 
 function clearShiftUpDownLayerHorizontalTimer() {
-    clearInterval(shiftUpLayerHorizontalTimer);
-    clearInterval(shiftDownLayerHorizontalTimer)
+    clearInterval(timers.shiftUpLayer);
+    clearInterval(timers.shiftDownLayer)
 }
 
 // ─── Layer & rocket positioning ──────────────────────────────────────────────
@@ -374,14 +374,14 @@ function positionRocketAndAleContainerHorizontally() {
     const lastLayerSpeed = layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1];
     const lastLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
 
-    const horizontalOffset = pageVerticalPosition * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
+    const horizontalOffset = scrollState.position * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
 
-    aleMaxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332;
+    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332;
 
     let alePosition = (containerDiv.offsetWidth * 0.5) + horizontalOffset;
 
-    if (aleMaxHorizontalDistance <= alePosition) {
-        alePosition = aleMaxHorizontalDistance;
+    if (ale.maxHorizontalDistance <= alePosition) {
+        alePosition = ale.maxHorizontalDistance;
     }
 
     const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + 170;
@@ -391,7 +391,7 @@ function positionRocketAndAleContainerHorizontally() {
         rocketPosition = rocketMaxPosition;
     }
 
-    switch (layersMovement) {
+    switch (scrollState.layersMovement) {
         case "vertical":
             rocketDiv.style.left = `${rocketPosition}px`;
             aleContainerDiv.style.left = `${alePosition}px`;
@@ -400,7 +400,7 @@ function positionRocketAndAleContainerHorizontally() {
 
         case "not moving 1":
         case "not moving 2":
-            const pageOffset = pageVerticalPosition -
+            const pageOffset = scrollState.position -
                 (pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket);
 
             aleContainerDiv.style.left = `${alePosition + pageOffset}px`;

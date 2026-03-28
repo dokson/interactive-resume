@@ -200,7 +200,7 @@ a {
 }
 
 .banner-middle-b {
-    background-color: #f26d7d;
+    background-color: #ed1c24;
 }
 
 .banner-image:a {
@@ -842,7 +842,7 @@ body {
 .experience-text-a a,
 .experience-text-b a,
 .experience-text-c a {
-    color: #64ffda;
+    color: #f7941d;
     text-decoration: none;
     transition: opacity 0.2s
 }
@@ -1780,7 +1780,7 @@ img {
     top: 0;
     width: 440px;
     height: 190px;
-    background-color: #f26d7d
+    background-color: #ed1c24
 }
 
 #preloader-banner-right {
@@ -2049,7 +2049,7 @@ img {
     padding-top: 6px;
     padding-left: 2px;
     padding-right: 2px;
-    background-color: #f26d7d;
+    background-color: #a67c52;
     font-family: frankfurter-plain;
     color: #fff;
     font-size: 24px
@@ -2131,7 +2131,7 @@ img {
 .skill-measurement-header {
     position: absolute;
     padding: 6px 10px 5px;
-    background-color: #00bff3;
+    background-color: #b3e5fc;
     font-family: frankfurter-medium-plain;
     color: #0072bc;
     font-size: 18px
@@ -2141,7 +2141,7 @@ img {
     position: absolute;
     width: 1px;
     height: 100%;
-    background-color: #00bff3
+    background-color: #b3e5fc
 }
 
 .scroll-icon,

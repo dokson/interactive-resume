@@ -12,14 +12,16 @@ The project remained untouched until **2025**, when I decided to revisit and pol
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Libraries | [jQuery 4](https://jquery.com/), [jQuery UI](https://jqueryui.com/) |
-| Contact form | [@emailjs/browser](https://www.emailjs.com/) |
-| Build pipeline | [Node.js](https://nodejs.org/) |
-| CI/CD | [GitHub Actions](https://github.com/features/actions) |
-| Hosting | [GitHub Pages](https://pages.github.com/) (custom domain: [`www.colace.me`](https://www.colace.me)) |
-| PDF sync | CV.pdf auto-committed from [dokson/cv](https://github.com/dokson/cv) |
+| Layer          | Technology                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| Libraries      | [jQuery 4](https://jquery.com/), custom easing functions                                            |
+| Animations     | `requestAnimationFrame`-based interval system for visual cycles                                     |
+| Contact form   | [@emailjs/browser](https://www.emailjs.com/)                                                        |
+| Build pipeline | [Node.js](https://nodejs.org/) (minify, SEO injection, manifest generation)                         |
+| Testing        | [Playwright](https://playwright.dev/) visual regression (12 screenshot baselines)                   |
+| CI/CD          | [GitHub Actions](https://github.com/features/actions)                                               |
+| Hosting        | [GitHub Pages](https://pages.github.com/) (custom domain: [`www.colace.me`](https://www.colace.me)) |
+| PDF sync       | CV.pdf auto-committed from [dokson/cv](https://github.com/dokson/cv)                                |
 
 ## 📝 License
 
@@ -37,9 +39,11 @@ You are welcome to view the code and draw inspiration for your own interactive r
 
 ## 🔄 Updates
 
+**March 2026**: Full codebase refactoring and modernization — split monolithic JS into focused modules, modernized to ES2024+ syntax, replaced legacy IE/vendor code with feature detection, introduced global state namespaces, and added Playwright visual regression testing.
+
 **June 2025**: Resume updated with latest professional experiences and technical skills. Project published on GitHub to inspire others in the community.
 
-**August 2019**: First version created for Bending Spoons *Game Lead* application.
+**August 2019**: First version created for Bending Spoons _Game Lead_ application.
 
 ---
 
