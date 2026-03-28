@@ -72,8 +72,8 @@ function hideContactConfirmationContainer() {
 
 function showContactConfirmationContainer(index) {
     const containerChildren = contactConfirmationContainerArray[index].children[0].children;
-    for (let i = 0; i < containerChildren.length; i++) {
-        $(containerChildren[i]).fadeTo(0, 1);
+    for (const child of containerChildren) {
+        $(child).fadeTo(0, 1);
     }
     isContactConfirmationContainerVisible = true;
 }
@@ -124,7 +124,7 @@ function drawManyFireworks() {
 function drawFirework() {
     if (drawFireworkCounter >= fireworkArray.length) {
         drawFireworkCounter = 0;
-        clearInterval(drawFireworkTimer)
+        resetFireworkSvg();
     } else {
         clearRafInterval(drawOneLayerOfFireworkTimer);
         drawOneLayerOfFireworkTimer = setRafInterval(() => { drawOneLayerOfFirework() }, 40)

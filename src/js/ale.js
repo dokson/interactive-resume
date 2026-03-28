@@ -14,15 +14,15 @@ function shiftAleToSeaFloor() {
 function positionLayerHorizontalToTop() {
     if (isAleSwimming) {
         setShiftUpLayerHorizontalDistance();
-        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = `${-shiftUpLayerHorizontalDistance}px`;
-        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = `${shiftUpLayerHorizontalDistance}px`
+        for (const layer of layerHorizontalArray) layer.style.top = `${-shiftUpLayerHorizontalDistance}px`;
+        for (const layer of layerVerticalArray) layer.style.bottom = `${shiftUpLayerHorizontalDistance}px`
     }
 }
 
 function positionLayerHorizontalToBottom() {
     if (!isAleSwimming) {
-        for (let i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = "0px";
-        for (let i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = "0px"
+        for (const layer of layerHorizontalArray) layer.style.top = "0px";
+        for (const layer of layerVerticalArray) layer.style.bottom = "0px"
     }
 }
 

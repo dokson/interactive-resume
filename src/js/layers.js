@@ -202,23 +202,24 @@ function positionLayersWhenNotMoving() {
 }
 
 function positionVerticalLayersAtLeftMost() {
-    for (let i = 0; i < layerVerticalArray.length; i++)
-        layerVerticalArray[i].style.left = "0px"
+    for (const layer of layerVerticalArray)
+        layer.style.left = "0px"
 }
 
 function positionHorizontalLayersToHaveSameRightPosition() {
-    for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.left = `${containerDiv.offsetWidth - layerHorizontalArray[i].offsetWidth}px`
+    for (const layer of layerHorizontalArray)
+        layer.style.left = `${containerDiv.offsetWidth - layer.offsetWidth}px`
 }
 
 function positionHorizontalLayersVertically() {
-    for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetTop + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight}px`
+    const lastVertical = layerVerticalArray[layerVerticalArray.length - 1];
+    for (const layer of layerHorizontalArray)
+        layer.style.top = `${lastVertical.offsetTop + lastVertical.offsetHeight - containerDiv.offsetHeight}px`
 }
 
 function positionHorizontalLayersAtBottomMost() {
-    for (let i = 0; i < layerHorizontalArray.length; i++)
-        layerHorizontalArray[i].style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight}px`
+    for (const layer of layerHorizontalArray)
+        layer.style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight}px`
 }
 
 function setAleLeftAndRightEdge() {
@@ -227,8 +228,8 @@ function setAleLeftAndRightEdge() {
 }
 
 function positionVerticalLayersToHaveSameTopPosition() {
-    for (let i = 0; i < layerVerticalArray.length; i++)
-        layerVerticalArray[i].style.bottom = `${containerDiv.offsetHeight - layerVerticalArray[i].offsetHeight}px`
+    for (const layer of layerVerticalArray)
+        layer.style.bottom = `${containerDiv.offsetHeight - layer.offsetHeight}px`
 }
 
 function positionVerticalLayersBottomToHorizontalLayersBottom() {

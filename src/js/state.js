@@ -1,258 +1,244 @@
-// ─── Preloader / Ale character / Layer engine / Sea ──────────────────────────
-var blinkAleEyesTimer;
+// ═══════════════════════════════════════════════════════════════════════════════
+// GLOBAL STATE — all shared variables used across JS modules
+// ═══════════════════════════════════════════════════════════════════════════════
 
-var contentDiv = document.getElementById("content"),
-    pageDiv = document.getElementById("page"),
-    bannersContainerDiv = document.getElementById("banners-container"),
-    splashContainerDiv = document.getElementById("splash-container"),
-    isPreloadShiftUpAnimationFinish = false,
-    canFinishShiftUpHorizontalLayersAfterEverythingLoaded = true;
+// ─── DOM elements: page structure ───────────────────────────────────────────
+var contentDiv = document.getElementById("content");
+var pageDiv = document.getElementById("page");
+var bannersContainerDiv = document.getElementById("banners-container");
+var splashContainerDiv = document.getElementById("splash-container");
 
-var aleContainerDiv = document.getElementById("ale-container"),
-    aleDiv = document.getElementById("ale"),
-    aleFramesDiv = document.getElementById("ale-slides"),
-    aleEyesCloseDiv = document.getElementById("ale-eyes-close"),
-    rocketDiv = document.getElementById("rocket"),
-    groundAndGrassContainer1Div = document.getElementById("ground-and-grass-container-1"),
-    elevation1Div = document.getElementById("elevation-1"),
-    elevation2Div = document.getElementById("elevation-2");
+// ─── DOM elements: Ale character ────────────────────────────────────────────
+var aleContainerDiv = document.getElementById("ale-container");
+var aleDiv = document.getElementById("ale");
+var aleFramesDiv = document.getElementById("ale-slides");
+var aleEyesCloseDiv = document.getElementById("ale-eyes-close");
+var rocketDiv = document.getElementById("rocket");
+var groundAndGrassContainer1Div = document.getElementById("ground-and-grass-container-1");
+var elevation1Div = document.getElementById("elevation-1");
+var elevation2Div = document.getElementById("elevation-2");
 
-var layerHorizontalArray = [],
-    layerVerticalArray = [],
-    gapBetweenContactCloudAndBannersContainer = 400,
-    layerHorizontalSpeedArray = [],
-    layerVerticalSpeedArray = [];
+// ─── DOM elements: layers ───────────────────────────────────────────────────
+var layerHorizontalArray = [];
+var layerVerticalArray = [];
+var layerHorizontalSpeedArray = [];
+var layerVerticalSpeedArray = [];
 
-var sea1Div = document.getElementById("sea-1"),
-    seaFloorDiv = document.getElementById("sea-floor"),
-    seaFloorFrontObjectArray = [],
-    seaFloorBackObjectArray = [];
+// ─── DOM elements: sea ──────────────────────────────────────────────────────
+var sea1Div = document.getElementById("sea-1");
+var seaFloorDiv = document.getElementById("sea-floor");
+var seaFloorFrontObjectArray = [];
+var seaFloorBackObjectArray = [];
+var bubbleDiv = document.getElementById("bubble");
 
-var about1ContainerDiv = document.getElementById("plants-container"),
-    plantLine1Div = document.getElementById("plant-line-1"),
-    plantLine2Div = document.getElementById("plant-line-2"),
-    plantArray = [],
-    plantTargetTopObjectArray = [plantLine1Div, plantLine1Div, plantLine2Div, plantLine2Div];
+// ─── DOM elements: about section (plants & buildings) ───────────────────────
+var about1ContainerDiv = document.getElementById("plants-container");
+var plantLine1Div = document.getElementById("plant-line-1");
+var plantLine2Div = document.getElementById("plant-line-2");
+var plantArray = [];
+var plantTargetTopObjectArray = [plantLine1Div, plantLine1Div, plantLine2Div, plantLine2Div];
 
-// ─── About: plants & buildings 1 ─────────────────────────────────────────────
-var canAnimatePlantInformation;
+var about2ContainerDiv = document.getElementById("buildings-container");
+var buildingTargetLeftArray = [0, 305, 710];
+var buildingEarlyPositionArray = [795, 1100, 1505];
+var buildingArray = [];
 
-var about2ContainerDiv = document.getElementById("buildings-container"),
-    buildingTargetLeftArray = [0, 305, 710],
-    buildingEarlyPositionArray = [795, 1100, 1505],
-    buildingArray = [];
+var about3ContainerDiv = document.getElementById("buildings-container-2");
+var building2TargetLeftArray = [-12, 305, 550];
+var building2EarlyPositionArray = [795, 1100, 1505];
+var building2Array = [];
 
-// ─── Experience / piecharts / sea animals & skills: fish ─────────────────────
-var canAnimateBuildingInformation,
-    canAnimateBuilding2Information,
-    buildingBlinkTimer,
-    building2BlinkTimer;
+// ─── DOM elements: experience section (bosses & piecharts) ──────────────────
+var experience1ContainerDiv = document.getElementById("experience-1-container");
+var experience2ContainerDiv = document.getElementById("experience-2-container");
+var experience3ContainerDiv = document.getElementById("experience-3-container");
+var experienceTextContainerArray = [];
+var chainBlockAndStringContainerArray = [];
+var experienceTextContainerDistanceFromFloor = 185;
 
-var animateRobotHandsTimer,
-    spinRobotHandsTimer,
-    animateSquidHandsTimer,
-    moveSquidHandsTimer,
-    animateAlienHandsTimer,
-    alienSteerPreviousAngle,
-    canAnimateBossInformation,
-    canAnimateRobotInformation,
-    canAnimateSquidInformation,
-    canAnimateAlienInformation;
+var robotDiv = document.getElementById("robot");
+var robotHandLeftDiv = document.getElementById("robot-hand-left");
+var robotHandRightDiv = document.getElementById("robot-hand-right");
+var robotHandChildrenLength = $(robotHandLeftDiv).children().length;
+var changeRobotHandsCounter = 0;
 
-var bubbleTimer,
-    shiftUpLayerHorizontalDistance,
-    shiftUpLayerHorizontalTimer,
-    shiftDownLayerHorizontalTimer,
-    blinkSeaAnimalsTimer,
-    canAnimateFishInformation;
+var squidDiv = document.getElementById("squid");
+var squidHandCloseArray = [];
+var squidHandOpenArray = [];
+var openAndCloseSquidHandsCounter = 0;
 
-var experience1ContainerDiv = document.getElementById("experience-1-container"),
-    experience2ContainerDiv = document.getElementById("experience-2-container"),
-    experience3ContainerDiv = document.getElementById("experience-3-container"),
-    experienceTextContainerArray = [],
-    chainBlockAndStringContainerArray = [],
-    experienceTextContainerDistanceFromFloor = 185;
-
-var robotDiv = document.getElementById("robot"),
-    changeRobotHandsCounter = 0,
-    robotHandLeftDiv = document.getElementById("robot-hand-left"),
-    robotHandRightDiv = document.getElementById("robot-hand-right"),
-    robotHandChildrenLength = $(robotHandLeftDiv).children().length;
-
-var squidDiv = document.getElementById("squid"),
-    squidHandCloseArray = [],
-    squidHandOpenArray = [],
-    openAndCloseSquidHandsCounter = 0;
-
-var alienDiv = document.getElementById("alien"),
-    alienSteerDiv = document.getElementById("alien-steer"),
-    alienSteerAngle = 0,
-    alienSteerAngleLimit = 15,
-    alienSteerAngleIncrement = 5;
+var alienDiv = document.getElementById("alien");
+var alienSteerDiv = document.getElementById("alien-steer");
+var alienSteerAngle = 0;
+var alienSteerAngleLimit = 15;
+var alienSteerAngleIncrement = 5;
+var alienSteerPreviousAngle;
 
 function getPiechartElements(prefix) {
     return {
-        front: document.getElementById("piechart-" + prefix + "-front"),
-        graphic1: document.getElementById("piechart-" + prefix + "-text-graphic-1"),
-        graphic2: document.getElementById("piechart-" + prefix + "-text-graphic-2"),
-        animation1: document.getElementById("piechart-" + prefix + "-text-animation-1"),
-        animation2: document.getElementById("piechart-" + prefix + "-text-animation-2"),
-        code1: document.getElementById("piechart-" + prefix + "-text-code-1"),
-        code2: document.getElementById("piechart-" + prefix + "-text-code-2")
+        front: document.getElementById(`piechart-${prefix}-front`),
+        graphic1: document.getElementById(`piechart-${prefix}-text-graphic-1`),
+        graphic2: document.getElementById(`piechart-${prefix}-text-graphic-2`),
+        animation1: document.getElementById(`piechart-${prefix}-text-animation-1`),
+        animation2: document.getElementById(`piechart-${prefix}-text-animation-2`),
+        code1: document.getElementById(`piechart-${prefix}-text-code-1`),
+        code2: document.getElementById(`piechart-${prefix}-text-code-2`)
     };
 }
 
-var piechartRobot = getPiechartElements("robot"),
-    piechartRobotFrontDiv = piechartRobot.front,
-    piechartRobotTextGraphic1Div = piechartRobot.graphic1,
-    piechartRobotTextGraphic2Div = piechartRobot.graphic2,
-    piechartRobotTextAnimation1Div = piechartRobot.animation1,
-    piechartRobotTextAnimation2Div = piechartRobot.animation2,
-    piechartRobotTextCode1Div = piechartRobot.code1,
-    piechartRobotTextCode2Div = piechartRobot.code2;
+var piechartRobot = getPiechartElements("robot");
+var piechartSquid = getPiechartElements("squid");
+var piechartAlien = getPiechartElements("alien");
 
-var piechartSquid = getPiechartElements("squid"),
-    piechartSquidFrontDiv = piechartSquid.front,
-    piechartSquidTextGraphic1Div = piechartSquid.graphic1,
-    piechartSquidTextGraphic2Div = piechartSquid.graphic2,
-    piechartSquidTextAnimation1Div = piechartSquid.animation1,
-    piechartSquidTextAnimation2Div = piechartSquid.animation2,
-    piechartSquidTextCode1Div = piechartSquid.code1,
-    piechartSquidTextCode2Div = piechartSquid.code2;
+// ─── DOM elements: skills section (sea animals) ─────────────────────────────
+var skill1ContainerDiv = document.getElementById("skill-1-container");
+var fishArray = [];
+var fishEyeArray = [];
+var isFishStillAnimating = false;
+var fishAnimateNumber = 0;
+var numberOfFishInEachRowArray = [5, 5, 3, 3];
 
-var piechartAlien = getPiechartElements("alien"),
-    piechartAlienFrontDiv = piechartAlien.front,
-    piechartAlienTextGraphic1Div = piechartAlien.graphic1,
-    piechartAlienTextGraphic2Div = piechartAlien.graphic2,
-    piechartAlienTextAnimation1Div = piechartAlien.animation1,
-    piechartAlienTextAnimation2Div = piechartAlien.animation2,
-    piechartAlienTextCode1Div = piechartAlien.code1,
-    piechartAlienTextCode2Div = piechartAlien.code2;
+var skill2ContainerDiv = document.getElementById("skill-2-container");
+var crabArray = [];
+var crabEyeArray = [];
+var isCrabStillAnimating = false;
+var crabAnimateNumber = 0;
+var numberOfCrabInEachRowArray = [4, 5, 3, 3];
 
-var bubbleDiv = document.getElementById("bubble"),
-    shiftUpDownLayerHorizontalIncrement = 40,
-    shiftUpDownLayerHorizontalInterval = 40,
-    seaAnimalSwimDistance = 900;
+var skill3ContainerDiv = document.getElementById("skill-3-container");
+var turtleArray = [];
+var turtleEyeArray = [];
+var isTurtleStillAnimating = false;
+var turtleAnimateNumber = 0;
+var numberOfTurtleInEachRowArray = [5, 5, 4, 3];
 
-var skill1ContainerDiv = document.getElementById("skill-1-container"),
-    fishArray = [],
-    fishEyeArray = [],
-    isFishStillAnimating = false,
-    fishAnimateNumber = 0,
-    numberOfFishInEachRowArray = [5, 5, 3, 3];
+// ─── DOM elements: contact / links / fireworks ──────────────────────────────
+var contactContainerDiv = document.getElementById("contact-container");
+var linksContainerDiv = document.getElementById("links-container");
+var scrollOrSwipeTextContainer1Div = document.getElementById("scroll-or-swipe-text-container-1");
+var scrollOrSwipeTextContainer2Div = document.getElementById("scroll-or-swipe-text-container-2");
+var contactConfirmationContainerArray = [];
+var emailAddressDiv = document.getElementById("email-address");
+var emailSubjectDiv = document.getElementById("email-subject");
+var emailMessageDiv = document.getElementById("email-message");
+var stars = document.getElementsByClassName("star");
+var alienEyes = document.getElementById("alien-close-eyes");
 
-// ─── Skills: crabs ───────────────────────────────────────────────────────────
-var canAnimateCrabInformation,
-    skill2ContainerDiv = document.getElementById("skill-2-container"),
-    crabArray = [],
-    crabEyeArray = [],
-    isCrabStillAnimating = false,
-    crabAnimateNumber = 0,
-    numberOfCrabInEachRowArray = [4, 5, 3, 3];
+var fireworksContainerDiv = document.getElementById("fireworks-container");
+var fireworkArray = [];
+var fireworkSvgArray = [];
 
-// ─── Skills: turtles ─────────────────────────────────────────────────────────
-var canAnimateTurtleInformation,
-    skill3ContainerDiv = document.getElementById("skill-3-container"),
-    turtleArray = [],
-    turtleEyeArray = [],
-    isTurtleStillAnimating = false,
-    turtleAnimateNumber = 0,
-    numberOfTurtleInEachRowArray = [5, 5, 4, 3];
+// ─── Ale: physics & sprite frames ───────────────────────────────────────────
+var isAleJumping;
+var isAleFalling;
+var isAleSwimming = false;
+var isAleBelowSeaLevel = false;
+var isAleHappy = false;
+var swimUpHeight;
+var canAnimateAleRunSwim;
+var aleStartFrame;
+var aleStopFrame;
+var aleRightEdge;
+var aleLeftEdge;
+var aleMaxHorizontalDistance;
+var elevationArray = [];
+var elevationNumberBelowAle = null;
 
-// ─── Ale physics & sprite frames / buildings 2 ───────────────────────────────
-var isAleJumping,
-    isAleFalling,
-    swimUpHeight,
-    layersMovement,
-    aleRightEdge,
-    aleLeftEdge,
-    aleMaxHorizontalDistance,
-    canAnimateAleRunSwim,
-    aleStartFrame,
-    aleStopFrame,
-    shiftAleFrameTimer,
-    pageVerticalPositionWhenAnimateAle1,
-    pageVerticalPositionWhenAnimateAle2,
-    canAnimateLinksContainer,
-    happyAleTimer,
-    starsAndAlienTimer,
-    scrollOrSwipeTextContainerTimer,
-    drawFireworkTimer,
-    fireworkCenterX,
-    fireworkCenterY,
-    fireworkOneRadiusDistance,
-    fireworkOneRotationAngle,
-    drawOneLayerOfFireworkTimer;
+var aleFrameIndex = 0;
+var aleFrameDirection = 1;
+var aleStaticFrame = 0;
+var aleStartRunFrame = 1;
+var aleStopRunFrame = 2;
+var aleStartSwimFrame = 3;
+var aleStopSwimFrame = 4;
+var aleSwimDownFrame = 5;
+var aleStartJumpFrame = 6;
+var aleStopJumpFrame = 7;
+var aleOneFrameWidth = 200;
+var shiftAleFrameTimeInterval = 200;
+var minimumVerticalDistanceToTriggerAleSwimDownFrame = 100;
 
-var pageVerticalPosition = 0,
-    pageVerticalPositionOnTouch = 0,
-    previousPageVerticalPosition = 0,
-    deltaPageVerticalPosition = 0,
-    isAleSwimming = false,
-    isAleBelowSeaLevel = false,
-    elevationArray = [],
-    elevationNumberBelowAle = null,
-    distanceBetweenAleAndRocket = 300;
-
-var aleFrameIndex = 0,
-    aleFrameDirection = 1,
-    aleStaticFrame = 0,
-    aleStartRunFrame = 1,
-    aleStopRunFrame = 2,
-    aleStartSwimFrame = 3,
-    aleStopSwimFrame = 4,
-    aleSwimDownFrame = 5,
-    aleStartJumpFrame = 6,
-    aleStopJumpFrame = 7,
-    aleOneFrameWidth = 200,
-    shiftAleFrameTimeInterval = 200,
-    minimumVerticalDistanceToTriggerAleSwimDownFrame = 100;
-
-var about3ContainerDiv = document.getElementById("buildings-container-2"),
-    building2TargetLeftArray = [-12, 305, 550],
-    building2EarlyPositionArray = [795, 1100, 1505],
-    building2Array = [];
-
-// ─── Contact / links / fireworks ────────────────────────────────────────────
-var contactContainerDiv = document.getElementById("contact-container"),
-    linksContainerDiv = document.getElementById("links-container"),
-    isAleHappy = false,
-    scrollOrSwipeTextContainer1Div = document.getElementById("scroll-or-swipe-text-container-1"),
-    scrollOrSwipeTextContainer2Div = document.getElementById("scroll-or-swipe-text-container-2"),
-    canHideScrollOrSwipeTextContainer = true,
-    canAnimateScrollOrSwipeTextContainer = true,
-    contactConfirmationContainerArray = [],
-    emailAddressDiv = document.getElementById("email-address"),
-    emailSubjectDiv = document.getElementById("email-subject"),
-    emailMessageDiv = document.getElementById("email-message"),
-    isContactConfirmationContainerVisible = true,
-    stars = document.getElementsByClassName("star"),
-    alienEyes = document.getElementById("alien-close-eyes"),
-    touchStartX = 0,
-    touchCurrentX = 0,
-    touchEndX = 0;
-
-var fireworksContainerDiv = document.getElementById("fireworks-container"),
-    fireworkArray = [],
-    fireworkSvgArray = [],
-    drawFireworkCounter = 0,
-    fireworkRowNumber = 8,
-    fireworkColumnNumber = 16,
-    fireworkLayerNumber = 0,
-    fireworkDotRadius = 5,
-    canDrawManyFireworks = true;
-
-// ─── Bootstrap & section dispatch ────────────────────────────────────────────
-disableIsAleJumpingAndFalling();
-
-var landInformationContainerArray = [about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv];
-
+// ─── Scroll / page position ─────────────────────────────────────────────────
+var pageVerticalPosition = 0;
+var pageVerticalPositionOnTouch = 0;
+var previousPageVerticalPosition = 0;
+var deltaPageVerticalPosition = 0;
+var pageVerticalPositionWhenAnimateAle1;
+var pageVerticalPositionWhenAnimateAle2;
+var layersMovement;
 var canScrollOrSwipe;
+var touchStartX = 0;
+var touchCurrentX = 0;
+var touchEndX = 0;
+var distanceBetweenAleAndRocket = 300;
+
+// ─── Animation flags ────────────────────────────────────────────────────────
+var isPreloadShiftUpAnimationFinish = false;
+var canFinishShiftUpHorizontalLayersAfterEverythingLoaded = true;
+var canAnimatePlantInformation;
+var canAnimateBuildingInformation;
+var canAnimateBuilding2Information;
+var canAnimateRobotInformation;
+var canAnimateSquidInformation;
+var canAnimateAlienInformation;
+var canAnimateBossInformation;
+var canAnimateFishInformation;
+var canAnimateCrabInformation;
+var canAnimateTurtleInformation;
+var canAnimateLinksContainer;
+var canHideScrollOrSwipeTextContainer = true;
+var canAnimateScrollOrSwipeTextContainer = true;
+var isContactConfirmationContainerVisible = true;
+var canDrawManyFireworks = true;
+
+// ─── Timer IDs ──────────────────────────────────────────────────────────────
+var blinkAleEyesTimer;
+var shiftAleFrameTimer;
+var happyAleTimer;
+var animateRobotHandsTimer;
+var spinRobotHandsTimer;
+var animateSquidHandsTimer;
+var moveSquidHandsTimer;
+var animateAlienHandsTimer;
+var bubbleTimer;
+var blinkSeaAnimalsTimer;
+var starsTimer;
+var alienEyesTimer;
+var scrollOrSwipeTextContainerTimer;
+var buildingBlinkTimer;
+var building2BlinkTimer;
+var shiftUpLayerHorizontalDistance;
+var shiftUpLayerHorizontalTimer;
+var shiftDownLayerHorizontalTimer;
+var drawFireworkTimer;
+var drawOneLayerOfFireworkTimer;
+
+// ─── Firework config ────────────────────────────────────────────────────────
+var drawFireworkCounter = 0;
+var fireworkRowNumber = 8;
+var fireworkColumnNumber = 16;
+var fireworkLayerNumber = 0;
+var fireworkDotRadius = 5;
+var fireworkCenterX;
+var fireworkCenterY;
+var fireworkOneRadiusDistance;
+var fireworkOneRotationAngle;
+
+// ─── Constants ──────────────────────────────────────────────────────────────
+var gapBetweenContactCloudAndBannersContainer = 400;
+var shiftUpDownLayerHorizontalIncrement = 40;
+var shiftUpDownLayerHorizontalInterval = 40;
+var seaAnimalSwimDistance = 900;
+
+// ─── Section container arrays (built after DOM elements are declared) ───────
+var landInformationContainerArray = [about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv];
 var seaInformationContainerArray = [skill1ContainerDiv, skill2ContainerDiv, skill3ContainerDiv];
 
+// ─── Bootstrap ──────────────────────────────────────────────────────────────
+disableIsAleJumpingAndFalling();
 disableScrollOrSwipe();
 
-// ─── Event handlers ──────────────────────────────────────────────────────────
+// ─── Event handlers ─────────────────────────────────────────────────────────
 $(window).on("beforeunload", () => {
     $(window).scrollTop(0);
 });
@@ -281,7 +267,8 @@ window.onload = () => {
     hideContactConfirmationContainer();
     hideAleEyesClose();
     animateAleEyes();
-    animateStarsAndAlienEyes();
+    animateStars();
+    animateAlienEyes();
     positionSeaFloorObjectsVertically();
     openSquidHands();
     hideBubble();

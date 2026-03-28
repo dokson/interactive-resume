@@ -136,9 +136,9 @@ function blinkSeaAnimals(eyeArray) {
         const randomIndex = Math.floor(Math.random() * eyeArray.length);
         selectedEyes.push(eyeArray[randomIndex])
     }
-    for (let i = 0; i < selectedEyes.length; i++) {
-        $(selectedEyes[i]).fadeTo(0, 1);
-        $(selectedEyes[i]).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
+    for (const eye of selectedEyes) {
+        $(eye).fadeTo(0, 1);
+        $(eye).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
     }
 }
 
@@ -149,10 +149,10 @@ function makeSeaAnimalsBlinking(eyeArray) {
 
 // ─── Sea floor ───────────────────────────────────────────────────────────────
 function positionSeaFloorObjectsVertically() {
-    for (let i = 0; i < seaFloorFrontObjectArray.length; i++)
-        seaFloorFrontObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[i].style.bottom = `${-1 * (seaFloorFrontObjectArray[i].offsetHeight - sea1Div.offsetHeight)}px` : seaFloorFrontObjectArray[i].style.bottom = "0px";
-    for (let i = 0; i < seaFloorBackObjectArray.length; i++)
-        seaFloorBackObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[i].style.bottom = `${-.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[i].offsetHeight - sea1Div.offsetHeight)}px` : seaFloorBackObjectArray[i].style.bottom = "-70%"
+    for (const obj of seaFloorFrontObjectArray)
+        obj.offsetHeight > sea1Div.offsetHeight ? obj.style.bottom = `${-1 * (obj.offsetHeight - sea1Div.offsetHeight)}px` : obj.style.bottom = "0px";
+    for (const obj of seaFloorBackObjectArray)
+        obj.offsetHeight > sea1Div.offsetHeight ? obj.style.bottom = `${-.7 * containerDiv.offsetHeight - (obj.offsetHeight - sea1Div.offsetHeight)}px` : obj.style.bottom = "-70%"
 }
 
 // ─── Experience: containers & text ───────────────────────────────────────────
@@ -192,37 +192,33 @@ function animateExperienceTextContainer(index) {
 }
 
 function hidePiechartElements(frontDiv, textDivs) {
-    for (let i = 0; i < textDivs.length; i++) {
-        $(textDivs[i]).fadeTo(0, 0);
+    for (const div of textDivs) {
+        $(div).fadeTo(0, 0);
     }
     $(frontDiv).fadeTo(0, 0);
 }
 
+function hidePiechartByPrefix(piechart) {
+    hidePiechartElements(piechart.front, [
+        piechart.graphic1, piechart.graphic2,
+        piechart.animation1, piechart.animation2,
+        piechart.code1, piechart.code2
+    ]);
+}
+
 function positionExperience1Elements() {
     robotDiv.style.left = `${experience1ContainerDiv.offsetWidth}px`;
-    hidePiechartElements(piechartRobotFrontDiv, [
-        piechartRobotTextGraphic1Div, piechartRobotTextGraphic2Div,
-        piechartRobotTextAnimation1Div, piechartRobotTextAnimation2Div,
-        piechartRobotTextCode1Div, piechartRobotTextCode2Div
-    ]);
+    hidePiechartByPrefix(piechartRobot);
 }
 
 function positionExperience2Elements() {
     squidDiv.style.left = `${experience2ContainerDiv.offsetWidth}px`;
-    hidePiechartElements(piechartSquidFrontDiv, [
-        piechartSquidTextGraphic1Div, piechartSquidTextGraphic2Div,
-        piechartSquidTextAnimation1Div, piechartSquidTextAnimation2Div,
-        piechartSquidTextCode1Div, piechartSquidTextCode2Div
-    ]);
+    hidePiechartByPrefix(piechartSquid);
 }
 
 function positionExperience3Elements() {
     alienDiv.style.left = `${experience3ContainerDiv.offsetWidth}px`;
-    hidePiechartElements(piechartAlienFrontDiv, [
-        piechartAlienTextGraphic1Div, piechartAlienTextGraphic2Div,
-        piechartAlienTextAnimation1Div, piechartAlienTextAnimation2Div,
-        piechartAlienTextCode1Div, piechartAlienTextCode2Div
-    ]);
+    hidePiechartByPrefix(piechartAlien);
 }
 
 // ─── Experience: animation dispatch ──────────────────────────────────────────
@@ -430,21 +426,13 @@ function openAndCloseSquidHands() {
 }
 
 function openSquidHands() {
-    for (let i = 0; i < squidHandOpenArray.length; i++) {
-        setElementOpacity(squidHandOpenArray[i], 1);
-    }
-    for (let i = 0; i < squidHandCloseArray.length; i++) {
-        setElementOpacity(squidHandCloseArray[i], 0);
-    }
+    for (const hand of squidHandOpenArray) setElementOpacity(hand, 1);
+    for (const hand of squidHandCloseArray) setElementOpacity(hand, 0);
 }
 
 function closeSquidHands() {
-    for (let i = 0; i < squidHandOpenArray.length; i++) {
-        setElementOpacity(squidHandOpenArray[i], 0);
-    }
-    for (let i = 0; i < squidHandCloseArray.length; i++) {
-        setElementOpacity(squidHandCloseArray[i], 1);
-    }
+    for (const hand of squidHandOpenArray) setElementOpacity(hand, 0);
+    for (const hand of squidHandCloseArray) setElementOpacity(hand, 1);
 }
 
 // ─── Experience: alien ───────────────────────────────────────────────────────
@@ -477,7 +465,7 @@ function rotateAlienHands() {
 function animateAlien() {
     $(alienDiv).stop().animate({
         left: "450px"
-    }, 1000, () => {
+    }, 300, () => {
         animatePiechartFoxnewsFront();
         animateAlienHand()
     })
@@ -490,53 +478,59 @@ function animatePiechartFront(frontDiv, callback) {
     });
 }
 
-function animatePiechartAolFront() { animatePiechartFront(piechartRobotFrontDiv, animatePiechartAolText); }
-function animatePiechartIncognitoFront() { animatePiechartFront(piechartSquidFrontDiv, animatePiechartIncognitoText); }
-function animatePiechartFoxnewsFront() { animatePiechartFront(piechartAlienFrontDiv, animatePiechartFoxnewsText); }
-
 function animatePiechartTextPair(div1, div2, delayOffset) {
     $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
     $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
 }
 
-function animatePiechartAolText() {
-    animatePiechartTextPair(piechartRobotTextCode1Div, piechartRobotTextCode2Div, 0);
-    animatePiechartTextPair(piechartRobotTextGraphic1Div, piechartRobotTextGraphic2Div, 300);
-    animatePiechartTextPair(piechartRobotTextAnimation1Div, piechartRobotTextAnimation2Div, 600);
+function animatePiechartText(piechart, order) {
+    for (let i = 0; i < order.length; i++) {
+        animatePiechartTextPair(piechart[order[i] + "1"], piechart[order[i] + "2"], 300 * i);
+    }
 }
 
-function animatePiechartIncognitoText() {
-    animatePiechartTextPair(piechartSquidTextCode1Div, piechartSquidTextCode2Div, 0);
-    animatePiechartTextPair(piechartSquidTextAnimation1Div, piechartSquidTextAnimation2Div, 300);
-    animatePiechartTextPair(piechartSquidTextGraphic1Div, piechartSquidTextGraphic2Div, 600);
+function animatePiechartAolFront() {
+    animatePiechartFront(piechartRobot.front, () => {
+        animatePiechartText(piechartRobot, ["code", "graphic", "animation"]);
+    });
 }
 
-function animatePiechartFoxnewsText() {
-    animatePiechartTextPair(piechartAlienTextCode1Div, piechartAlienTextCode2Div, 0);
-    animatePiechartTextPair(piechartAlienTextAnimation1Div, piechartAlienTextAnimation2Div, 300);
-    animatePiechartTextPair(piechartAlienTextGraphic1Div, piechartAlienTextGraphic2Div, 600);
+function animatePiechartIncognitoFront() {
+    animatePiechartFront(piechartSquid.front, () => {
+        animatePiechartText(piechartSquid, ["code", "animation", "graphic"]);
+    });
+}
+
+function animatePiechartFoxnewsFront() {
+    animatePiechartFront(piechartAlien.front, () => {
+        animatePiechartText(piechartAlien, ["code", "animation", "graphic"]);
+    });
 }
 
 // ─── Stars & alien eyes ──────────────────────────────────────────────────────
-function animateStarsAndAlienEyes() {
-    clearInterval(starsAndAlienTimer);
-    starsAndAlienTimer = setInterval(() => {
+function animateStars() {
+    clearInterval(starsTimer);
+    starsTimer = setInterval(() => {
         switchStarsColor();
+    }, 400);
+}
+
+function animateAlienEyes() {
+    clearInterval(alienEyesTimer);
+    alienEyesTimer = setInterval(() => {
         switchAlienEyes();
-    }, 1000)
+    }, 700);
 }
 
-function switchElementOpacity(element) {
-    $(element).fadeTo(0, 0);
-    $(element).stop().delay(500).animate({ opacity: 1 }, 0, () => { });
-}
-
+var starsVisible = true;
 function switchStarsColor() {
-    switchElementOpacity(stars);
+    starsVisible = !starsVisible;
+    $(stars).fadeTo(0, starsVisible ? 1 : 0);
 }
 
 function switchAlienEyes() {
-    switchElementOpacity(alienEyes);
+    $(alienEyes).fadeTo(0, 1);
+    $(alienEyes).stop().delay(230).animate({ opacity: 0 }, 0, () => { });
 }
 
 // ─── Scroll / swipe hint text ────────────────────────────────────────────────

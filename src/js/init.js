@@ -1,7 +1,7 @@
 // ─── DOM collection ──────────────────────────────────────────────────────────
 function collectElements(selector, targetArray) {
     const elements = document.querySelectorAll(selector);
-    for (let i = 0; i < elements.length; i++) targetArray.push(elements[i]);
+    for (const el of elements) targetArray.push(el);
 }
 
 function storeDivs() {
@@ -36,11 +36,18 @@ function initVariablesAfterShowContainer() {
 }
 
 function resetVariables() {
-    canAnimateBuildingInformation = canAnimateBuilding2Information = canAnimatePlantInformation = !(pageVerticalPosition = 0);
+    pageVerticalPosition = 0;
+    canAnimatePlantInformation = true;
+    canAnimateBuildingInformation = true;
+    canAnimateBuilding2Information = true;
+    canAnimateRobotInformation = true;
+    canAnimateSquidInformation = true;
+    canAnimateAlienInformation = true;
+    canAnimateLinksContainer = true;
+    canDrawManyFireworks = true;
     if (!isFishStillAnimating) canAnimateFishInformation = true;
     if (!isCrabStillAnimating) canAnimateCrabInformation = true;
     if (!isTurtleStillAnimating) canAnimateTurtleInformation = true;
-    canDrawManyFireworks = canAnimateLinksContainer = canAnimateAlienInformation = canAnimateSquidInformation = canAnimateRobotInformation = true
 }
 
 function resetFunctions() {
