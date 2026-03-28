@@ -1,5 +1,5 @@
 // ─── Scroll / swipe control ──────────────────────────────────────────────────
-function orientationChangeHandler(e) {
+function orientationChangeHandler(event) {
     disableScrollOrSwipe();
     setTimeout(function () {
         $(window).trigger("resize")
@@ -21,23 +21,23 @@ function initTouchEvents() {
     document.addEventListener("touchend", handleEnd, false)
 }
 
-function handleStart(e) {
-    touchStartX = e.targetTouches[0].pageX;
+function handleStart(event) {
+    touchStartX = event.targetTouches[0].pageX;
     pageVerticalPositionOnTouch = pageVerticalPosition
 }
 
-function handleMove(e) {
-    e.preventDefault();
-    touchCurrentX = e.targetTouches[0].pageX;
+function handleMove(event) {
+    event.preventDefault();
+    touchCurrentX = event.targetTouches[0].pageX;
     if (canScrollOrSwipe) {
         detectPageVerticalPosition();
         runTheseFunctionsAfterScrollOrSwipe()
     }
 }
 
-function handleEnd(e) {
-    e.preventDefault();
-    touchEndX = e.changedTouches[0].pageX
+function handleEnd(event) {
+    event.preventDefault();
+    touchEndX = event.changedTouches[0].pageX
 }
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────
@@ -63,8 +63,8 @@ function showContainer() {
 }
 
 function shiftUpHorizontalLayersAfterEverythingLoaded() {
-    for (var e = 0; e < layerHorizontalArray.length; e++)
-        $(layerHorizontalArray[e]).stop().animate({
+    for (var i = 0; i < layerHorizontalArray.length; i++)
+        $(layerHorizontalArray[i]).stop().animate({
             top: "0px"
         }, 1000, function () {
             finishShiftUpHorizontalLayersAfterEverythingLoaded()
@@ -88,7 +88,6 @@ function shiftDownAleContainer() {
         setAleStaticFrame();
         enableAnimateAleRunSwim()
     });
-    if (browserName === "internet explorer" && browserVersion <= 8) enableAnimateAleRunSwim()
 }
 
 function makePageScrollable() {
@@ -114,13 +113,13 @@ function setLayerSpeed() {
         layerHorizontalSpeedArray.pop();
     for (; layerVerticalSpeedArray.length > 0;)
         layerVerticalSpeedArray.pop();
-    for (var e = 0; e < layerHorizontalArray.length; e++) {
-        var t = (layerHorizontalArray[e].offsetWidth - containerDiv.offsetWidth) / (layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth);
-        layerHorizontalSpeedArray.push(t)
+    for (var i = 0; i < layerHorizontalArray.length; i++) {
+        var speed = (layerHorizontalArray[i].offsetWidth - containerDiv.offsetWidth) / (layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth);
+        layerHorizontalSpeedArray.push(speed)
     }
-    for (e = 0; e < layerVerticalArray.length; e++) {
-        var i = (layerVerticalArray[e].offsetHeight - containerDiv.offsetHeight) / (layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight);
-        layerVerticalSpeedArray.push(i)
+    for (i = 0; i < layerVerticalArray.length; i++) {
+        var speed = (layerVerticalArray[i].offsetHeight - containerDiv.offsetHeight) / (layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight);
+        layerVerticalSpeedArray.push(speed)
     }
 }
 
@@ -128,7 +127,7 @@ function setLayerSpeed() {
 function detectPageVerticalPosition() {
     previousPageVerticalPosition = pageVerticalPosition;
     if (deviceName === "computer") {
-        pageVerticalPosition = browserName === "internet explorer" ? document.documentElement.scrollTop : pageYOffset
+        pageVerticalPosition = window.scrollY
     } else {
         pageVerticalPosition = pageVerticalPositionOnTouch + (touchStartX - touchCurrentX);
         if (pageVerticalPosition < 0) pageVerticalPosition = 0;
@@ -203,23 +202,23 @@ function positionLayersWhenNotMoving() {
 }
 
 function positionVerticalLayersAtLeftMost() {
-    for (var e = 0; e < layerVerticalArray.length; e++)
-        layerVerticalArray[e].style.left = "0px"
+    for (var i = 0; i < layerVerticalArray.length; i++)
+        layerVerticalArray[i].style.left = "0px"
 }
 
 function positionHorizontalLayersToHaveSameRightPosition() {
-    for (var e = 0; e < layerHorizontalArray.length; e++)
-        layerHorizontalArray[e].style.left = containerDiv.offsetWidth - layerHorizontalArray[e].offsetWidth + "px"
+    for (var i = 0; i < layerHorizontalArray.length; i++)
+        layerHorizontalArray[i].style.left = containerDiv.offsetWidth - layerHorizontalArray[i].offsetWidth + "px"
 }
 
 function positionHorizontalLayersVertically() {
-    for (var e = 0; e < layerHorizontalArray.length; e++)
-        layerHorizontalArray[e].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
+    for (var i = 0; i < layerHorizontalArray.length; i++)
+        layerHorizontalArray[i].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetTop + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
 }
 
 function positionHorizontalLayersAtBottomMost() {
-    for (var e = 0; e < layerHorizontalArray.length; e++)
-        layerHorizontalArray[e].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
+    for (var i = 0; i < layerHorizontalArray.length; i++)
+        layerHorizontalArray[i].style.top = layerVerticalArray[layerVerticalArray.length - 1].offsetHeight - containerDiv.offsetHeight + "px"
 }
 
 function setAleLeftAndRightEdge() {
@@ -228,13 +227,13 @@ function setAleLeftAndRightEdge() {
 }
 
 function positionVerticalLayersToHaveSameTopPosition() {
-    for (var e = 0; e < layerVerticalArray.length; e++)
-        layerVerticalArray[e].style.bottom = containerDiv.offsetHeight - layerVerticalArray[e].offsetHeight + "px"
+    for (var i = 0; i < layerVerticalArray.length; i++)
+        layerVerticalArray[i].style.bottom = containerDiv.offsetHeight - layerVerticalArray[i].offsetHeight + "px"
 }
 
 function positionVerticalLayersBottomToHorizontalLayersBottom() {
-    for (var e = 0; e < layerVerticalArray.length; e++)
-        layerVerticalArray[e].style.bottom = -1 * layerHorizontalArray[e].offsetTop + "px"
+    for (var i = 0; i < layerVerticalArray.length; i++)
+        layerVerticalArray[i].style.bottom = -1 * layerHorizontalArray[i].offsetTop + "px"
 }
 
 // ─── Horizontal layer shift ──────────────────────────────────────────────────
@@ -308,14 +307,14 @@ function shiftUpLayerHorizontal() {
 
 function moveUpLayerHorizontal() {
     if (layersMovement === "horizontal") {
-        for (var e = 0; e < layerHorizontalArray.length; e++) {
-            var t = layerHorizontalArray[e].offsetTop - shiftUpDownLayerHorizontalIncrement;
-            if (t <= -shiftUpLayerHorizontalDistance) {
-                t = -shiftUpLayerHorizontalDistance;
-                layerHorizontalArray[e].style.top = t + "px";
+        for (var i = 0; i < layerHorizontalArray.length; i++) {
+            var newTop = layerHorizontalArray[i].offsetTop - shiftUpDownLayerHorizontalIncrement;
+            if (newTop <= -shiftUpLayerHorizontalDistance) {
+                newTop = -shiftUpLayerHorizontalDistance;
+                layerHorizontalArray[i].style.top = newTop + "px";
                 clearInterval(shiftUpLayerHorizontalTimer)
             } else {
-                layerHorizontalArray[e].style.top = t + "px"
+                layerHorizontalArray[i].style.top = newTop + "px"
             }
             if (aleContainerDiv.offsetTop > sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
                 isAleBelowSeaLevel = true
@@ -335,14 +334,14 @@ function shiftDownLayerHorizontal() {
 
 function moveDownLayerHorizontal() {
     if (layersMovement === "horizontal") {
-        for (var e = 0; e < layerHorizontalArray.length; e++) {
-            var t = layerHorizontalArray[e].offsetTop + shiftUpDownLayerHorizontalIncrement;
-            if (t >= 0) {
-                t = 0;
-                layerHorizontalArray[e].style.top = t + "px";
+        for (var i = 0; i < layerHorizontalArray.length; i++) {
+            var newTop = layerHorizontalArray[i].offsetTop + shiftUpDownLayerHorizontalIncrement;
+            if (newTop >= 0) {
+                newTop = 0;
+                layerHorizontalArray[i].style.top = newTop + "px";
                 clearInterval(shiftDownLayerHorizontalTimer)
             } else {
-                layerHorizontalArray[e].style.top = t + "px"
+                layerHorizontalArray[i].style.top = newTop + "px"
             }
             if (aleContainerDiv.offsetTop < sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
                 isAleBelowSeaLevel = false
@@ -367,7 +366,7 @@ function clearShiftUpDownLayerHorizontalTimer() {
 
 // ─── Layer & rocket positioning ──────────────────────────────────────────────
 function positionVerticalLayersHorizontally() {
-    for (var e = 0; e < layerVerticalArray.length; e++) layerVerticalArray[e].style.left = layerHorizontalArray[e].offsetLeft + layerHorizontalArray[e].offsetWidth - containerDiv.offsetWidth + "px"
+    for (var i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.left = layerHorizontalArray[i].offsetLeft + layerHorizontalArray[i].offsetWidth - containerDiv.offsetWidth + "px"
 }
 
 function positionRocketAndAleContainerHorizontally() {

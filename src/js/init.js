@@ -1,27 +1,28 @@
 // ─── DOM collection ──────────────────────────────────────────────────────────
 function storeDivs() {
-    for (var e = document.getElementsByTagName("div"), t = 0; t < e.length; t++) {
-        var cls = e[t].getAttribute("class");
-        if (cls === "fish") fishArray.push(e[t]);
-        if (cls === "fish-eyes") fishEyeArray.push(e[t]);
-        if (cls === "crab") crabArray.push(e[t]);
-        if (cls === "crab-eyes") crabEyeArray.push(e[t]);
-        if (cls === "turtle") turtleArray.push(e[t]);
-        if (cls === "turtle-eyes") turtleEyeArray.push(e[t]);
-        if (cls === "elevation") elevationArray.push(e[t]);
-        if (cls === "plant") plantArray.push(e[t]);
-        if (cls === "building") buildingArray.push(e[t]);
-        if (cls === "building2") building2Array.push(e[t]);
-        if (cls === "contact-confirmation-container") contactConfirmationContainerArray.push(e[t]);
-        if (cls === "experience-text-container") experienceTextContainerArray.push(e[t]);
-        if (cls === "chain-block-and-string-container") chainBlockAndStringContainerArray.push(e[t]);
-        if (cls === "layer-horizontal") layerHorizontalArray.push(e[t]);
-        if (cls === "layer-vertical") layerVerticalArray.push(e[t]);
-        if (cls === "algae-a" || cls === "algae-b" || cls === "title-skills-class") seaFloorFrontObjectArray.push(e[t]);
-        if (cls === "coral" || cls === "coral-big") seaFloorBackObjectArray.push(e[t]);
-        if (cls === "squid-hand-close") squidHandCloseArray.push(e[t]);
-        if (cls === "squid-hand-open") squidHandOpenArray.push(e[t]);
-        if (cls === "firework") fireworkArray.push(e[t])
+    var allDivs = document.getElementsByTagName("div");
+    for (var i = 0; i < allDivs.length; i++) {
+        var cls = allDivs[i].getAttribute("class");
+        if (cls === "fish") fishArray.push(allDivs[i]);
+        if (cls === "fish-eyes") fishEyeArray.push(allDivs[i]);
+        if (cls === "crab") crabArray.push(allDivs[i]);
+        if (cls === "crab-eyes") crabEyeArray.push(allDivs[i]);
+        if (cls === "turtle") turtleArray.push(allDivs[i]);
+        if (cls === "turtle-eyes") turtleEyeArray.push(allDivs[i]);
+        if (cls === "elevation") elevationArray.push(allDivs[i]);
+        if (cls === "plant") plantArray.push(allDivs[i]);
+        if (cls === "building") buildingArray.push(allDivs[i]);
+        if (cls === "building2") building2Array.push(allDivs[i]);
+        if (cls === "contact-confirmation-container") contactConfirmationContainerArray.push(allDivs[i]);
+        if (cls === "experience-text-container") experienceTextContainerArray.push(allDivs[i]);
+        if (cls === "chain-block-and-string-container") chainBlockAndStringContainerArray.push(allDivs[i]);
+        if (cls === "layer-horizontal") layerHorizontalArray.push(allDivs[i]);
+        if (cls === "layer-vertical") layerVerticalArray.push(allDivs[i]);
+        if (cls === "algae-a" || cls === "algae-b" || cls === "title-skills-class") seaFloorFrontObjectArray.push(allDivs[i]);
+        if (cls === "coral" || cls === "coral-big") seaFloorBackObjectArray.push(allDivs[i]);
+        if (cls === "squid-hand-close") squidHandCloseArray.push(allDivs[i]);
+        if (cls === "squid-hand-open") squidHandOpenArray.push(allDivs[i]);
+        if (cls === "firework") fireworkArray.push(allDivs[i])
     }
 }
 

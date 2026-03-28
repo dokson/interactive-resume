@@ -1,19 +1,19 @@
 // ─── About: plants ───────────────────────────────────────────────────────────
 function animatePlants() {
-    for (var e = 0; e < plantArray.length; e++) $(plantArray[e]).stop().delay(300 * e).animate({
-        top: [plantTargetTopObjectArray[e].offsetTop, "easeOutElastic"]
+    for (var i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(300 * i).animate({
+        top: [plantTargetTopObjectArray[i].offsetTop, "easeOutElastic"]
     }, 800, function () { })
 }
 
 function positionPlants() {
-    for (var e = 0; e < plantArray.length; e++) plantArray[e].style.top = canAnimatePlantInformation ? "100%" : plantTargetTopObjectArray[e].offsetTop + "px"
+    for (var i = 0; i < plantArray.length; i++) plantArray[i].style.top = canAnimatePlantInformation ? "100%" : plantTargetTopObjectArray[i].offsetTop + "px"
 }
 
 // ─── About: buildings ────────────────────────────────────────────────────────
 function animateElementsLeft(elements, targets) {
-    for (var e = 0; e < elements.length; e++) {
-        $(elements[e]).stop().delay(300 * e).animate({
-            left: [targets[e], "easeOutCubic"]
+    for (var i = 0; i < elements.length; i++) {
+        $(elements[i]).stop().delay(300 * i).animate({
+            left: [targets[i], "easeOutCubic"]
         }, 1000, function () { });
     }
 }
@@ -27,8 +27,8 @@ function animateBuildings2() {
 }
 
 function positionElementsLeft(elements, positions) {
-    for (var e = 0; e < elements.length; e++) {
-        elements[e].style.left = positions[e] + "px";
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.left = positions[i] + "px";
     }
 }
 
@@ -41,39 +41,37 @@ function positionBuildings2() {
 }
 
 // ─── Sea animals ─────────────────────────────────────────────────────────────
-function positionSeaAnimals(e, t, i, n) {
-    for (var a = e, o = t, r = i, l = n, s = 0, c = 0; c < o.length; c++)
-        for (var f = 0; f < o[c]; f++) {
-            a[s].style.left = seaAnimalSwimDistance + f * r + "px";
-            a[s].style.top = c * l + "px";
-            s += 1
+function positionSeaAnimals(animals, animalsPerRow, colSpacing, rowSpacing) {
+    for (var animalIndex = 0, row = 0; row < animalsPerRow.length; row++)
+        for (var col = 0; col < animalsPerRow[row]; col++) {
+            animals[animalIndex].style.left = seaAnimalSwimDistance + col * colSpacing + "px";
+            animals[animalIndex].style.top = row * rowSpacing + "px";
+            animalIndex += 1
         }
 }
 
-function animateSeaAnimals(e) {
-    var t = e;
-    if (t == fishArray) isFishStillAnimating = true;
-    if (t == crabArray) isCrabStillAnimating = true;
-    if (t == turtleArray) isTurtleStillAnimating = true;
-    for (var i = 0; i < t.length; i++) $(t[i]).stop().delay(100 * i).animate({
-        left: [t[i].offsetLeft - seaAnimalSwimDistance, "easeOutCubic"]
+function animateSeaAnimals(animalArray) {
+    if (animalArray == fishArray) isFishStillAnimating = true;
+    if (animalArray == crabArray) isCrabStillAnimating = true;
+    if (animalArray == turtleArray) isTurtleStillAnimating = true;
+    for (var i = 0; i < animalArray.length; i++) $(animalArray[i]).stop().delay(100 * i).animate({
+        left: [animalArray[i].offsetLeft - seaAnimalSwimDistance, "easeOutCubic"]
     }, 600, function () {
-        disableIsSeaAnimalStillAnimating(t)
+        disableIsSeaAnimalStillAnimating(animalArray)
     })
 }
 
-function disableIsSeaAnimalStillAnimating(e) {
-    var t = e;
-    if (t == fishArray) {
-        if (fishAnimateNumber >= t.length - 1) { isFishStillAnimating = false; fishAnimateNumber = 0 }
+function disableIsSeaAnimalStillAnimating(animalArray) {
+    if (animalArray == fishArray) {
+        if (fishAnimateNumber >= animalArray.length - 1) { isFishStillAnimating = false; fishAnimateNumber = 0 }
         else fishAnimateNumber += 1
     }
-    if (t == crabArray) {
-        if (crabAnimateNumber >= t.length - 1) { isCrabStillAnimating = false; crabAnimateNumber = 0 }
+    if (animalArray == crabArray) {
+        if (crabAnimateNumber >= animalArray.length - 1) { isCrabStillAnimating = false; crabAnimateNumber = 0 }
         else crabAnimateNumber += 1
     }
-    if (t == turtleArray) {
-        if (turtleAnimateNumber >= t.length - 1) { isTurtleStillAnimating = false; turtleAnimateNumber = 0 }
+    if (animalArray == turtleArray) {
+        if (turtleAnimateNumber >= animalArray.length - 1) { isTurtleStillAnimating = false; turtleAnimateNumber = 0 }
         else turtleAnimateNumber += 1
     }
 }
@@ -85,10 +83,10 @@ function createBubble() {
 }
 
 function animateBubble() {
-    var e = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
-    positionBubble(e);
+    var topOffset = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
+    positionBubble(topOffset);
     showBubble();
-    $(bubbleDiv).stop().animate({ top: "0px" }, 2 * e, function () { hideBubble() })
+    $(bubbleDiv).stop().animate({ top: "0px" }, 2 * topOffset, function () { hideBubble() })
 }
 
 function hideBubble() {
@@ -99,68 +97,70 @@ function showBubble() {
     $(bubbleDiv).fadeTo(0, 1)
 }
 
-function positionBubble(e) {
+function positionBubble(topOffset) {
     bubbleDiv.style.left = pageVerticalPosition + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft + "px";
-    bubbleDiv.style.top = e + "px"
+    bubbleDiv.style.top = topOffset + "px"
 }
 
 // ─── Sea animals: blink ──────────────────────────────────────────────────────
-function blinkSeaAnimals(e) {
-    for (var t = e, i = [], n = Math.ceil(5 * Math.random()), a = 0; a < n; a++) {
-        var o = Math.floor(Math.random() * e.length);
-        i.push(t[o])
+function blinkSeaAnimals(eyeArray) {
+    var selectedEyes = [];
+    var blinkCount = Math.ceil(5 * Math.random());
+    for (var i = 0; i < blinkCount; i++) {
+        var randomIndex = Math.floor(Math.random() * eyeArray.length);
+        selectedEyes.push(eyeArray[randomIndex])
     }
-    for (a = 0; a < i.length; a++) {
-        $(i[a]).fadeTo(0, 1);
-        $(i[a]).stop().delay(300).animate({ opacity: 0 }, 0, function () { })
+    for (i = 0; i < selectedEyes.length; i++) {
+        $(selectedEyes[i]).fadeTo(0, 1);
+        $(selectedEyes[i]).stop().delay(300).animate({ opacity: 0 }, 0, function () { })
     }
 }
 
-function makeSeaAnimalsBlinking(e) {
+function makeSeaAnimalsBlinking(eyeArray) {
     clearInterval(blinkSeaAnimalsTimer);
-    blinkSeaAnimalsTimer = setInterval(function () { blinkSeaAnimals(e) }, 3000)
+    blinkSeaAnimalsTimer = setInterval(function () { blinkSeaAnimals(eyeArray) }, 3000)
 }
 
 // ─── Sea floor ───────────────────────────────────────────────────────────────
 function positionSeaFloorObjectsVertically() {
-    for (var e = 0; e < seaFloorFrontObjectArray.length; e++)
-        seaFloorFrontObjectArray[e].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[e].style.bottom = -1 * (seaFloorFrontObjectArray[e].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[e].style.bottom = "0px";
-    for (e = 0; e < seaFloorBackObjectArray.length; e++)
-        seaFloorBackObjectArray[e].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[e].style.bottom = -.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[e].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorBackObjectArray[e].style.bottom = "-70%"
+    for (var i = 0; i < seaFloorFrontObjectArray.length; i++)
+        seaFloorFrontObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorFrontObjectArray[i].style.bottom = -1 * (seaFloorFrontObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorFrontObjectArray[i].style.bottom = "0px";
+    for (i = 0; i < seaFloorBackObjectArray.length; i++)
+        seaFloorBackObjectArray[i].offsetHeight > sea1Div.offsetHeight ? seaFloorBackObjectArray[i].style.bottom = -.7 * containerDiv.offsetHeight - (seaFloorBackObjectArray[i].offsetHeight - sea1Div.offsetHeight) + "px" : seaFloorBackObjectArray[i].style.bottom = "-70%"
 }
 
 // ─── Experience: containers & text ───────────────────────────────────────────
 function positionChainBlockAndStringContainer() {
-    for (var e = 0; e < chainBlockAndStringContainerArray.length; e++) {
-        if (e === 0) canAnimateBossInformation = canAnimateRobotInformation;
-        if (e === 1) canAnimateBossInformation = canAnimateSquidInformation;
-        if (e === 2) canAnimateBossInformation = canAnimateAlienInformation;
-        chainBlockAndStringContainerArray[e].style.left = .5 * experienceTextContainerArray[e].offsetWidth - .5 * chainBlockAndStringContainerArray[e].offsetWidth + "px";
-        chainBlockAndStringContainerArray[e].style.bottom = canAnimateBossInformation ?
-            .8 * containerDiv.offsetHeight + experienceTextContainerArray[e].offsetHeight + "px" :
-            experienceTextContainerDistanceFromFloor + experienceTextContainerArray[e].offsetHeight + "px"
+    for (var i = 0; i < chainBlockAndStringContainerArray.length; i++) {
+        if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
+        if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
+        if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
+        chainBlockAndStringContainerArray[i].style.left = .5 * experienceTextContainerArray[i].offsetWidth - .5 * chainBlockAndStringContainerArray[i].offsetWidth + "px";
+        chainBlockAndStringContainerArray[i].style.bottom = canAnimateBossInformation ?
+            .8 * containerDiv.offsetHeight + experienceTextContainerArray[i].offsetHeight + "px" :
+            experienceTextContainerDistanceFromFloor + experienceTextContainerArray[i].offsetHeight + "px"
     }
 }
 
-function animateChainBlockAndStringContainer(e) {
-    $(chainBlockAndStringContainerArray[e]).stop().animate({
-        bottom: [experienceTextContainerDistanceFromFloor + experienceTextContainerArray[e].offsetHeight, "easeOutCubic"]
+function animateChainBlockAndStringContainer(index) {
+    $(chainBlockAndStringContainerArray[index]).stop().animate({
+        bottom: [experienceTextContainerDistanceFromFloor + experienceTextContainerArray[index].offsetHeight, "easeOutCubic"]
     }, 1000, function () { })
 }
 
 function positionExperienceTextContainer() {
-    for (var e = 0; e < experienceTextContainerArray.length; e++) {
-        if (e === 0) canAnimateBossInformation = canAnimateRobotInformation;
-        if (e === 1) canAnimateBossInformation = canAnimateSquidInformation;
-        if (e === 2) canAnimateBossInformation = canAnimateAlienInformation;
-        experienceTextContainerArray[e].style.bottom = canAnimateBossInformation ?
+    for (var i = 0; i < experienceTextContainerArray.length; i++) {
+        if (i === 0) canAnimateBossInformation = canAnimateRobotInformation;
+        if (i === 1) canAnimateBossInformation = canAnimateSquidInformation;
+        if (i === 2) canAnimateBossInformation = canAnimateAlienInformation;
+        experienceTextContainerArray[i].style.bottom = canAnimateBossInformation ?
             .8 * containerDiv.offsetHeight + "px" :
             experienceTextContainerDistanceFromFloor + "px"
     }
 }
 
-function animateExperienceTextContainer(e) {
-    $(experienceTextContainerArray[e]).stop().animate({
+function animateExperienceTextContainer(index) {
+    $(experienceTextContainerArray[index]).stop().animate({
         bottom: [experienceTextContainerDistanceFromFloor, "easeOutCubic"]
     }, 1000, function () { })
 }
@@ -169,9 +169,7 @@ function hidePiechartElements(frontDiv, textDivs) {
     for (var i = 0; i < textDivs.length; i++) {
         $(textDivs[i]).fadeTo(0, 0);
     }
-    if (!(browserName === "internet explorer" && browserVersion <= 8)) {
-        $(frontDiv).fadeTo(0, 0);
-    }
+    $(frontDiv).fadeTo(0, 0);
 }
 
 function positionExperience1Elements() {
@@ -207,8 +205,8 @@ function animateInformationAndEnemiesElements() {
         return;
 
     if (!isAleSwimming) {
-        for (var e = 0; e < landInformationContainerArray.length; e++) {
-            const container = landInformationContainerArray[e];
+        for (var i = 0; i < landInformationContainerArray.length; i++) {
+            const container = landInformationContainerArray[i];
             const containerLeft = container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
             const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
@@ -263,8 +261,8 @@ function animateInformationAndEnemiesElements() {
         }
     }
     if (isAleSwimming) {
-        for (e = 0; e < seaInformationContainerArray.length; e++) {
-            const container = seaInformationContainerArray[e];
+        for (i = 0; i < seaInformationContainerArray.length; i++) {
+            const container = seaInformationContainerArray[i];
             const containerLeft = sea1Div.offsetLeft + container.offsetLeft;
             const containerRight = containerLeft + container.offsetWidth;
             const viewportCenter = pageVerticalPosition + (containerDiv.offsetWidth * 0.5);
@@ -333,36 +331,35 @@ function changeRobotHands() {
             pageVerticalPosition + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
             clearInterval(animateRobotHandsTimer)
     } else {
-        for (var e = 0; e < robotHandChildrenLength; e++) {
-            if (e === changeRobotHandsCounter) setRobotHandsToOpaque(e);
-            else setRobotHandsToTransparent(e)
+        for (var i = 0; i < robotHandChildrenLength; i++) {
+            if (i === changeRobotHandsCounter) setRobotHandsToOpaque(i);
+            else setRobotHandsToTransparent(i)
         }
     }
     changeRobotHandsCounter += 1
 }
 
 function setRobotHandsToDefault() {
-    for (var e = 0; e < robotHandChildrenLength; e++) {
-        if (e === 0) setRobotHandsToOpaque(e);
-        else setRobotHandsToTransparent(e)
+    for (var i = 0; i < robotHandChildrenLength; i++) {
+        if (i === 0) setRobotHandsToOpaque(i);
+        else setRobotHandsToTransparent(i)
     }
 }
 
 function setElementOpacity(element, opacity) {
     if (element) {
         element.style.opacity = opacity;
-        element.style.filter = "alpha(opacity=" + (opacity * 100) + ")";
     }
 }
 
-function setRobotHandsToOpaque(e) {
-    setElementOpacity(robotHandLeftDiv.children[e], 1);
-    setElementOpacity(robotHandRightDiv.children[e], 1);
+function setRobotHandsToOpaque(index) {
+    setElementOpacity(robotHandLeftDiv.children[index], 1);
+    setElementOpacity(robotHandRightDiv.children[index], 1);
 }
 
-function setRobotHandsToTransparent(e) {
-    setElementOpacity(robotHandLeftDiv.children[e], 0);
-    setElementOpacity(robotHandRightDiv.children[e], 0);
+function setRobotHandsToTransparent(index) {
+    setElementOpacity(robotHandLeftDiv.children[index], 0);
+    setElementOpacity(robotHandRightDiv.children[index], 0);
 }
 
 // ─── Experience: squid ───────────────────────────────────────────────────────
@@ -407,20 +404,20 @@ function openAndCloseSquidHands() {
 }
 
 function openSquidHands() {
-    for (var e = 0; e < squidHandOpenArray.length; e++) {
-        setElementOpacity(squidHandOpenArray[e], 1);
+    for (var i = 0; i < squidHandOpenArray.length; i++) {
+        setElementOpacity(squidHandOpenArray[i], 1);
     }
-    for (e = 0; e < squidHandCloseArray.length; e++) {
-        setElementOpacity(squidHandCloseArray[e], 0);
+    for (i = 0; i < squidHandCloseArray.length; i++) {
+        setElementOpacity(squidHandCloseArray[i], 0);
     }
 }
 
 function closeSquidHands() {
-    for (var e = 0; e < squidHandOpenArray.length; e++) {
-        setElementOpacity(squidHandOpenArray[e], 0);
+    for (var i = 0; i < squidHandOpenArray.length; i++) {
+        setElementOpacity(squidHandOpenArray[i], 0);
     }
-    for (e = 0; e < squidHandCloseArray.length; e++) {
-        setElementOpacity(squidHandCloseArray[e], 1);
+    for (i = 0; i < squidHandCloseArray.length; i++) {
+        setElementOpacity(squidHandCloseArray[i], 1);
     }
 }
 
@@ -445,17 +442,9 @@ function rotateAlienHands() {
         pageVerticalPosition + .5 * containerDiv.offsetWidth > experience3ContainerDiv.offsetLeft + experience3ContainerDiv.offsetWidth;
     if (alienSteerAngle === 0 && isOutsideViewport) {
         clearInterval(animateAlienHandsTimer);
-        alienSteerDiv.style.webkitTransform = "rotate(0deg)";
-        alienSteerDiv.style.MozTransform = "rotate(0deg)";
-        alienSteerDiv.style.OTransform = "rotate(0deg)";
-        alienSteerDiv.style.msTransform = "rotate(0deg)";
-        alienSteerDiv.style.transform = "rotate(0deg)"
+        alienSteerDiv.style.transform = "rotate(0deg)";
     } else {
-        alienSteerDiv.style.webkitTransform = "rotate(" + alienSteerAngle + "deg)";
-        alienSteerDiv.style.MozTransform = "rotate(" + alienSteerAngle + "deg)";
-        alienSteerDiv.style.OTransform = "rotate(" + alienSteerAngle + "deg)";
-        alienSteerDiv.style.msTransform = "rotate(" + alienSteerAngle + "deg)";
-        alienSteerDiv.style.transform = "rotate(" + alienSteerAngle + "deg)"
+        alienSteerDiv.style.transform = "rotate(" + alienSteerAngle + "deg)";
     }
 }
 
@@ -470,13 +459,9 @@ function animateAlien() {
 
 // ─── Piecharts ───────────────────────────────────────────────────────────────
 function animatePiechartFront(frontDiv, callback) {
-    if (browserName === "internet explorer" && browserVersion <= 8) {
+    $(frontDiv).stop().animate({ opacity: 1 }, 500, function () {
         callback();
-    } else {
-        $(frontDiv).stop().animate({ opacity: 1 }, 500, function () {
-            callback();
-        });
-    }
+    });
 }
 
 function animatePiechartAolFront() { animatePiechartFront(piechartRobotFrontDiv, animatePiechartAolText); }

@@ -14,15 +14,15 @@ function shiftAleToSeaFloor() {
 function positionLayerHorizontalToTop() {
     if (isAleSwimming) {
         setShiftUpLayerHorizontalDistance();
-        for (var e = 0; e < layerHorizontalArray.length; e++) layerHorizontalArray[e].style.top = -shiftUpLayerHorizontalDistance + "px";
-        for (e = 0; e < layerVerticalArray.length; e++) layerVerticalArray[e].style.bottom = shiftUpLayerHorizontalDistance + "px"
+        for (var i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = -shiftUpLayerHorizontalDistance + "px";
+        for (i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = shiftUpLayerHorizontalDistance + "px"
     }
 }
 
 function positionLayerHorizontalToBottom() {
     if (!isAleSwimming) {
-        for (var e = 0; e < layerHorizontalArray.length; e++) layerHorizontalArray[e].style.top = "0px";
-        for (e = 0; e < layerVerticalArray.length; e++) layerVerticalArray[e].style.bottom = "0px"
+        for (var i = 0; i < layerHorizontalArray.length; i++) layerHorizontalArray[i].style.top = "0px";
+        for (i = 0; i < layerVerticalArray.length; i++) layerVerticalArray[i].style.bottom = "0px"
     }
 }
 
@@ -32,35 +32,35 @@ function checkAleJumpFallSwim() {
         if (isAleSwimming) {
             if (isAleBelowSeaLevel) aleSwimUp()
         } else {
-            for (var e = 0; e < elevationArray.length; e++) {
-                aleJumpUp(e);
-                aleFall(e)
+            for (var i = 0; i < elevationArray.length; i++) {
+                aleJumpUp(i);
+                aleFall(i)
             }
         }
     }
 }
 
-function aleJumpUp(e) {
+function aleJumpUp(elevationIndex) {
     if (
-        (previousPageVerticalPosition <= elevationArray[e].offsetLeft - aleRightEdge &&
-            pageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge) ||
-        (previousPageVerticalPosition >= elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge &&
-            pageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge)
+        (previousPageVerticalPosition <= elevationArray[elevationIndex].offsetLeft - aleRightEdge &&
+            pageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge) ||
+        (previousPageVerticalPosition >= elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge &&
+            pageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge)
     ) {
         positionAleAtGroundLevel();
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + 300, "easeOutCubic"]
         }, 300, function () {
-            aleJumpDown(e);
+            aleJumpDown(elevationIndex);
         });
         setAleJumpUpFrame();
     }
 }
 
-function aleJumpDown(e) {
-    if (pageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge && pageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge) {
+function aleJumpDown(elevationIndex) {
+    if (pageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge && pageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge) {
         $(aleContainerDiv).stop().animate({
-            bottom: [containerDiv.offsetHeight - elevationArray[e].offsetTop, "easeInCubic"]
+            bottom: [containerDiv.offsetHeight - elevationArray[elevationIndex].offsetTop, "easeInCubic"]
         }, 300, function () {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
@@ -69,10 +69,10 @@ function aleJumpDown(e) {
     }
 }
 
-function aleFall(e) {
+function aleFall(elevationIndex) {
     const aleIsLeavingElevation =
-        (previousPageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge && pageVerticalPosition >= elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge) ||
-        (previousPageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge && pageVerticalPosition <= elevationArray[e].offsetLeft - aleRightEdge);
+        (previousPageVerticalPosition < elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge && pageVerticalPosition >= elevationArray[elevationIndex].offsetLeft + elevationArray[elevationIndex].offsetWidth - aleLeftEdge) ||
+        (previousPageVerticalPosition > elevationArray[elevationIndex].offsetLeft - aleRightEdge && pageVerticalPosition <= elevationArray[elevationIndex].offsetLeft - aleRightEdge);
     if (aleIsLeavingElevation) {
         isAleFalling = true;
         setAleJumpDownAndFallFrame();
@@ -107,21 +107,21 @@ function disableIsAleJumpingAndFalling() {
 function aleSwimUp() {
     getSwimUpHeight();
     if (swimUpHeight > 0) {
-        var e = seaFloorDiv.offsetHeight + swimUpHeight + "px",
-            t = 3 * swimUpHeight,
-            i = 6 * swimUpHeight;
+        var targetBottom = seaFloorDiv.offsetHeight + swimUpHeight + "px",
+            swimUpDuration = 3 * swimUpHeight,
+            swimDownDuration = 6 * swimUpHeight;
         $(aleContainerDiv).stop().animate({
-            bottom: e
-        }, t, function () {
-            aleSwimDown(i)
+            bottom: targetBottom
+        }, swimUpDuration, function () {
+            aleSwimDown(swimDownDuration)
         })
     }
 }
 
-function aleSwimDown(e) {
+function aleSwimDown(duration) {
     $(aleContainerDiv).stop().animate({
         bottom: seaFloorDiv.offsetHeight + "px"
-    }, e, function () {
+    }, duration, function () {
         setAleStaticFrame()
     });
     if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - minimumVerticalDistanceToTriggerAleSwimDownFrame) {
@@ -219,9 +219,9 @@ function hideAleEyesClose() {
 
 function getSwimUpHeight() {
     swimUpHeight = Math.abs(deltaPageVerticalPosition);
-    var e = sea1Div.offsetHeight - aleDiv.offsetHeight;
-    if (e < swimUpHeight) {
-        swimUpHeight = e;
+    var maxSwimHeight = sea1Div.offsetHeight - aleDiv.offsetHeight;
+    if (maxSwimHeight < swimUpHeight) {
+        swimUpHeight = maxSwimHeight;
     }
 }
 
@@ -289,9 +289,9 @@ function positionAleAtSeaFloorLevel() {
 }
 
 function checkElevationNumberBelowAle() {
-    for (var e = 0; e < elevationArray.length; e++) {
-        if (pageVerticalPosition < elevationArray[e].offsetLeft + elevationArray[e].offsetWidth - aleLeftEdge && pageVerticalPosition > elevationArray[e].offsetLeft - aleRightEdge) {
-            elevationNumberBelowAle = e;
+    for (var i = 0; i < elevationArray.length; i++) {
+        if (pageVerticalPosition < elevationArray[i].offsetLeft + elevationArray[i].offsetWidth - aleLeftEdge && pageVerticalPosition > elevationArray[i].offsetLeft - aleRightEdge) {
+            elevationNumberBelowAle = i;
             break
         }
         elevationNumberBelowAle = null

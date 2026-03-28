@@ -47,18 +47,18 @@ function positionContactConfirmationContainer() {
     var leftPosition = (layersMovement === "not moving 1" || layersMovement === "not moving 2") ?
         aleContainerDiv.offsetLeft : aleMaxHorizontalDistance;
 
-    for (var e = 0; e < contactConfirmationContainerArray.length; e++) {
-        contactConfirmationContainerArray[e].style.left = leftPosition + "px";
-        contactConfirmationContainerArray[e].style.top = (.8 * containerDiv.offsetHeight - 370) + "px";
+    for (var i = 0; i < contactConfirmationContainerArray.length; i++) {
+        contactConfirmationContainerArray[i].style.left = leftPosition + "px";
+        contactConfirmationContainerArray[i].style.top = (.8 * containerDiv.offsetHeight - 370) + "px";
     }
 }
 
 function toggleContactConfirmationContainer(isVisible) {
     var opacity = isVisible ? 1 : 0;
-    for (var e = 0; e < contactConfirmationContainerArray.length; e++) {
-        var containerChildren = contactConfirmationContainerArray[e].children[0].children;
-        for (var i = 0; i < containerChildren.length; i++) {
-            $(containerChildren[i]).fadeTo(0, opacity);
+    for (var i = 0; i < contactConfirmationContainerArray.length; i++) {
+        var containerChildren = contactConfirmationContainerArray[i].children[0].children;
+        for (var j = 0; j < containerChildren.length; j++) {
+            $(containerChildren[j]).fadeTo(0, opacity);
         }
     }
     isContactConfirmationContainerVisible = isVisible;
@@ -70,8 +70,8 @@ function hideContactConfirmationContainer() {
     }
 }
 
-function showContactConfirmationContainer(e) {
-    var containerChildren = contactConfirmationContainerArray[e].children[0].children;
+function showContactConfirmationContainer(index) {
+    var containerChildren = contactConfirmationContainerArray[index].children[0].children;
     for (var i = 0; i < containerChildren.length; i++) {
         $(containerChildren[i]).fadeTo(0, 1);
     }
@@ -98,25 +98,23 @@ function clearAllInputField() {
 
 // ─── Fireworks ───────────────────────────────────────────────────────────────
 function createFireworkSvg() {
-    if (!(browserName === "internet explorer" && browserVersion <= 8))
-        for (var e = 0; e < fireworkArray.length; e++) {
-            var t = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            t.setAttribute("version", "1.2");
-            t.setAttribute("baseProfile", "tiny");
-            t.setAttribute("width", "100%");
-            t.setAttribute("height", "100%");
-            fireworkSvgArray.push(t)
-        }
+    for (var i = 0; i < fireworkArray.length; i++) {
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("version", "1.2");
+        svg.setAttribute("baseProfile", "tiny");
+        svg.setAttribute("width", "100%");
+        svg.setAttribute("height", "100%");
+        fireworkSvgArray.push(svg)
+    }
 }
 
 function appendFireworkSvgToContainer() {
-    if (!(browserName === "internet explorer" && browserVersion <= 8))
-        for (var e = 0; e < fireworkArray.length; e++)
-            fireworkArray[e].appendChild(fireworkSvgArray[e])
+    for (var i = 0; i < fireworkArray.length; i++)
+        fireworkArray[i].appendChild(fireworkSvgArray[i])
 }
 
 function drawManyFireworks() {
-    if (!(browserName === "internet explorer" && browserVersion <= 8) && canDrawManyFireworks) {
+    if (canDrawManyFireworks) {
         clearInterval(drawFireworkTimer);
         drawFireworkTimer = setInterval(function () { drawFirework() }, 1000);
         canDrawManyFireworks = false
@@ -136,13 +134,13 @@ function drawFirework() {
 function drawOneLayerOfFirework() {
     if (fireworkLayerNumber < fireworkRowNumber) {
         fireworkLayerNumber += 1;
-        for (var e = 0; e < fireworkColumnNumber; e++) {
-            var t = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            t.setAttribute("cx", String(fireworkCenterX + Math.cos(e * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
-            t.setAttribute("cy", String(fireworkCenterY + Math.sin(e * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
-            t.setAttribute("r", fireworkDotRadius);
-            t.setAttribute("fill", "#ffffff");
-            fireworkSvgArray[drawFireworkCounter].appendChild(t)
+        for (var i = 0; i < fireworkColumnNumber; i++) {
+            var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", String(fireworkCenterX + Math.cos(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
+            circle.setAttribute("cy", String(fireworkCenterY + Math.sin(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)));
+            circle.setAttribute("r", fireworkDotRadius);
+            circle.setAttribute("fill", "#ffffff");
+            fireworkSvgArray[drawFireworkCounter].appendChild(circle)
         }
     } else {
         fireworkLayerNumber = 0;
@@ -152,14 +150,14 @@ function drawOneLayerOfFirework() {
     }
 }
 
-function makeFireworkDisappear(e) {
-    $(fireworkArray[e]).fadeTo(1000, 0)
+function makeFireworkDisappear(index) {
+    $(fireworkArray[index]).fadeTo(1000, 0)
 }
 
 function resetFireworkSvg() {
-    for (var e = 0; e < fireworkArray.length; e++) {
-        $(fireworkSvgArray[e]).empty();
-        $(fireworkArray[e]).fadeTo(0, 1)
+    for (var i = 0; i < fireworkArray.length; i++) {
+        $(fireworkSvgArray[i]).empty();
+        $(fireworkArray[i]).fadeTo(0, 1)
     }
 }
 
