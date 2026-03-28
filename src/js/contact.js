@@ -126,8 +126,8 @@ function drawFirework() {
         drawFireworkCounter = 0;
         clearInterval(drawFireworkTimer)
     } else {
-        clearInterval(drawOneLayerOfFireworkTimer);
-        drawOneLayerOfFireworkTimer = setInterval(() => { drawOneLayerOfFirework() }, 40)
+        clearRafInterval(drawOneLayerOfFireworkTimer);
+        drawOneLayerOfFireworkTimer = setRafInterval(() => { drawOneLayerOfFirework() }, 40)
     }
 }
 
@@ -144,7 +144,7 @@ function drawOneLayerOfFirework() {
         }
     } else {
         fireworkLayerNumber = 0;
-        clearInterval(drawOneLayerOfFireworkTimer);
+        clearRafInterval(drawOneLayerOfFireworkTimer);
         makeFireworkDisappear(drawFireworkCounter);
         drawFireworkCounter += 1
     }

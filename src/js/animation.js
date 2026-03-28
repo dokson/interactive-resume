@@ -1,3 +1,29 @@
+// ─── rAF-based interval (syncs with display refresh, pauses in background) ──
+var rafIntervals = {};
+var rafIntervalNextId = 0;
+
+function setRafInterval(callback, interval) {
+    var id = ++rafIntervalNextId;
+    var lastTime = performance.now();
+    function loop(now) {
+        if (!rafIntervals[id]) return;
+        rafIntervals[id] = requestAnimationFrame(loop);
+        if (now - lastTime >= interval) {
+            lastTime = now;
+            callback();
+        }
+    }
+    rafIntervals[id] = requestAnimationFrame(loop);
+    return id;
+}
+
+function clearRafInterval(id) {
+    if (rafIntervals[id]) {
+        cancelAnimationFrame(rafIntervals[id]);
+        delete rafIntervals[id];
+    }
+}
+
 // ─── About: plants ───────────────────────────────────────────────────────────
 function animatePlants() {
     for (let i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(300 * i).animate({
@@ -316,8 +342,8 @@ function animateRobotHands() {
 }
 
 function spinRobotHands() {
-    clearInterval(spinRobotHandsTimer);
-    spinRobotHandsTimer = setInterval(() => {
+    clearRafInterval(spinRobotHandsTimer);
+    spinRobotHandsTimer = setRafInterval(() => {
         changeRobotHands()
     }, 100)
 }
@@ -325,7 +351,7 @@ function spinRobotHands() {
 function changeRobotHands() {
     if (changeRobotHandsCounter >= robotHandChildrenLength) {
         changeRobotHandsCounter = 0;
-        clearInterval(spinRobotHandsTimer);
+        clearRafInterval(spinRobotHandsTimer);
         setRobotHandsToDefault();
         if (pageVerticalPosition + .5 * containerDiv.offsetWidth < experience1ContainerDiv.offsetLeft ||
             pageVerticalPosition + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
@@ -381,8 +407,8 @@ function animateSquidHands() {
 }
 
 function moveSquidHands() {
-    clearInterval(moveSquidHandsTimer);
-    moveSquidHandsTimer = setInterval(() => {
+    clearRafInterval(moveSquidHandsTimer);
+    moveSquidHandsTimer = setRafInterval(() => {
         openAndCloseSquidHands()
     }, 200)
 }
@@ -390,7 +416,7 @@ function moveSquidHands() {
 function openAndCloseSquidHands() {
     if (openAndCloseSquidHandsCounter >= 8) {
         openAndCloseSquidHandsCounter = 0;
-        clearInterval(moveSquidHandsTimer);
+        clearRafInterval(moveSquidHandsTimer);
         openSquidHands();
         if (pageVerticalPosition + .5 * containerDiv.offsetWidth < experience2ContainerDiv.offsetLeft ||
             pageVerticalPosition + .5 * containerDiv.offsetWidth > experience2ContainerDiv.offsetLeft + experience2ContainerDiv.offsetWidth)
@@ -423,8 +449,8 @@ function closeSquidHands() {
 
 // ─── Experience: alien ───────────────────────────────────────────────────────
 function animateAlienHand() {
-    clearInterval(animateAlienHandsTimer);
-    animateAlienHandsTimer = setInterval(() => {
+    clearRafInterval(animateAlienHandsTimer);
+    animateAlienHandsTimer = setRafInterval(() => {
         rotateAlienHands()
     }, 100)
 }
@@ -441,7 +467,7 @@ function rotateAlienHands() {
         pageVerticalPosition + .5 * containerDiv.offsetWidth < experience3ContainerDiv.offsetLeft ||
         pageVerticalPosition + .5 * containerDiv.offsetWidth > experience3ContainerDiv.offsetLeft + experience3ContainerDiv.offsetWidth;
     if (alienSteerAngle === 0 && isOutsideViewport) {
-        clearInterval(animateAlienHandsTimer);
+        clearRafInterval(animateAlienHandsTimer);
         alienSteerDiv.style.transform = "rotate(0deg)";
     } else {
         alienSteerDiv.style.transform = "rotate(" + alienSteerAngle + "deg)";
