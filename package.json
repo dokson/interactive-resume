@@ -18,7 +18,9 @@
         "deploy:generate-manifest": "node src/build/generate-manifest.js",
         "deploy:generate-sitemap": "node src/build/generate-sitemap.js",
         "deploy:copy-libs": "node src/build/copy-libs.js",
-        "start": "npm run deploy"
+        "start": "npm run deploy",
+        "test": "npx playwright test",
+        "test:update": "npx playwright test --update-snapshots"
     },
     "dependencies": {
         "@emailjs/browser": "^4.4.1",
@@ -28,6 +30,7 @@
         "@playwright/test": "^1.58.2",
         "clean-css": "^5.3.3",
         "html-minifier-terser": "^7.2.0",
+        "serve": "^14.2.6",
         "uglify-js": "^3.19.3"
     },
     "config": {

@@ -1,3 +1,6 @@
+var preloaderDiv = document.getElementById("preloader");
+preloaderDiv.setAttribute("class", "transparent");
+
 function hidePreloader() {
     preloaderDiv.setAttribute("class", "displaynone")
 }

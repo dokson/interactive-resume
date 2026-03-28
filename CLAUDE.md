@@ -7,7 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm install          # install dependencies (required before first build)
 npm run deploy       # full build pipeline: inject-seo → minify → generate-manifest → copy-libs
+npm test             # run visual regression tests (compare screenshots against baselines)
+npm run test:update  # update baseline screenshots after intentional visual changes
 ```
+
+**IMPORTANT**: After any JS/CSS/HTML change, always run `npm run deploy && npm test` before committing. If a visual regression test fails unexpectedly, investigate the diff in `test-results/` before updating baselines. Only run `npm run test:update` when the visual change is intentional.
 
 Individual build steps can be run in isolation:
 
