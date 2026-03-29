@@ -13,7 +13,7 @@ function shiftUpPreloader() {
     turnOffPreloaderDotsAnimation();
     $(preloaderDiv).stop().animate({
         bottom: "100%"
-    }, 1000, function () {
+    }, 1000, () => {
         hidePreloader()
     })
 }

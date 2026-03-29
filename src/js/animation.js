@@ -77,9 +77,9 @@ function positionSeaAnimals(animals, animalsPerRow, colSpacing, rowSpacing) {
 }
 
 function animateSeaAnimals(animalArray) {
-    if (animalArray == fishArray) isFishStillAnimating = true;
-    if (animalArray == crabArray) isCrabStillAnimating = true;
-    if (animalArray == turtleArray) isTurtleStillAnimating = true;
+    if (animalArray === fishArray) isFishStillAnimating = true;
+    if (animalArray === crabArray) isCrabStillAnimating = true;
+    if (animalArray === turtleArray) isTurtleStillAnimating = true;
     for (let i = 0; i < animalArray.length; i++) $(animalArray[i]).stop().delay(100 * i).animate({
         left: [animalArray[i].offsetLeft - seaAnimalSwimDistance, "easeOutCubic"]
     }, 600, () => {
@@ -88,15 +88,15 @@ function animateSeaAnimals(animalArray) {
 }
 
 function disableIsSeaAnimalStillAnimating(animalArray) {
-    if (animalArray == fishArray) {
+    if (animalArray === fishArray) {
         if (fishAnimateNumber >= animalArray.length - 1) { isFishStillAnimating = false; fishAnimateNumber = 0 }
         else fishAnimateNumber += 1
     }
-    if (animalArray == crabArray) {
+    if (animalArray === crabArray) {
         if (crabAnimateNumber >= animalArray.length - 1) { isCrabStillAnimating = false; crabAnimateNumber = 0 }
         else crabAnimateNumber += 1
     }
-    if (animalArray == turtleArray) {
+    if (animalArray === turtleArray) {
         if (turtleAnimateNumber >= animalArray.length - 1) { isTurtleStillAnimating = false; turtleAnimateNumber = 0 }
         else turtleAnimateNumber += 1
     }
@@ -237,19 +237,19 @@ function animateInformationAndEnemiesElements() {
             const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
 
             if (wasOutsideViewport && isNowInsideViewport) {
-                if (container == about1ContainerDiv && flags.canAnimatePlant) {
+                if (container === about1ContainerDiv && flags.canAnimatePlant) {
                     animatePlants();
                     flags.canAnimatePlant = false;
                 }
-                if (container == about2ContainerDiv && flags.canAnimateBuilding) {
+                if (container === about2ContainerDiv && flags.canAnimateBuilding) {
                     animateBuildings();
                     flags.canAnimateBuilding = false;
                 }
-                if (container == about3ContainerDiv && flags.canAnimateBuilding2) {
+                if (container === about3ContainerDiv && flags.canAnimateBuilding2) {
                     animateBuildings2();
                     flags.canAnimateBuilding2 = false;
                 }
-                if (container == experience1ContainerDiv) {
+                if (container === experience1ContainerDiv) {
                     if (!flags.canAnimateRobot) {
                         animateRobotHands();
                     } else {
@@ -259,7 +259,7 @@ function animateInformationAndEnemiesElements() {
                         flags.canAnimateRobot = false;
                     }
                 }
-                if (container == experience2ContainerDiv) {
+                if (container === experience2ContainerDiv) {
                     if (!flags.canAnimateSquid) {
                         animateSquidHands();
                     } else {
@@ -269,7 +269,7 @@ function animateInformationAndEnemiesElements() {
                         flags.canAnimateSquid = false;
                     }
                 }
-                if (container == experience3ContainerDiv) {
+                if (container === experience3ContainerDiv) {
                     if (!flags.canAnimateAlien) {
                         animateAlienHand();
                     } else {
@@ -293,21 +293,21 @@ function animateInformationAndEnemiesElements() {
             const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
 
             if (wasOutsideViewport && isNowInsideViewport) {
-                if (container == skill1ContainerDiv) {
+                if (container === skill1ContainerDiv) {
                     makeSeaAnimalsBlinking(fishEyeArray);
                     if (flags.canAnimateFish) {
                         animateSeaAnimals(fishArray);
                         flags.canAnimateFish = false;
                     }
                 }
-                if (container == skill2ContainerDiv) {
+                if (container === skill2ContainerDiv) {
                     makeSeaAnimalsBlinking(crabEyeArray);
                     if (flags.canAnimateCrab) {
                         animateSeaAnimals(crabArray);
                         flags.canAnimateCrab = false;
                     }
                 }
-                if (container == skill3ContainerDiv) {
+                if (container === skill3ContainerDiv) {
                     makeSeaAnimalsBlinking(turtleEyeArray);
                     if (flags.canAnimateTurtle) {
                         animateSeaAnimals(turtleArray);
@@ -322,7 +322,7 @@ function animateInformationAndEnemiesElements() {
 // ─── Experience: robot ───────────────────────────────────────────────────────
 function animateRobot() {
     $(robotDiv).stop().animate({
-        left: "420px"
+        left: "420px" // sprite landing position inside experience-1 container
     }, 1000, () => {
         animatePiechartAolFront();
         animateRobotHands()
@@ -387,7 +387,7 @@ function setRobotHandsToTransparent(index) {
 // ─── Experience: squid ───────────────────────────────────────────────────────
 function animateSquid() {
     $(squidDiv).stop().animate({
-        left: "430px"
+        left: "430px" // sprite landing position inside experience-2 container
     }, 1000, () => {
         animatePiechartIncognitoFront();
         animateSquidHands()
@@ -464,7 +464,7 @@ function rotateAlienHands() {
 
 function animateAlien() {
     $(alienDiv).stop().animate({
-        left: "450px"
+        left: "450px" // sprite landing position inside experience-3 container
     }, 300, () => {
         animatePiechartFoxnewsFront();
         animateAlienHand()

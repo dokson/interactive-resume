@@ -100,7 +100,8 @@ function setAleStaticFrame() {
 }
 
 function disableIsAleJumpingAndFalling() {
-    ale.isFalling = ale.isJumping = false
+    ale.isFalling = false;
+    ale.isJumping = false
 }
 
 // ─── Ale: swim ───────────────────────────────────────────────────────────────
@@ -229,11 +230,11 @@ function getSwimUpHeight() {
 function orientAle() {
     if (scrollState.delta > 0) {
         aleFramesDiv.style.top = "0px";
-        aleEyesCloseDiv.style.left = "82px"
+        aleEyesCloseDiv.style.left = "82px" // eyes-close overlay offset when facing right
     }
     if (scrollState.delta < 0) {
         aleFramesDiv.style.top = "-200px";
-        aleEyesCloseDiv.style.left = "68px"
+        aleEyesCloseDiv.style.left = "68px" // eyes-close overlay offset when facing left
     }
 }
 
@@ -254,7 +255,7 @@ function clearHappyAleTimer() {
 }
 
 function aleHandsUp() {
-    aleFramesDiv.style.left = "-1600px";
+    aleFramesDiv.style.left = "-1600px"; // hands-up frame position in spritesheet (frame 8 × 200px)
     setTimeout(() => { setAleStaticFrame() }, 1000)
 }
 

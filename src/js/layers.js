@@ -73,7 +73,8 @@ function shiftUpHorizontalLayersAfterEverythingLoaded() {
 
 function finishShiftUpHorizontalLayersAfterEverythingLoaded() {
     if (flags.canFinishShiftUp) {
-        flags.preloadShiftUpDone = !(flags.canFinishShiftUp = false);
+        flags.canFinishShiftUp = false;
+        flags.preloadShiftUpDone = true;
         makePageScrollable();
         shiftDownAleContainer();
         animateScrollOrSwipeTextContainer()
@@ -109,10 +110,8 @@ function setPageHeight() {
 }
 
 function setLayerSpeed() {
-    for (; layerHorizontalSpeedArray.length > 0;)
-        layerHorizontalSpeedArray.pop();
-    for (; layerVerticalSpeedArray.length > 0;)
-        layerVerticalSpeedArray.pop();
+    layerHorizontalSpeedArray.length = 0;
+    layerVerticalSpeedArray.length = 0;
     for (let i = 0; i < layerHorizontalArray.length; i++) {
         const speed = (layerHorizontalArray[i].offsetWidth - containerDiv.offsetWidth) / (layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth);
         layerHorizontalSpeedArray.push(speed)
@@ -376,7 +375,7 @@ function positionRocketAndAleContainerHorizontally() {
 
     const horizontalOffset = scrollState.position * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
 
-    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332;
+    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332; // max rightward offset for Ale during vertical scroll
 
     let alePosition = (containerDiv.offsetWidth * 0.5) + horizontalOffset;
 
@@ -384,7 +383,7 @@ function positionRocketAndAleContainerHorizontally() {
         alePosition = ale.maxHorizontalDistance;
     }
 
-    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + 170;
+    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + 170; // max rightward offset for rocket during vertical scroll
     let rocketPosition = (containerDiv.offsetWidth - rocketDiv.offsetWidth) * 0.5 + horizontalOffset;
 
     if (rocketMaxPosition <= rocketPosition) {
