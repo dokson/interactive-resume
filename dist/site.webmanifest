@@ -32,7 +32,7 @@
     "background_color": "#ffffff",
     "display": "standalone",
     "orientation": "portrait-primary",
-    "start_url": "interactive-resume/",
-    "scope": "interactive-resume/",
+    "start_url": "/",
+    "scope": "/",
     "lang": "en-US"
 }
