@@ -27,8 +27,8 @@ const manifest = {
     background_color: packageJson.config.manifest.backgroundColor,
     display: packageJson.config.manifest.display,
     orientation: packageJson.config.manifest.orientation,
-    start_url: packageJson.name + '/',
-    scope: packageJson.name + '/',
+    start_url: '/',
+    scope: '/',
     lang: packageJson.config.manifest.lang,
     categories: packageJson.config.manifest.keywords
 };
