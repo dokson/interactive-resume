@@ -101,6 +101,20 @@
                     "Python",
                     "TypeScript"
                 ],
+                "knowsLanguage": [
+                    "English",
+                    "Italian",
+                    "Russian"
+                ],
+                "hasOccupation": {
+                    "@type": "Occupation",
+                    "name": "Forward Deployed Engineer",
+                    "occupationLocation": {
+                        "@type": "City",
+                        "name": "Milan"
+                    },
+                    "skills": "Palantir AIP, Palantir Foundry, AI Ontology Design, Mission Engineering, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, Multi-Agent Systems, MLOps, LLMOps, Cloud Data Platforms (GCP, AWS, Azure)"
+                },
                 "hasCredential": [
                     {
                         "@type": "EducationalOccupationalCredential",
@@ -191,24 +205,6 @@
             "publisher": {
                 "@id": "https://www.colace.me/#person"
             }
-        },
-        {
-            "@type": "BreadcrumbList",
-            "@id": "https://www.colace.me/#breadcrumb",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "Home",
-                    "item": "https://www.colace.me/"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "Alessandro Colace — Forward Deployed Engineer",
-                    "item": "https://www.colace.me/#person"
-                }
-            ]
         },
         {
             "@type": "FAQPage",

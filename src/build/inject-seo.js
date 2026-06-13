@@ -17,13 +17,21 @@ async function injectJsonLd() {
             fs.readFile(seoMetaPath, 'utf8'),
         ]);
 
+        let parsedSeoMeta;
         try {
-            JSON.parse(seoMeta)
+            parsedSeoMeta = JSON.parse(seoMeta);
         } catch (jsonError) {
             throw new Error(`Invalid JSON-LD in ${seoMetaPath}: ${jsonError.message}`);
         }
 
-        const indentedSeoMeta = JSON.stringify(JSON.parse(seoMeta), null, 4)
+        // Stamp the ProfilePage with the build date (freshness signal for AI search / GEO).
+        const buildDate = new Date().toISOString().split('T')[0];
+        const profilePage = (parsedSeoMeta['@graph'] || []).find(node => node['@type'] === 'ProfilePage');
+        if (profilePage) {
+            profilePage.dateModified = buildDate;
+        }
+
+        const indentedSeoMeta = JSON.stringify(parsedSeoMeta, null, 4)
             .split('\n')
             .map(line => `    ${line}`)
             .join('\n');

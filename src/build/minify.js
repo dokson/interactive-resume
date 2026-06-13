@@ -79,6 +79,9 @@ const htmlMinifyOptions = {
     useShortDoctype: true
 };
 
+// Build date stamped into __BUILD_DATE__ placeholders (freshness signal for AI search / GEO)
+const buildDate = new Date().toISOString().split('T')[0];
+
 (async () => {
     for (const { input, output } of htmlFiles) {
         if (!fs.existsSync(input)) {
@@ -86,7 +89,7 @@ const htmlMinifyOptions = {
             continue;
         }
         try {
-            const source = fs.readFileSync(input, 'utf8');
+            const source = fs.readFileSync(input, 'utf8').replaceAll('__BUILD_DATE__', buildDate);
             const minified = await minifyHTML(source, htmlMinifyOptions);
             fs.writeFileSync(output, minified, 'utf8');
             const saved = (((source.length - minified.length) / source.length) * 100).toFixed(1);
