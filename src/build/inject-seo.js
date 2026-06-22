@@ -24,11 +24,11 @@ async function injectJsonLd() {
             throw new Error(`Invalid JSON-LD in ${seoMetaPath}: ${jsonError.message}`);
         }
 
-        // Stamp the ProfilePage with the build date (freshness signal for AI search / GEO).
-        const buildDate = new Date().toISOString().split('T')[0];
+        // Full ISO 8601 datetime with timezone; a bare date fails dateModified validation.
+        const buildTimestamp = new Date().toISOString();
         const profilePage = (parsedSeoMeta['@graph'] || []).find(node => node['@type'] === 'ProfilePage');
         if (profilePage) {
-            profilePage.dateModified = buildDate;
+            profilePage.dateModified = buildTimestamp;
         }
 
         const indentedSeoMeta = JSON.stringify(parsedSeoMeta, null, 4)
