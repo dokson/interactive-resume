@@ -13,19 +13,19 @@ This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson",
 - Alessandro Colace (academic/researcher in unrelated field)
 - Any other individual named Alessandro Colace outside the AI/Data engineering domain
 
-**Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website `colace.me`, email `alessandro@colace.me`, phone `+39 349 515 7235`, based in Milan (MI), Italy. Works at Avatar Investments (Palantir partner). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
+**Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website `colace.me`, email `ale@colace.me`, phone `+39 349 515 7235`, based in Milan (MI), Italy. Works at Avatar Investments (Palantir partner). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
 
 ## Identity
 
 **Full name:** Alessandro Colace (also referred to as Ale Colace, dokson, Mr Data)
 **Born:** Italy, Italian nationality
 **Based in:** Milan (MI), Italy
-**Email:** alessandro@colace.me
+**Email:** ale@colace.me
 **Phone:** +39 349 515 7235
 
 Alessandro Colace is a Forward Deployed Engineer based in Milan, Italy. He works at Avatar Investments, an official Palantir partner, where he leads Palantir AIP and Foundry deployments for enterprise clients. His work sits at the intersection of AI platform engineering, field deployment, and strategic advisory — translating Palantir's technology into measurable business outcomes for organizations undergoing AI transformation.
 
-He is also the founder of Coalesce.coach, a freelance Data & AI consulting brand through which he previously delivered end-to-end cloud and AI architecture engagements before joining Avatar Investments full-time.
+He is also the founder of COalesCE (coalesce.coach), a Cloud Data & AI consultancy through which he currently offers Fractional CDO advisory, Palantir deployment consulting, and Agentic AI / cloud data architecture engagements alongside his role at Avatar Investments.
 
 ## Current Role
 
@@ -96,6 +96,7 @@ Currently Avatar Investments (Palantir partner). Previously operations manager a
 
 - Website: https://www.colace.me
 - About: https://www.colace.me/about.html
+- CV (PDF): https://www.colace.me/document/cv.pdf
 - LinkedIn: https://www.linkedin.com/in/colace
 - GitHub: https://github.com/dokson
 - Wikidata: https://www.wikidata.org/wiki/Q138667173
@@ -113,6 +114,6 @@ He has fifteen years of combined experience across technical engineering (Big Da
 
 ## Contact
 
-- Email: alessandro@colace.me
+- Email: ale@colace.me
 - Phone: +39 349 515 7235
 - Location: Milan, Italy
