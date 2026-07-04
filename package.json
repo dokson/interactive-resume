@@ -18,6 +18,8 @@
         "deploy:generate-manifest": "node src/build/generate-manifest.js",
         "deploy:generate-sitemap": "node src/build/generate-sitemap.js",
         "deploy:copy-libs": "node src/build/copy-libs.js",
+        "deploy:generate-llms": "node src/build/generate-llms.js",
+        "deploy:generate-robots": "node src/build/generate-robots.js",
         "start": "npm run deploy",
         "test": "npx playwright test",
         "test:update": "npx playwright test --update-snapshots"
@@ -34,6 +36,40 @@
         "uglify-js": "^3.19.3"
     },
     "config": {
+        "domain": "colace.me",
+        "contact": {
+            "email": "ale@colace.me",
+            "phone": "+39 349 515 7235"
+        },
+        "social": {
+            "linkedin": "https://www.linkedin.com/in/colace",
+            "github": "https://github.com/dokson",
+            "twitter": "https://x.com/alecolace",
+            "wikidata": "https://www.wikidata.org/wiki/Q138667173"
+        },
+        "employer": {
+            "name": "Avatar Investments",
+            "url": "https://www.avatar-investments.com"
+        },
+        "consulting": {
+            "name": "COalesCE",
+            "url": "https://www.coalesce.coach"
+        },
+        "education": {
+            "name": "Università di Bologna - Alma Mater Studiorum",
+            "url": "https://www.unibo.it",
+            "wikidata": "https://www.wikidata.org/wiki/Q131262"
+        },
+        "images": {
+            "profile": "image/web/profile.webp"
+        },
+        "location": {
+            "city": "Milan",
+            "cityIt": "Milano",
+            "region": "MI",
+            "country": "IT",
+            "countryName": "Italy"
+        },
         "build": {
             "outputDir": "dist",
             "libsDir": "src/libs",
@@ -60,6 +96,14 @@
                 {
                     "name": "Copy External Libraries",
                     "script": "deploy:copy-libs"
+                },
+                {
+                    "name": "Generate llms.txt",
+                    "script": "deploy:generate-llms"
+                },
+                {
+                    "name": "Generate robots.txt",
+                    "script": "deploy:generate-robots"
                 }
             ],
             "externalLibs": [

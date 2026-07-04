@@ -34,6 +34,8 @@ jobs:
           mkdir -p deploy
           mv dist/*.html .
           mv dist/sitemap.xml sitemap.xml
+          mv dist/robots.txt robots.txt
+          mv dist/llms.txt llms.txt
           cp -r dist document font image *.html favicon.ico robots.txt sitemap.xml llms.txt deploy/
           echo "Deployment files prepared:"
           du -sh deploy/*

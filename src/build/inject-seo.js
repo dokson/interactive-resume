@@ -1,6 +1,9 @@
 const fs = require('fs').promises;
 const path = require('path');
 
+const packageJson = require(path.join(__dirname, '../../package.json'));
+const { buildReplacements, applyReplacements } = require('./placeholders');
+
 const rootDir = path.resolve(__dirname, '..', '..');
 const distDir = path.join(rootDir, 'dist');
 
@@ -17,9 +20,11 @@ async function injectJsonLd() {
             fs.readFile(seoMetaPath, 'utf8'),
         ]);
 
+        const resolvedSeoMeta = applyReplacements(seoMeta, buildReplacements(packageJson));
+
         let parsedSeoMeta;
         try {
-            parsedSeoMeta = JSON.parse(seoMeta);
+            parsedSeoMeta = JSON.parse(resolvedSeoMeta);
         } catch (jsonError) {
             throw new Error(`Invalid JSON-LD in ${seoMetaPath}: ${jsonError.message}`);
         }

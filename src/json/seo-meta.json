@@ -3,14 +3,14 @@
     "@graph": [
         {
             "@type": "ProfilePage",
-            "@id": "https://www.colace.me/#webpage",
-            "url": "https://www.colace.me/",
-            "name": "Alessandro Colace | Forward Deployed Engineer @ Avatar Investments, Milan (Italy)",
+            "@id": "__SITE_URL__/#webpage",
+            "url": "__SITE_URL__/",
+            "name": "Alessandro Colace | Forward Deployed Engineer @ __CONSULTING_NAME__, __CITY__ (__COUNTRY_NAME__)",
             "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer at Avatar Investments (official Palantir Partner).",
             "inLanguage": "en-US",
             "mainEntity": {
                 "@type": "Person",
-                "@id": "https://www.colace.me/#person",
+                "@id": "__SITE_URL__/#person",
                 "name": "Alessandro Colace",
                 "alternateName": [
                     "Colace Alessandro",
@@ -21,7 +21,7 @@
                     "Mr Data"
                 ],
                 "jobTitle": [
-                    "Forward Deployed Engineer",
+                    "__JOB_TITLE__",
                     "AI Engineer",
                     "Data Engineer",
                     "Cloud Data Architect",
@@ -29,23 +29,22 @@
                     "Fractional CDO"
                 ],
                 "description": "Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments (official Palantir Partner). Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six Google Cloud professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
-                "url": "https://www.colace.me/",
-                "image": "https://www.colace.me/image/web/profile.webp",
-                "email": "alessandro@colace.me",
-                "telephone": "+393495157235",
+                "url": "__SITE_URL__/",
+                "image": "__PROFILE_IMAGE_URL__",
+                "email": "__EMAIL__",
+                "telephone": "__PHONE_TEL__",
                 "sameAs": [
-                    "https://www.wikidata.org/wiki/Q138667173",
-                    "https://www.linkedin.com/in/colace",
-                    "https://github.com/dokson",
-                    "https://x.com/alecolace",
-                    "https://www.avatar-investments.com",
-                    "https://www.coalesce.coach"
+                    "__WIKIDATA__",
+                    "__LINKEDIN__",
+                    "__GITHUB__",
+                    "__TWITTER__",
+                    "__CONSULTING_URL__"
                 ],
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "Milano",
-                    "addressRegion": "MI",
-                    "addressCountry": "IT"
+                    "addressLocality": "__CITY_IT__",
+                    "addressRegion": "__REGION__",
+                    "addressCountry": "__COUNTRY__"
                 },
                 "nationality": {
                     "@type": "Country",
@@ -53,22 +52,29 @@
                 },
                 "alumniOf": {
                     "@type": "EducationalOrganization",
-                    "name": "Università di Bologna - Alma Mater Studiorum",
-                    "url": "https://www.unibo.it",
-                    "sameAs": "https://www.wikidata.org/wiki/Q131262"
+                    "name": "__EDUCATION_NAME__",
+                    "url": "__EDUCATION_URL__",
+                    "sameAs": "__EDUCATION_WIKIDATA__"
                 },
-                "worksFor": {
-                    "@type": "Organization",
-                    "@id": "https://www.avatar-investments.com/#organization",
-                    "name": "Avatar Investments",
-                    "url": "https://www.avatar-investments.com",
-                    "address": {
-                        "@type": "PostalAddress",
-                        "addressLocality": "Milano",
-                        "addressRegion": "MI",
-                        "addressCountry": "IT"
+                "worksFor": [
+                    {
+                        "@type": "Organization",
+                        "@id": "__EMPLOYER_URL__/#organization",
+                        "name": "__EMPLOYER_NAME__",
+                        "url": "__EMPLOYER_URL__",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": "__CITY_IT__",
+                            "addressRegion": "__REGION__",
+                            "addressCountry": "__COUNTRY__"
+                        }
+                    },
+                    {
+                        "@type": "Organization",
+                        "name": "__CONSULTING_NAME__",
+                        "url": "__CONSULTING_URL__"
                     }
-                },
+                ],
                 "knowsAbout": [
                     "Palantir AIP",
                     "Palantir Foundry",
@@ -108,10 +114,10 @@
                 ],
                 "hasOccupation": {
                     "@type": "Occupation",
-                    "name": "Forward Deployed Engineer",
+                    "name": "__JOB_TITLE__",
                     "occupationLocation": {
                         "@type": "City",
-                        "name": "Milan"
+                        "name": "__CITY__"
                     },
                     "skills": "Palantir AIP, Palantir Foundry, AI Ontology Design, Mission Engineering, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, Multi-Agent Systems, MLOps, LLMOps, Cloud Data Platforms (GCP, AWS, Azure)"
                 },
@@ -197,18 +203,18 @@
         },
         {
             "@type": "WebSite",
-            "@id": "https://www.colace.me/#website",
-            "url": "https://www.colace.me/",
+            "@id": "__SITE_URL__/#website",
+            "url": "__SITE_URL__/",
             "name": "Alessandro Colace",
             "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer at Avatar Investments.",
             "inLanguage": "en-US",
             "publisher": {
-                "@id": "https://www.colace.me/#person"
+                "@id": "__SITE_URL__/#person"
             }
         },
         {
             "@type": "FAQPage",
-            "@id": "https://www.colace.me/#faq",
+            "@id": "__SITE_URL__/#faq",
             "mainEntity": [
                 {
                     "@type": "Question",
