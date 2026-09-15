@@ -50,7 +50,16 @@ function runTheseFunctionsAfterScrollOrSwipe() {
     animateAleRunSwim();
     hideScrollOrSwipeTextContainer();
     hideContactConfirmationContainer();
+    updateScrollProgress();
     deviceFunctionScrollSwipe()
+}
+
+// Composited scaleX rather than an animated width, so tracking the scroll costs no layout.
+function updateScrollProgress() {
+    const scrollableHeight = pageDiv.offsetHeight - containerDiv.offsetHeight;
+    const progress = scrollableHeight > 0 ? Math.min(Math.max(scrollState.position / scrollableHeight, 0), 1) : 0;
+    progressBarDiv.style.transform = `scaleX(${progress})`;
+    progressTrackDiv.setAttribute("aria-valuenow", Math.round(progress * 100))
 }
 
 function deviceFunctionScrollSwipe() {

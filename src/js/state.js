@@ -95,6 +95,8 @@ var timers = {
 // ─── DOM elements: page structure ───────────────────────────────────────────
 var contentDiv = document.getElementById("content");
 var pageDiv = document.getElementById("page");
+var progressTrackDiv = document.getElementById("progress-track");
+var progressBarDiv = document.getElementById("progress-bar");
 var bannersContainerDiv = document.getElementById("banners-container");
 var splashContainerDiv = document.getElementById("splash-container");
 
@@ -262,6 +264,7 @@ window.onload = () => {
     disableAnimateAleRunSwim();
     resetVariables();
     setPageHeight();
+    updateScrollProgress();
     setLayerSpeed();
     positionVerticalLayersHorizontally();
     positionRocketAndAleContainerHorizontally();
@@ -296,6 +299,7 @@ window.onresize = () => {
     setBannersContainerVerticalPosition();
     setPageHeight();
     detectPageVerticalPosition();
+    updateScrollProgress();
     orientAle();
     setLayerSpeed();
     moveLayers();

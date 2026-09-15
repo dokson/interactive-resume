@@ -242,6 +242,33 @@ body {
     background-color: #00bff3
 }
 
+/* The native scrollbar is replaced by #progress-track: scrolling itself is untouched. */
+html {
+    scrollbar-width: none
+}
+
+html::-webkit-scrollbar {
+    display: none
+}
+
+#progress-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 5px;
+    background-color: rgba(0, 0, 0, .2)
+}
+
+#progress-bar {
+    width: 100%;
+    height: 100%;
+    background-color: #ed1c24;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .2);
+    transform: scaleX(0);
+    transform-origin: left center
+}
+
 #bubble {
     position: relative;
     left: -50%;
@@ -1746,7 +1773,6 @@ img {
 }
 
 #preloader {
-    position: fixed;
     bottom: 0;
     width: 100%;
     height: 100%;
