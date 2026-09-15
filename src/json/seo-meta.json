@@ -6,7 +6,7 @@
             "@id": "__SITE_URL__/#webpage",
             "url": "__SITE_URL__/",
             "name": "Alessandro Colace | Forward Deployed Engineer @ __CONSULTING_NAME__, __CITY__ (__COUNTRY_NAME__)",
-            "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer at Avatar Investments (official Palantir Partner).",
+            "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer and founder of COalesCE.",
             "inLanguage": "en-US",
             "mainEntity": {
                 "@type": "Person",
@@ -28,7 +28,7 @@
                     "MLOps Engineer",
                     "Fractional CDO"
                 ],
-                "description": "Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments (official Palantir Partner). Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six Google Cloud professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
+                "description": "Milan-based AI Engineer and Forward Deployed Engineer, founder of COalesCE (coalesce.coach), an independent technology consultancy covering cloud data platforms, AI in production, legacy modernisation, cybersecurity, custom software and technical governance. Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six Google Cloud professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
                 "url": "__SITE_URL__/",
                 "image": "__PROFILE_IMAGE_URL__",
                 "email": "__EMAIL__",
@@ -56,31 +56,28 @@
                     "url": "__EDUCATION_URL__",
                     "sameAs": "__EDUCATION_WIKIDATA__"
                 },
-                "worksFor": [
-                    {
-                        "@type": "Organization",
-                        "@id": "__EMPLOYER_URL__/#organization",
-                        "name": "__EMPLOYER_NAME__",
-                        "url": "__EMPLOYER_URL__",
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressLocality": "__CITY_IT__",
-                            "addressRegion": "__REGION__",
-                            "addressCountry": "__COUNTRY__"
-                        }
-                    },
-                    {
-                        "@type": "Organization",
-                        "name": "__CONSULTING_NAME__",
-                        "url": "__CONSULTING_URL__"
+                "worksFor": {
+                    "@type": "Organization",
+                    "@id": "__CONSULTING_URL__/#organization",
+                    "name": "__CONSULTING_NAME__",
+                    "url": "__CONSULTING_URL__",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "__CITY_IT__",
+                        "addressRegion": "__REGION__",
+                        "addressCountry": "__COUNTRY__"
                     }
-                ],
+                },
                 "knowsAbout": [
                     "Palantir AIP",
                     "Palantir Foundry",
                     "Forward Deployed Engineering",
                     "AI Transformation Strategy",
-                    "Retrieval-Augmented Generation",
+                    {
+                        "@type": "Thing",
+                        "name": "Retrieval-Augmented Generation",
+                        "sameAs": "https://www.wikidata.org/wiki/Q121362277"
+                    },
                     "Large Language Models",
                     "Agentic AI",
                     "Multi-Agent Systems",
@@ -88,29 +85,144 @@
                     "Prompt Engineering",
                     "MLOps",
                     "LLMOps",
-                    "Data Engineering",
+                    {
+                        "@type": "Thing",
+                        "name": "Data Engineering",
+                        "sameAs": "https://www.wikidata.org/wiki/Q104659521"
+                    },
                     "Data Architecture",
-                    "Data Governance",
+                    {
+                        "@type": "Thing",
+                        "name": "Data Governance",
+                        "sameAs": "https://www.wikidata.org/wiki/Q872685"
+                    },
                     "Cloud Data Platforms",
                     "Google Cloud Platform (GCP)",
                     "Amazon Web Services (AWS)",
                     "Microsoft Azure",
-                    "BigQuery",
-                    "Databricks",
-                    "Snowflake",
-                    "Apache Spark",
-                    "Apache Airflow",
-                    "dbt",
+                    {
+                        "@type": "Thing",
+                        "name": "BigQuery",
+                        "sameAs": "https://www.wikidata.org/wiki/Q4904867"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Databricks",
+                        "sameAs": "https://www.wikidata.org/wiki/Q18350420"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Snowflake",
+                        "sameAs": "https://www.wikidata.org/wiki/Q22078063"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Apache Spark",
+                        "sameAs": "https://www.wikidata.org/wiki/Q7573619"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Apache Airflow",
+                        "sameAs": "https://www.wikidata.org/wiki/Q28915062"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "dbt",
+                        "sameAs": "https://www.wikidata.org/wiki/Q107610347"
+                    },
                     "Terraform",
                     "Docker",
                     "Kubernetes",
                     "Python",
-                    "TypeScript"
+                    "TypeScript",
+                    {
+                        "@type": "Thing",
+                        "name": "Artificial Intelligence",
+                        "sameAs": "https://www.wikidata.org/wiki/Q11660"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Machine Learning",
+                        "sameAs": "https://www.wikidata.org/wiki/Q2539"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Generative AI",
+                        "sameAs": "https://www.wikidata.org/wiki/Q117246174"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Knowledge Graphs",
+                        "sameAs": "https://www.wikidata.org/wiki/Q33002955"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Ontologies",
+                        "sameAs": "https://www.wikidata.org/wiki/Q324254"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "AI Agents",
+                        "sameAs": "https://www.wikidata.org/wiki/Q132451509"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Cybersecurity",
+                        "sameAs": "https://www.wikidata.org/wiki/Q3510521"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "NIS2",
+                        "sameAs": "https://www.wikidata.org/wiki/Q130213702"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "EU AI Act",
+                        "sameAs": "https://www.wikidata.org/wiki/Q108456694"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Web Application Development",
+                        "sameAs": "https://www.wikidata.org/wiki/Q7978559"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Mobile Application Development",
+                        "sameAs": "https://www.wikidata.org/wiki/Q2988038"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Business Intelligence",
+                        "sameAs": "https://www.wikidata.org/wiki/Q3353185"
+                    },
+                    {
+                        "@type": "Thing",
+                        "name": "Data Integration",
+                        "sameAs": "https://www.wikidata.org/wiki/Q386824"
+                    },
+                    "Legacy System Modernization",
+                    "Fractional CTO",
+                    "IT Consulting"
                 ],
                 "knowsLanguage": [
-                    "English",
-                    "Italian",
-                    "Russian"
+                    {
+                        "@type": "Language",
+                        "name": "English",
+                        "alternateName": "en",
+                        "sameAs": "https://www.wikidata.org/wiki/Q1860"
+                    },
+                    {
+                        "@type": "Language",
+                        "name": "Italian",
+                        "alternateName": "it",
+                        "sameAs": "https://www.wikidata.org/wiki/Q652"
+                    },
+                    {
+                        "@type": "Language",
+                        "name": "Russian",
+                        "alternateName": "ru",
+                        "sameAs": "https://www.wikidata.org/wiki/Q7737"
+                    }
                 ],
                 "hasOccupation": {
                     "@type": "Occupation",
@@ -119,7 +231,8 @@
                         "@type": "City",
                         "name": "__CITY__"
                     },
-                    "skills": "Palantir AIP, Palantir Foundry, AI Ontology Design, Mission Engineering, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, Multi-Agent Systems, MLOps, LLMOps, Cloud Data Platforms (GCP, AWS, Azure)"
+                    "skills": "Palantir AIP, Palantir Foundry, AI Ontology Design, Mission Engineering, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, Multi-Agent Systems, MLOps, LLMOps, Cloud Data Platforms (GCP, AWS, Azure)",
+                    "sameAs": "https://www.wikidata.org/wiki/Q139672314"
                 },
                 "hasCredential": [
                     {
@@ -206,7 +319,7 @@
             "@id": "__SITE_URL__/#website",
             "url": "__SITE_URL__/",
             "name": "Alessandro Colace",
-            "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer at Avatar Investments.",
+            "description": "Interactive resume and professional profile of Alessandro Colace, Forward Deployed Engineer and founder of COalesCE.",
             "inLanguage": "en-US",
             "publisher": {
                 "@id": "__SITE_URL__/#person"
@@ -221,7 +334,7 @@
                     "name": "What is a Forward Deployed Engineer?",
                     "acceptedAnswer": {
                         "@type": "Answer",
-                        "text": "A Forward Deployed Engineer (FDE) is a technical professional who works directly with clients to deploy and customize enterprise software platforms. At Avatar Investments, an official Palantir partner, Alessandro Colace serves as FDE specializing in Palantir AIP and Foundry deployments, bridging the gap between product engineering and real-world client implementation across data-intensive industries."
+                        "text": "A Forward Deployed Engineer (FDE) is a technical professional who works directly with clients to deploy and customize enterprise software platforms. Through COalesCE, his own Milan-based independent technology consultancy, Alessandro Colace works as an FDE across cloud data platforms, AI in production, legacy modernisation, cybersecurity and technical governance — including Palantir AIP and Foundry deployments — bridging the gap between product engineering and real-world client implementation across data-intensive industries."
                     }
                 },
                 {
@@ -245,7 +358,7 @@
                     "name": "Where is Alessandro Colace based?",
                     "acceptedAnswer": {
                         "@type": "Answer",
-                        "text": "Alessandro Colace is based in Milan, Italy. He works at Avatar Investments, an official Palantir partner headquartered in Milan, serving enterprise clients across Italy and Europe in AI transformation and data platform engineering."
+                        "text": "Alessandro Colace is based in Milan, Italy. He runs COalesCE (coalesce.coach), his own independent technology consultancy headquartered in Milan, serving enterprise clients across Italy and Europe in AI transformation and data platform engineering."
                     }
                 },
                 {

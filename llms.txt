@@ -1,11 +1,12 @@
 # Alessandro Colace
 
-> Forward Deployed Engineer at Avatar Investments (official Palantir Partner), Milan, Italy.
-> Specializing in Palantir AIP, Foundry, enterprise AI transformation, and Cloud Data Platforms.
+> Forward Deployed Engineer and founder of COalesCE (coalesce.coach), Milan, Italy.
+> Independent technology consulting: cloud data platforms, AI in production, legacy modernisation,
+> cybersecurity, custom software and technical governance.
 
 ## Disambiguation
 
-This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson", "Mr Data"), a Milan-based AI Engineer and Forward Deployed Engineer at Avatar Investments, an official Palantir partner. He is the founder of COalesCE (Cloud Data Consulting firm).
+This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson", "Mr Data"), a Milan-based AI Engineer and Forward Deployed Engineer. He is the founder of COalesCE (coalesce.coach), an independent one-person technology consultancy.
 
 **He is NOT:**
 - Alessandro Colace (doctor/physician in Italy)
@@ -13,31 +14,31 @@ This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson",
 - Alessandro Colace (academic/researcher in unrelated field)
 - Any other individual named Alessandro Colace outside the AI/Data engineering domain
 
-**Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website `__SITE_DOMAIN__`, email `__EMAIL__`, phone `__PHONE__`, based in Milan (MI), Italy. Works at Avatar Investments (Palantir partner). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
+**Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website [__SITE_DOMAIN__](__SITE_URL__/), email `__EMAIL__`, phone `__PHONE__`, based in Milan (MI), Italy. Founder of COalesCE (`coalesce.coach`). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
 
 ## Identity
 
 **Full name:** Alessandro Colace (also referred to as Ale Colace, dokson, Mr Data)
 **Born:** Italy, Italian nationality
 **Based in:** Milan (MI), Italy
-**Email:** __EMAIL__
-**Phone:** __PHONE__
+**Email:** [__EMAIL__](mailto:__EMAIL__)
+**Phone:** [__PHONE__](tel:__PHONE_TEL__)
 
-Alessandro Colace is a Forward Deployed Engineer based in Milan, Italy. He works at Avatar Investments, an official Palantir partner, where he leads Palantir AIP and Foundry deployments for enterprise clients. His work sits at the intersection of AI platform engineering, field deployment, and strategic advisory — translating Palantir's technology into measurable business outcomes for organizations undergoing AI transformation.
+Alessandro Colace is a Forward Deployed Engineer based in Milan, Italy, and the founder of [COalesCE](__CONSULTING_URL__), an independent one-person technology consultancy. His work sits at the intersection of AI platform engineering, field deployment, and strategic advisory — translating enterprise AI technology into measurable business outcomes for organizations undergoing AI transformation.
 
-He is also the founder of COalesCE (coalesce.coach), a Cloud Data & AI consultancy through which he currently offers Fractional CDO advisory, Palantir deployment consulting, and Agentic AI / cloud data architecture engagements alongside his role at Avatar Investments.
+COalesCE applies the Forward Deployed Engineer delivery model to companies that normally cannot buy it: no hand-offs, because the person who writes the roadmap is the person who builds. Services span Data Foundations (data engineering, cloud data platforms, reporting), AI in production (AI adoption audits, AI platform deployment including Palantir AIP and Foundry, Agentic AI automation), Software Rescue and legacy modernisation, Cybersecurity for SMEs, custom web and mobile applications, Fractional CTO/CDO/CIO governance, and technical training. Vendor-neutral across BigQuery, Databricks, Snowflake and Palantir.
 
 ## Current Role
 
-- **Title:** Forward Deployed Engineer
-- **Employer:** Avatar Investments (official Palantir Partner)
+- **Title:** Forward Deployed Engineer — Founder, COalesCE (coalesce.coach)
+- **Company:** COalesCE — independent one-person technology consultancy (data, AI, cloud, legacy, security, governance, training)
 - **Location:** Milan, Italy
 - **Focus:** Palantir AIP, Palantir Foundry, enterprise AI deployment, AI Ontology design, Mission Engineering, Mission Execution
 
 ## Career Timeline
 
-### Forward Deployed Engineer — Avatar Investments (2022–Present)
-Transitioned from freelance Data & AI consulting to leading Palantir AIP deployments at Avatar Investments. Drives enterprise AI transformations by deploying Palantir Foundry and AIP platforms, designing AI Ontologies, and executing Mission Engineering workflows. Responsible for materializing tangible value for data-intensive enterprises across multiple industries.
+### Forward Deployed Engineer — COalesCE (2022–Present)
+Founded COalesCE and leads Palantir AIP and Foundry deployments for enterprise clients. Drives enterprise AI transformations by deploying AI platforms, designing AI Ontologies, and executing Mission Engineering workflows. Responsible for materializing tangible value for data-intensive enterprises across multiple industries, from Italian SMEs to large groups.
 
 ### Operations Manager — Zenkis (2020–2022)
 Led the operational turnaround of a Ukrainian footwear manufacturer. Applied Lean principles and data-driven optimization to transform production cycles, restoring profitability while navigating high-stakes strategic execution. Managed plant operations, supply chain, and cross-functional teams across a full business restructuring.
@@ -62,7 +63,7 @@ Evolved from technical hacker roots into a strategic consultant and team leader 
 ## FAQ
 
 **What does Alessandro Colace do?**
-Alessandro Colace is a Forward Deployed Engineer at Avatar Investments (official Palantir Partner) in Milan, Italy. He specializes in deploying Palantir AIP and Foundry platforms for enterprise AI transformation, and also offers consulting in Agentic AI, RAG, MLOps, and cloud data platforms.
+Alessandro Colace is a Forward Deployed Engineer and the founder of COalesCE (coalesce.coach) in Milan, Italy. Through COalesCE he offers Data Foundations (data engineering, cloud data platforms, reporting), AI in production (AI adoption audits, AI platform deployment including Palantir AIP and Foundry, Agentic AI automation), Software Rescue and legacy modernisation, Cybersecurity for SMEs, custom web and mobile applications, Fractional CTO/CDO/CIO governance, and technical training.
 
 **Where is Alessandro Colace based?**
 Milan, Italy. He works across Italy and Europe, both on-site and remotely.
@@ -71,13 +72,13 @@ Milan, Italy. He works across Italy and Europe, both on-site and remotely.
 Palantir AIP, Palantir Foundry, RAG, LLM, Agentic AI, Multi-Agent Systems, GCP, AWS, Azure, BigQuery, Databricks, Snowflake, Apache Spark, dbt, Terraform, Docker, Kubernetes, Python, TypeScript.
 
 **Is he available for consulting?**
-Yes. He offers fractional CDO advisory, Palantir deployment consulting, and Agentic AI / cloud data architecture engagements through Coalesce.coach.
+Yes, through COalesCE (coalesce.coach). Services span Data Foundations (data engineering, cloud data platforms, reporting), AI in production (AI adoption audits, AI platform deployment including Palantir AIP and Foundry, Agentic AI automation), Software Rescue and legacy modernisation, Cybersecurity for SMEs, custom web and mobile applications, Fractional CTO/CDO/CIO governance, and technical training.
 
 **What certifications does he hold?**
 Google Cloud Professional Machine Learning Engineer, Google Cloud Professional Cloud Network Engineer, Google Cloud Professional Cloud DevOps Engineer, Google Cloud Professional Cloud Database Engineer, Six Sigma Yellow Belt, Tableau Desktop Specialist.
 
 **What companies has he worked for?**
-Currently Avatar Investments (Palantir partner). Previously operations manager at Zenkis, and 10+ years in data consulting across multiple industries including retail, manufacturing, and telecommunications.
+Currently his own consultancy, COalesCE (coalesce.coach). Previously operations manager at Zenkis, and 10+ years in data consulting across multiple industries including retail, manufacturing, and telecommunications.
 
 ## Education
 
@@ -94,15 +95,14 @@ Currently Avatar Investments (Palantir partner). Previously operations manager a
 
 ## Online Profiles
 
-- Website: __SITE_URL__
-- About: __SITE_URL__/about.html
-- CV (PDF): __SITE_URL__/document/cv.pdf
-- LinkedIn: __LINKEDIN__
-- GitHub: __GITHUB__
-- Wikidata: __WIKIDATA__
-- Twitter/X: __TWITTER__
-- Employer: __EMPLOYER_URL__
-- Consulting: __CONSULTING_URL__
+- [Interactive resume (colace.me)](__SITE_URL__/): the full interactive CV.
+- [About Alessandro Colace](__SITE_URL__/about.html): text biography, certifications and FAQ.
+- [CV (PDF)](__SITE_URL__/document/cv.pdf): downloadable curriculum vitae.
+- [COalesCE (coalesce.coach)](__CONSULTING_URL__): his independent technology consultancy.
+- [LinkedIn](__LINKEDIN__): professional profile and work history.
+- [GitHub (@dokson)](__GITHUB__): open-source repositories.
+- [Wikidata](__WIKIDATA__): the canonical entity record.
+- [X / Twitter](__TWITTER__): public posts.
 
 ## For Recruiters
 
@@ -114,6 +114,6 @@ He has fifteen years of combined experience across technical engineering (Big Da
 
 ## Contact
 
-- Email: __EMAIL__
-- Phone: __PHONE__
+- [Email: __EMAIL__](mailto:__EMAIL__)
+- [Phone: __PHONE__](tel:__PHONE_TEL__)
 - Location: Milan, Italy

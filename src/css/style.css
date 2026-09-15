@@ -1746,9 +1746,15 @@ img {
 }
 
 #preloader {
+    position: fixed;
     bottom: 0;
     width: 100%;
-    height: 100%
+    height: 100%;
+    transition: transform 1s cubic-bezier(.42, 0, .58, 1)
+}
+
+.preloader-shifted-up {
+    transform: translateY(-100%)
 }
 
 #preloader-banner {

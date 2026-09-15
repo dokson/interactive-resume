@@ -79,11 +79,12 @@ const htmlMinifyOptions = {
     useShortDoctype: true
 };
 
-// Build date stamped into __BUILD_DATE__ placeholders (freshness signal for AI search / GEO)
-const buildDate = new Date().toISOString().split('T')[0];
+// Build time stamped into __BUILD_TIMESTAMP__ placeholders (freshness signal for AI search / GEO).
+// Full ISO 8601 with timezone: Search Console rejects a bare date in dateModified.
+const buildTimestamp = new Date().toISOString();
 
 const { buildReplacements, applyReplacements } = require('./placeholders');
-const replacements = buildReplacements(packageJson, { buildDate });
+const replacements = buildReplacements(packageJson, { buildTimestamp });
 
 (async () => {
     for (const { input, output } of htmlFiles) {

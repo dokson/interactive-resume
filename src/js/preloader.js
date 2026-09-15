@@ -11,11 +11,9 @@ function showPreloader() {
 
 function shiftUpPreloader() {
     turnOffPreloaderDotsAnimation();
-    $(preloaderDiv).stop().animate({
-        bottom: "100%"
-    }, 1000, () => {
-        hidePreloader()
-    })
+    // Composited slide-up: transform never touches layout, so the reveal costs no CLS.
+    preloaderDiv.classList.add("preloader-shifted-up");
+    setTimeout(hidePreloader, 1000)
 }
 
 function turnOffPreloaderDotsAnimation() {

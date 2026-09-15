@@ -1,4 +1,80 @@
+# Search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Bingbot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: YandexBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Applebot
+Allow: /
+Disallow: /document/cv.pdf
+
+# Social preview crawlers
+User-agent: Twitterbot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: LinkedInBot
+Allow: /
+Disallow: /document/cv.pdf
+
+# AI answer engines (GEO/AEO) — explicitly welcomed.
+# OpenAI, Anthropic and Perplexity each publish three tokens (training, user fetch, search
+# index) and all three are named: the search one governs citation eligibility and does not
+# inherit from the training one. Anthropic retired Claude-Web, so it is gone from here.
+User-agent: GPTBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Claude-User
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /document/cv.pdf
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /document/cv.pdf
+
+# Everyone else
 User-agent: *
+Allow: /
 Disallow: /document/cv.pdf
 
 Sitemap: __SITE_URL__/sitemap.xml

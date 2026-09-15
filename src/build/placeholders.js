@@ -10,8 +10,8 @@ function obfuscateDomainDisplay(url) {
         .join('');
 }
 
-function buildReplacements(packageJson, { buildDate } = {}) {
-    const { contact, social, domain, employer, consulting, education, images, location } = packageJson.config;
+function buildReplacements(packageJson, { buildTimestamp } = {}) {
+    const { contact, social, domain, consulting, education, images, location } = packageJson.config;
     const [emailUser, emailDomain] = contact.email.split('@');
 
     const replacements = {
@@ -29,8 +29,6 @@ function buildReplacements(packageJson, { buildDate } = {}) {
         __TWITTER__: social.twitter,
         __TWITTER_HANDLE__: `@${new URL(social.twitter).pathname.slice(1)}`,
         __WIKIDATA__: social.wikidata,
-        __EMPLOYER_NAME__: employer.name,
-        __EMPLOYER_URL__: employer.url,
         __CONSULTING_NAME__: consulting.name,
         __CONSULTING_URL__: consulting.url,
         __EDUCATION_NAME__: education.name,
@@ -46,8 +44,8 @@ function buildReplacements(packageJson, { buildDate } = {}) {
         __JOB_TITLE__: packageJson.job_title,
     };
 
-    if (buildDate) {
-        replacements.__BUILD_DATE__ = buildDate;
+    if (buildTimestamp) {
+        replacements.__BUILD_TIMESTAMP__ = buildTimestamp;
     }
 
     return replacements;

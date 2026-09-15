@@ -47,10 +47,6 @@
             "twitter": "https://x.com/alecolace",
             "wikidata": "https://www.wikidata.org/wiki/Q138667173"
         },
-        "employer": {
-            "name": "Avatar Investments",
-            "url": "https://www.avatar-investments.com"
-        },
         "consulting": {
             "name": "COalesCE",
             "url": "https://www.coalesce.coach"
@@ -169,6 +165,11 @@
             "prompt-engineering",
             "mlops",
             "cloud-data-platforms",
+            "legacy-modernization",
+            "cybersecurity",
+            "nis2",
+            "fractional-cto",
+            "it-consulting",
             "nodejs",
             "typescript",
             "python",
