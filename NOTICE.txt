@@ -8,4 +8,10 @@ This project was created in 2019 and published on GitHub in 2025.
 
 This project is not affiliated with or endorsed by Robby Leonardi.
 
+THIRD-PARTY ASSETS
+
+font/C64_Pro_Mono-STYLE.woff - "C64 Pro Mono" typeface, (C) Style (https://style64.org/c64-truetype). Embedded unmodified, under its original filename, for display via @font-face as permitted by its license (https://style64.org/c64-truetype/license). It may not be sold, redistributed, or offered for direct download.
+
+"Commodore" and "Commodore 64" are trademarks of their respective owner. The preloader is a non-commercial homage and is not affiliated with or endorsed by the trademark holder.
+
 If requested by the original creator, this project will be immediately removed.

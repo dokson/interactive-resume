@@ -72,12 +72,9 @@ function showContainer() {
 }
 
 function shiftUpHorizontalLayersAfterEverythingLoaded() {
-    for (let i = 0; i < layerHorizontalArray.length; i++)
-        $(layerHorizontalArray[i]).stop().animate({
-            top: "0px"
-        }, 1000, () => {
-            finishShiftUpHorizontalLayersAfterEverythingLoaded()
-        })
+    // Composited rise: transform keeps the intro out of Cumulative Layout Shift.
+    for (const layer of layerHorizontalArray) layer.classList.add("layer-risen");
+    setTimeout(finishShiftUpHorizontalLayersAfterEverythingLoaded, 1000)
 }
 
 function finishShiftUpHorizontalLayersAfterEverythingLoaded() {

@@ -52,6 +52,7 @@
 
     <link rel=preconnect href=https://api.emailjs.com crossorigin>
     <link rel=preload href=dist/style.min.css as=style fetchpriority=high>
+    <link rel=preload href=font/C64_Pro_Mono-STYLE.woff as=font type=font/woff crossorigin>
     <link rel=stylesheet href=dist/style.min.css fetchpriority=high>
     <link rel=manifest href=dist/site.webmanifest>
     <link rel=icon type=image/x-icon href=favicon.ico>
@@ -104,16 +105,15 @@
     </noscript>
     <h1 class=visually-hidden>Alessandro Colace — Forward Deployed Engineer (FDE), AI Engineer, Data Engineer, Cloud Data Architect, MLOps Engineer, Fractional CDO, Milan, Italy</h1>
     <div class=content-noscroll id=content>
-        <div class=displaynone id=preloader>
-            <div id=preloader-banner-container>
-                <div id=preloader-banner>
-                    <div id=preloader-banner-left></div>
-                    <div id=preloader-banner-middle>
-                        <div id=preloader-banner-text-a>LOADING</div>
-                        <div class=preloader-dots-animation id=preloader-dots></div>
-                    </div>
-                    <div id=preloader-banner-right></div>
-                </div>
+        <div class=displaynone data-nosnippet id=preloader>
+            <div aria-live=polite class=c64-screen id=preloader-screen role=status>
+                <p>&nbsp;</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;**** COMMODORE 64 BASIC V2 ****</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;64K RAM SYSTEM&nbsp;&nbsp;38911 BASIC BYTES FREE</p>
+                <p>&nbsp;</p>
+                <p>READY.</p>
+                <p><span id=preloader-typed></span><span class=c64-cursor id=preloader-cursor></span></p>
             </div>
         </div>
         <script src=dist/preloader.min.js></script>

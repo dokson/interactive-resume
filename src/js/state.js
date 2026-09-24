@@ -257,10 +257,9 @@ window.onload = () => {
     storeDivs();
     setFrontLayerVerticalHeight();
     setBannersContainerVerticalPosition();
-    shiftUpPreloader();
+    finishPreloader().then(shiftUpHorizontalLayersAfterEverythingLoaded);
     showContainer();
     initVariablesAfterShowContainer();
-    shiftUpHorizontalLayersAfterEverythingLoaded();
     disableAnimateAleRunSwim();
     resetVariables();
     setPageHeight();

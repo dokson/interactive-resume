@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history: sitemap lastmod comes from git log
 
       - name: Set up Node.js
         uses: actions/setup-node@v7

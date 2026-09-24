@@ -6,6 +6,9 @@ const SCROLL_SETTLE_MS = 500;
 async function waitForSiteReady(page) {
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => document.fonts.ready);
+    await page.waitForSelector('#preloader.c64-waiting');
+    await page.mouse.click(10, 10);
+    await page.waitForSelector('#preloader', { state: 'hidden' });
     await page.waitForTimeout(ANIMATION_SETTLE_MS);
 }
 
@@ -53,8 +56,7 @@ test.describe('Visual Regression', () => {
         // Block a JS file to keep preloader visible
         await page.route('**/state.min.js', route => route.abort());
         await page.goto('/index.html');
-        await page.waitForSelector('#preloader', { state: 'visible' });
-        await page.waitForTimeout(500);
+        await page.waitForSelector('#preloader.c64-loading');
         await expect(page).toHaveScreenshot('00-preloader.png');
     });
 

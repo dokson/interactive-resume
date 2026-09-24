@@ -1291,7 +1291,13 @@ img {
 
 .layer-horizontal {
     left: 0;
-    top: 100%
+    top: 0;
+    transform: translateY(100%);
+    transition: transform 1s cubic-bezier(.42, 0, .58, 1)
+}
+
+.layer-horizontal.layer-risen {
+    transform: none
 }
 
 #layer-horizontal-1 {
@@ -1775,84 +1781,86 @@ img {
 #preloader {
     bottom: 0;
     width: 100%;
-    height: 100%;
-    transition: transform 1s cubic-bezier(.42, 0, .58, 1)
+    height: 100%
 }
 
-.preloader-shifted-up {
-    transform: translateY(-100%)
+@font-face {
+    font-family: 'C64 Pro Mono';
+    src: url(../font/C64_Pro_Mono-STYLE.woff) format('woff');
+    font-display: swap
 }
 
-#preloader-banner {
-    position: relative;
-    left: -50%;
-    margin-top: -115px;
-    width: 600px;
-    height: 230px
+#preloader {
+    z-index: 1000;
+    background: #6c5eb5
 }
 
-#preloader-banner-container {
+#preloader.c64-waiting {
+    cursor: pointer
+}
+
+#preloader.c64-blank .c64-screen > * {
+    visibility: hidden
+}
+
+.c64-prompt {
+    animation: c64-blink 1s steps(1) infinite
+}
+
+#preloader.c64-loading {
+    background: repeating-linear-gradient(0deg, #6c5eb5 0 7px, #ffffff 7px 10px, #6c5eb5 10px 13px, #b8c76f 13px 21px, #6c5eb5 21px 23px, #352879 23px 29px, #6c5eb5 29px 37px, #9ae29b 37px 41px);
+    background-size: 100% 41px;
+    animation: c64-raster .12s steps(4) infinite
+}
+
+@keyframes c64-raster {
+    to {
+        background-position: 0 41px
+    }
+}
+
+.c64-screen {
     position: absolute;
     left: 50%;
-    top: 50%
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40ch;
+    height: 25em;
+    overflow: hidden;
+    background: #352879;
+    color: #6c5eb5;
+    font-family: 'C64 Pro Mono', 'Courier New', Courier, monospace;
+    font-size: min(calc((100vw - 32px) / 40), calc((100vh - 48px) / 25), 24px);
+    line-height: 1em;
+    text-transform: uppercase;
+    white-space: nowrap
 }
 
-#preloader-banner-left {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 80px;
-    height: 230px;
-    background-image: url(../image/layers/preloader-banner-left.png)
+.c64-screen p {
+    margin: 0
 }
 
-#preloader-banner-middle {
-    position: absolute;
-    left: 79px;
-    top: 0;
-    width: 440px;
-    height: 190px;
-    background-color: #ed1c24
+.c64-cursor {
+    display: inline-block;
+    width: 1ch;
+    height: 1em;
+    vertical-align: top;
+    background: #6c5eb5;
+    animation: c64-blink 1s steps(1) infinite
 }
 
-#preloader-banner-right {
-    position: absolute;
-    left: 518px;
-    top: 0;
-    width: 80px;
-    height: 230px;
-    background-image: url(../image/layers/preloader-banner-right.png)
+@keyframes c64-blink {
+    50% {
+        opacity: 0
+    }
 }
 
-#preloader-banner-text-a,
-#preloader-banner-text-b {
-    position: relative;
-    font-family: frankfurter-plain;
-    color: #fff;
-    font-size: 72px;
-    text-align: center;
-    margin-top: 29px
-}
-
-#preloader-banner-text-b {
-    font-size: 39px;
-    margin-top: -12px
-}
-
-#preloader-dots {
-    position: absolute;
-    left: 194px;
-    top: 130px;
-    width: 53px;
-    height: 9px
-}
-
-.preloader-dots-animation {
-    background-image: url(../image/layers/preloader-dots-animation.gif)
-}
-
-.preloader-dots-static {
-    background-image: url(../image/layers/preloader-dots-static.png)
+@media (prefers-reduced-motion: reduce) {
+    #preloader.c64-loading,
+    .c64-prompt,
+    .c64-cursor {
+        animation: none
+    }
 }
 
 #ale {

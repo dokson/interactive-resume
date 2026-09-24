@@ -11,7 +11,7 @@ npm test             # run visual regression tests (compare screenshots against 
 npm run test:update  # update baseline screenshots after intentional visual changes
 ```
 
-**IMPORTANT**: After any JS/CSS/HTML change, always run `npm run deploy && npm test` before committing. If a visual regression test fails unexpectedly, investigate the diff in `test-results/` before updating baselines. Only run `npm run test:update` when the visual change is intentional.
+After any JS/CSS/HTML change, run `npm run deploy && npm test` before committing. If a visual regression test fails unexpectedly, investigate the diff in `test-results/` before updating baselines; run `npm run test:update` only when the visual change is intentional.
 
 Individual build steps can be run in isolation:
 
@@ -19,7 +19,7 @@ Individual build steps can be run in isolation:
 npm run deploy:inject-seo         # inject JSON-LD from src/json/seo-meta.json into dist/index.html
 npm run deploy:minify             # minify JS → dist/*.min.js, CSS → dist/*.min.css, HTML → dist/*.html
 npm run deploy:generate-manifest  # generate dist/site.webmanifest from package.json metadata
-npm run deploy:generate-sitemap   # dynamically generate sitemap.xml with the latest build date
+npm run deploy:generate-sitemap   # generate sitemap.xml; lastmod = last git commit touching each page's content (CI checks out full history)
 npm run deploy:copy-libs          # copy npm dependency bundles (jQuery, EmailJS) into dist/
 npm run deploy:generate-llms      # resolve __PLACEHOLDER__ tokens in llms.txt → dist/llms.txt
 npm run deploy:generate-robots    # resolve __PLACEHOLDER__ tokens in robots.txt → dist/robots.txt
@@ -80,7 +80,7 @@ state.min.js                                 ← must be last: declares all glob
 Module responsibilities:
 
 - **`container-transparent-or-displaynone.js`** — Device detection (`deviceName`) via feature detection (`ontouchstart`/`maxTouchPoints`) and `containerDiv` declaration
-- **`preloader.js`** — Preloader bootstrap: `preloaderDiv` declaration, show/hide/shift-up preloader
+- **`preloader.js`** — Commodore 64 preloader: `preloaderDiv` declaration, animated tape-loading sequence (starts immediately), then `finishPreloader()` (called on `window.onload`) waits for the sequence, shows a `RUN` prompt and hides the preloader on click/tap/key. Uses `font/C64_Pro_Mono-STYLE.woff` (Style64 license: keep the file unmodified and with its original name)
 - **`ale.js`** — Ale character: movement, jump/fall/swim, eyes, orientation, happy state
 - **`layers.js`** — Layer system, scroll/swipe, page dimensions, horizontal shift, touch events
 - **`animation.js`** — About/sea/experience animations, scroll hint, rAF interval utility
@@ -105,12 +105,13 @@ DOM elements, arrays, counters, and constants remain as individual `var` declara
 - **jQuery `.animate()`** is used for movement animations (parallax, character positioning, slide-ins)
 - **`setRafInterval` / `clearRafInterval`** (defined in `animation.js`) wraps `requestAnimationFrame` with timestamp-based throttling. Used for visual cyclic animations (robot hands, squid hands, alien steer, fireworks, stars blink, alien eyes, Ale eyes). Benefits: syncs with display refresh, auto-pauses in background tabs.
 - **`setInterval`** is still used for periodic non-visual triggers (bubble creation every 3s, sea animal blink every 3s, etc.)
-- **Prefer composited CSS transitions (`transform`/`opacity`) over jQuery `.animate()` on layout properties** (`bottom`, `top`, `left`, `width`, `height`) for animations that run during page load or otherwise affect visible layout — animating layout properties triggers reflow and Cumulative Layout Shift. Example: `preloader.js`'s `shiftUpPreloader()` toggles the `.preloader-shifted-up` class (`transform: translateY(-100%)`, `src/css/style.css`) instead of `.animate({bottom: ...})`, eliminating CLS on the preloader reveal.
+- **Prefer composited CSS transitions (`transform`/`opacity`) over jQuery `.animate()` on layout properties** (`bottom`, `top`, `left`, `width`, `height`) for animations that run during page load or otherwise affect visible layout — animating layout properties triggers reflow and Cumulative Layout Shift.
 
 ### Visual regression testing
 
 Playwright-based screenshot comparison across 12 key scroll positions. Baselines are stored in `tests/visual-regression.spec.js-snapshots/` and committed to git. Tests run locally only (baselines are platform-specific: `*-chromium-win32.png`).
 
+- The section tests click the `RUN` prompt (`#preloader.c64-waiting`) before taking screenshots; the preloader test waits for `#preloader.c64-loading`
 - `npm test` — compare current state against baselines (fails if >1% pixel difference)
 - `npm run test:update` — regenerate baselines after intentional visual changes
 - Playwright config: `playwright.config.js` (uses `serve` as webServer on port 3000)
@@ -135,7 +136,7 @@ When editing JavaScript files in `src/js/`, please adhere to the following:
 - **No scientific notation**: Write `1000`, `2000`, not `1e3`, `2e3`.
 - **No `setTimeout` with strings**: Always use the function form.
 - **HTML Formatting**: Do not use automatic line-wrapping or formatters that wrap long HTML lines (e.g., in `index.html`). The extensive use of inline classes and IDs for animations means that line breaks mid-tag will destroy the layout. Use settings like `"html.format.wrapLineLength": 0`.
-- **IMPORTANT**: When renaming loop variables from `e`→`i` in nested loops, verify that inner and outer loops don't share the same variable name. With `var` this silently worked; with `let` it would shadow, but with `var` (in older code) it caused the container visibility bug. Use `i`/`j` for nested loops.
+- **Nested loops use distinct counters** (`i`/`j`): a shared name shadows with `let` and clobbers with `var`.
 
 ## Architecture & Maintenance Guidelines
 

@@ -16,6 +16,7 @@ The project remained untouched until **2025**, when I decided to revisit and pol
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Libraries      | [jQuery 4](https://jquery.com/), custom easing functions                                            |
 | Animations     | `requestAnimationFrame`-based interval system for visual cycles                                     |
+| Preloader      | Commodore 64 tape-loading boot screen (C64 Pro Mono font, Pepto palette), click/tap/key to `RUN`     |
 | Contact form   | [@emailjs/browser](https://www.emailjs.com/)                                                        |
 | Build pipeline | [Node.js](https://nodejs.org/) (minify, SEO injection, manifest generation)                         |
 | Testing        | [Playwright](https://playwright.dev/) visual regression (12 screenshot baselines)                   |
@@ -29,15 +30,21 @@ This project is based on code from [Robby Leonardi's interactive resume](http://
 
 Because the underlying code derives from a proprietary work, no open-source license is applied here, and the project is **not available for redistribution or commercial use**.
 
+The preloader uses the **C64 Pro Mono** typeface by [Style](https://style64.org/c64-truetype), embedded under its [license](https://style64.org/c64-truetype/license): the font file is not covered by this repository and may not be redistributed or offered for download. Commodore 64 is a trademark of its respective owner; this project is not affiliated with or endorsed by it.
+
 You are welcome to view the code and draw inspiration for your own interactive resume, but please build something that genuinely reflects your own story and style.
 
 ## 🙏 Acknowledgments
 
 - Huge thanks to [Robby Leonardi](http://www.rleonardi.com/) for the original concept and creative genius.
 
+- Thanks to [Style](https://style64.org/) for the C64 TrueType fonts and to Philip "Pepto" Timmermann for the [VIC-II color analysis](https://www.pepto.de/projects/colorvic/).
+
 - Special thanks to [GitHub](http://github.com) for [GitHub Pages](https://pages.github.com/)
 
 ## 🔄 Updates
+
+**September 2026**: New Commodore 64-style preloader — BASIC V2 boot screen, animated tape-loading sequence with raster border stripes, and a click/tap/key "RUN" prompt to enter the resume.
 
 **March 2026**: Full codebase refactoring and modernization — split monolithic JS into focused modules, modernized to ES2024+ syntax, replaced legacy IE/vendor code with feature detection, introduced global state namespaces, and added Playwright visual regression testing.
 
