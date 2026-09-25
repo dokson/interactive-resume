@@ -26,29 +26,30 @@ function printPreloaderLine(text) {
 async function typePreloaderCommand(command) {
     for (const character of command) {
         preloaderTypedSpan.textContent += character;
-        await waitPreloader(110);
+        await waitPreloader(gameConfig.preloader.typeCharInterval);
     }
-    await waitPreloader(250);
+    await waitPreloader(gameConfig.preloader.afterTypePause);
     printPreloaderLine(command);
     preloaderTypedSpan.textContent = "";
 }
 
 async function runPreloaderSequence() {
-    await waitPreloader(300);
+    const timing = gameConfig.preloader;
+    await waitPreloader(timing.startDelay);
     await typePreloaderCommand("LOAD");
     printPreloaderLine("");
     printPreloaderLine("PRESS PLAY ON TAPE");
-    await waitPreloader(500);
+    await waitPreloader(timing.pressPlayPause);
     printPreloaderLine("OK");
     printPreloaderLine("");
-    await waitPreloader(300);
-    printPreloaderLine("SEARCHING FOR RESUME");
-    await waitPreloader(600);
-    printPreloaderLine("FOUND COLACE.ME");
-    await waitPreloader(400);
+    await waitPreloader(timing.okPause);
+    printPreloaderLine(`SEARCHING FOR ${timing.searchName}`);
+    await waitPreloader(timing.searchingPause);
+    printPreloaderLine(`FOUND ${timing.fileName}`);
+    await waitPreloader(timing.foundPause);
     printPreloaderLine("LOADING");
     preloaderDiv.classList.add("c64-loading");
-    await waitPreloader(700);
+    await waitPreloader(timing.loadingStripesDuration);
 }
 
 function waitPreloaderStart() {
@@ -76,7 +77,7 @@ async function finishPreloader() {
     prompt.remove();
     await typePreloaderCommand("RUN");
     preloaderDiv.classList.add("c64-blank");
-    await waitPreloader(120);
+    await waitPreloader(gameConfig.preloader.runBlankDuration);
     hidePreloader();
 }
 

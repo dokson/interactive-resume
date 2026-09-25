@@ -25,6 +25,23 @@ async function disableAnimations(page) {
     });
 }
 
+// JS-driven cycles ignore the CSS animation kill switch: settle them in their rest state.
+async function settleGameAnimations(page) {
+    await page.evaluate(() => {
+        for (let i = 0; i < 5; i++) $('[id^="experience-"] *').finish();
+        clearRafInterval(timers.stars);
+        for (const star of stars) star.style.filter = gameConfig.stars.palette[0];
+        clearRafInterval(timers.blinkAleEyes);
+        clearRafInterval(timers.alienEyes);
+        clearInterval(timers.blinkSeaAnimals);
+        clearInterval(timers.scrollText);
+        const flashOverlays = [aleEyesCloseDiv, alienEyes, scrollOrSwipeTextContainer1Div, scrollOrSwipeTextContainer2Div, ...seaAnimalSpecies.flatMap((species) => species.eyes)];
+        $(flashOverlays).stop(true).css("opacity", 0);
+        clearRafInterval(timers.animateAlienHands);
+        alienSteerDiv.style.transform = "rotate(0deg)";
+    });
+}
+
 async function scrollToPercent(page, percent) {
     await page.evaluate((pct) => {
         var maxScroll = document.getElementById('page').offsetHeight - window.innerHeight;
@@ -70,6 +87,7 @@ test.describe('Visual Regression', () => {
         for (const section of sections) {
             test(`section ${section.name}`, async ({ page }) => {
                 await scrollToPercent(page, section.percent);
+                await settleGameAnimations(page);
                 await expect(page).toHaveScreenshot(`${section.name}.png`);
             });
         }

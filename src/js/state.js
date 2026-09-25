@@ -20,20 +20,16 @@ var ale = {
     elevationBelow: null,
     frameIndex: 0,
     frameDirection: 1,
-    staticFrame: 0,
-    startRunFrame: 1,
-    stopRunFrame: 2,
-    startSwimFrame: 3,
-    stopSwimFrame: 4,
-    swimDownFrame: 5,
-    startJumpFrame: 6,
-    stopJumpFrame: 7,
-    oneFrameWidth: 200,
-    frameTimeInterval: 200,
-    minSwimDownDistance: 100,
-    animatePosition1: undefined,
-    animatePosition2: undefined
+    animatePosition1: undefined
 };
+
+// ─── Scroll phases: which layers move for the current scroll position ───────
+var LayersMovement = Object.freeze({
+    horizontal: "horizontal",
+    vertical: "vertical",
+    walkingToRocket: "walking-to-rocket",
+    atRocket: "at-rocket"
+});
 
 // ─── Namespace: scroll / page position ──────────────────────────────────────
 var scrollState = {
@@ -44,8 +40,7 @@ var scrollState = {
     layersMovement: undefined,
     canScrollOrSwipe: undefined,
     touchStartX: 0,
-    touchCurrentX: 0,
-    touchEndX: 0
+    touchCurrentX: 0
 };
 
 // ─── Namespace: animation flags ─────────────────────────────────────────────
@@ -55,18 +50,12 @@ var flags = {
     canAnimatePlant: undefined,
     canAnimateBuilding: undefined,
     canAnimateBuilding2: undefined,
-    canAnimateRobot: undefined,
-    canAnimateSquid: undefined,
-    canAnimateAlien: undefined,
-    canAnimateBoss: undefined,
-    canAnimateFish: undefined,
-    canAnimateCrab: undefined,
-    canAnimateTurtle: undefined,
     canAnimateLinks: undefined,
     canHideScrollText: true,
     canAnimateScrollText: true,
     contactConfirmationVisible: true,
-    canDrawFireworks: true
+    canDrawFireworks: true,
+    starPaletteIndex: 0
 };
 
 // ─── Namespace: timer IDs ───────────────────────────────────────────────────
@@ -84,8 +73,6 @@ var timers = {
     stars: undefined,
     alienEyes: undefined,
     scrollText: undefined,
-    buildingBlink: undefined,
-    building2Blink: undefined,
     shiftUpLayer: undefined,
     shiftDownLayer: undefined,
     drawFirework: undefined,
@@ -107,8 +94,6 @@ var aleFramesDiv = document.getElementById("ale-slides");
 var aleEyesCloseDiv = document.getElementById("ale-eyes-close");
 var rocketDiv = document.getElementById("rocket");
 var groundAndGrassContainer1Div = document.getElementById("ground-and-grass-container-1");
-var elevation1Div = document.getElementById("elevation-1");
-var elevation2Div = document.getElementById("elevation-2");
 
 // ─── DOM elements: layers ───────────────────────────────────────────────────
 var layerHorizontalArray = [];
@@ -131,13 +116,9 @@ var plantArray = [];
 var plantTargetTopObjectArray = [plantLine1Div, plantLine1Div, plantLine2Div, plantLine2Div];
 
 var about2ContainerDiv = document.getElementById("buildings-container");
-var buildingTargetLeftArray = [0, 305, 710];
-var buildingEarlyPositionArray = [795, 1100, 1505];
 var buildingArray = [];
 
 var about3ContainerDiv = document.getElementById("buildings-container-2");
-var building2TargetLeftArray = [-12, 305, 550];
-var building2EarlyPositionArray = [795, 1100, 1505];
 var building2Array = [];
 
 // ─── DOM elements: experience section (bosses & piecharts) ──────────────────
@@ -146,8 +127,6 @@ var experience2ContainerDiv = document.getElementById("experience-2-container");
 var experience3ContainerDiv = document.getElementById("experience-3-container");
 var experienceTextContainerArray = [];
 var chainBlockAndStringContainerArray = [];
-var experienceTextContainerDistanceFromFloor = 185;
-
 var robotDiv = document.getElementById("robot");
 var robotHandLeftDiv = document.getElementById("robot-hand-left");
 var robotHandRightDiv = document.getElementById("robot-hand-right");
@@ -162,8 +141,8 @@ var openAndCloseSquidHandsCounter = 0;
 var alienDiv = document.getElementById("alien");
 var alienSteerDiv = document.getElementById("alien-steer");
 var alienSteerAngle = 0;
-var alienSteerAngleLimit = 15;
-var alienSteerAngleIncrement = 5;
+var alienSteerAngleLimit = gameConfig.bosses.alien.steerAngleLimit;
+var alienSteerAngleIncrement = gameConfig.bosses.alien.steerAngleStep;
 var alienSteerPreviousAngle;
 
 function getPiechartElements(prefix) {
@@ -182,27 +161,55 @@ var piechartRobot = getPiechartElements("robot");
 var piechartSquid = getPiechartElements("squid");
 var piechartAlien = getPiechartElements("alien");
 
+/**
+ * @typedef {object} Boss
+ * @property {"robot"|"squid"|"alien"} name  key into gameConfig.bosses
+ * @property {number} index  position in experienceTextContainerArray / chainBlockAndStringContainerArray
+ * @property {HTMLElement} div
+ * @property {HTMLElement} containerDiv
+ * @property {ReturnType<typeof getPiechartElements>} piechart
+ * @property {() => void} startIdle  idle loop once the boss has landed
+ * @property {boolean|undefined} canAnimate  true until the entry animation has played
+ */
+
+// Bosses in experience order: index matches experienceTextContainerArray / chainBlockAndStringContainerArray.
+/** @returns {Boss} */
+function createBoss(name, index, div, containerDiv, piechart, startIdle) {
+    return { name, index, div, containerDiv, piechart, startIdle, canAnimate: undefined };
+}
+
+var bosses = [
+    createBoss("robot", 0, robotDiv, experience1ContainerDiv, piechartRobot, () => animateRobotHands()),
+    createBoss("squid", 1, squidDiv, experience2ContainerDiv, piechartSquid, () => animateSquidHands()),
+    createBoss("alien", 2, alienDiv, experience3ContainerDiv, piechartAlien, () => animateAlienHand())
+];
+
 // ─── DOM elements: skills section (sea animals) ─────────────────────────────
 var skill1ContainerDiv = document.getElementById("skill-1-container");
-var fishArray = [];
-var fishEyeArray = [];
-var isFishStillAnimating = false;
-var fishAnimateNumber = 0;
-var numberOfFishInEachRowArray = [5, 5, 3, 3];
-
 var skill2ContainerDiv = document.getElementById("skill-2-container");
-var crabArray = [];
-var crabEyeArray = [];
-var isCrabStillAnimating = false;
-var crabAnimateNumber = 0;
-var numberOfCrabInEachRowArray = [4, 5, 3, 3];
-
 var skill3ContainerDiv = document.getElementById("skill-3-container");
-var turtleArray = [];
-var turtleEyeArray = [];
-var isTurtleStillAnimating = false;
-var turtleAnimateNumber = 0;
-var numberOfTurtleInEachRowArray = [5, 5, 4, 3];
+
+/**
+ * @typedef {object} SeaAnimalSpecies
+ * @property {"fish"|"crab"|"turtle"} name  CSS class of the animals (eyes use `${name}-eyes`) and key into gameConfig.seaAnimals.rows
+ * @property {HTMLElement} containerDiv
+ * @property {HTMLElement[]} animals
+ * @property {HTMLElement[]} eyes
+ * @property {boolean} isAnimating
+ * @property {number} arrivedCount
+ * @property {boolean|undefined} canAnimate
+ */
+
+/** @returns {SeaAnimalSpecies} */
+function createSeaAnimalSpecies(name, containerDiv) {
+    return { name, containerDiv, animals: [], eyes: [], isAnimating: false, arrivedCount: 0, canAnimate: undefined };
+}
+
+var seaAnimalSpecies = [
+    createSeaAnimalSpecies("fish", skill1ContainerDiv),
+    createSeaAnimalSpecies("crab", skill2ContainerDiv),
+    createSeaAnimalSpecies("turtle", skill3ContainerDiv)
+];
 
 // ─── DOM elements: contact / links / fireworks ──────────────────────────────
 var contactContainerDiv = document.getElementById("contact-container");
@@ -220,101 +227,89 @@ var fireworksContainerDiv = document.getElementById("fireworks-container");
 var fireworkArray = [];
 var fireworkSvgArray = [];
 
-// ─── Firework config ────────────────────────────────────────────────────────
+// ─── Firework state ────────────────────────────────────────────────────────
 var drawFireworkCounter = 0;
-var fireworkRowNumber = 8;
-var fireworkColumnNumber = 16;
 var fireworkLayerNumber = 0;
-var fireworkDotRadius = 5;
 var fireworkCenterX;
 var fireworkCenterY;
 var fireworkOneRadiusDistance;
 var fireworkOneRotationAngle;
 
-// ─── Constants ──────────────────────────────────────────────────────────────
-var distanceBetweenAleAndRocket = 300;
-var gapBetweenContactCloudAndBannersContainer = 400;
-var shiftUpDownLayerHorizontalIncrement = 40;
-var shiftUpDownLayerHorizontalInterval = 40;
-var seaAnimalSwimDistance = 900;
+// ─── Derived layout values ──────────────────────────────────────────────────
 var shiftUpLayerHorizontalDistance;
 
-// ─── Section container arrays (built after DOM elements are declared) ───────
-var landInformationContainerArray = [about1ContainerDiv, about2ContainerDiv, about3ContainerDiv, experience1ContainerDiv, experience2ContainerDiv, experience3ContainerDiv];
-var seaInformationContainerArray = [skill1ContainerDiv, skill2ContainerDiv, skill3ContainerDiv];
+// ─── Scenes ─────────────────────────────────────────────────────────────────
+// Every animated section of the world, with its whole lifecycle in one place:
+//   world      "land" or "sea" (sea containers are positioned inside #sea-1)
+//   container  element whose horizontal span triggers `enter` when the viewport centre crosses into it
+//   reset()    restore the "not yet played" state (on load and when scrolling back to the start)
+//   layout()   place elements for the current state (after every reset)
+//   resize()   optional: re-place elements after a window resize
+//   enter()    entry animation / idle loop when the viewport centre enters the container
+// To add a scene: add its markup, then one object here.
+/**
+ * @typedef {object} Scene
+ * @property {string} name
+ * @property {"land"|"sea"} world
+ * @property {HTMLElement} container
+ * @property {() => void} reset
+ * @property {() => void} layout
+ * @property {() => void} [resize]
+ * @property {() => void} enter
+ */
 
-// ─── Bootstrap ──────────────────────────────────────────────────────────────
-disableIsAleJumpingAndFalling();
-disableScrollOrSwipe();
+/** @returns {Scene} */
+function createBossScene(boss) {
+    return {
+        name: boss.name,
+        world: "land",
+        container: boss.containerDiv,
+        reset: () => { boss.canAnimate = true },
+        layout: () => { positionBoss(boss); positionBossText(boss); positionBossChain(boss) },
+        resize: () => { positionBossText(boss); positionBossChain(boss) },
+        enter: () => enterBossSection(boss)
+    };
+}
 
-// ─── Event handlers ─────────────────────────────────────────────────────────
-$(window).on("beforeunload", () => {
-    $(window).scrollTop(0);
-});
+/** @returns {Scene} */
+function createSeaAnimalScene(species) {
+    return {
+        name: species.name,
+        world: "sea",
+        container: species.containerDiv,
+        reset: () => { if (!species.isAnimating) species.canAnimate = true },
+        layout: () => { if (!species.isAnimating) positionSeaAnimals(species) },
+        enter: () => enterSeaAnimalSection(species)
+    };
+}
 
-window.onload = () => {
-    if (deviceName !== "computer") initTouchEvents();
-    storeDivs();
-    setFrontLayerVerticalHeight();
-    setBannersContainerVerticalPosition();
-    finishPreloader().then(shiftUpHorizontalLayersAfterEverythingLoaded);
-    showContainer();
-    initVariablesAfterShowContainer();
-    disableAnimateAleRunSwim();
-    resetVariables();
-    setPageHeight();
-    updateScrollProgress();
-    setLayerSpeed();
-    positionVerticalLayersHorizontally();
-    positionRocketAndAleContainerHorizontally();
-    positionContactContainer();
-    positionFireworksContainer();
-    resetFunctions();
-    positionSplashContainer();
-    setAleLeftAndRightEdge();
-    positionContactConfirmationContainer();
-    hideContactConfirmationContainer();
-    hideAleEyesClose();
-    animateAleEyes();
-    animateStars();
-    animateAlienEyes();
-    positionSeaFloorObjectsVertically();
-    openSquidHands();
-    hideBubble();
-    setRobotHandsToDefault();
-    createFireworkSvg();
-    appendFireworkSvgToContainer();
-};
-
-window.onscroll = () => {
-    if (scrollState.canScrollOrSwipe) {
-        detectPageVerticalPosition();
-        runTheseFunctionsAfterScrollOrSwipe();
-    }
-};
-
-window.onresize = () => {
-    setFrontLayerVerticalHeight();
-    setBannersContainerVerticalPosition();
-    setPageHeight();
-    detectPageVerticalPosition();
-    updateScrollProgress();
-    orientAle();
-    setLayerSpeed();
-    moveLayers();
-    setAleLeftAndRightEdge();
-    shiftUpDownHorizontalLayersOnResize();
-    animateInformationAndEnemiesElements();
-    positionSplashContainer();
-    positionAleContainerVertically();
-    positionLinksContainer();
-    positionPlants();
-    hideContactConfirmationContainer();
-    positionContactConfirmationContainer();
-    positionExperienceTextContainer();
-    positionChainBlockAndStringContainer();
-    positionSeaFloorObjectsVertically();
-    enableScrollOrSwipe();
-};
-
-$(window).on("orientationchange", orientationChangeHandler);
+/** @type {Scene[]} */
+var scenes = [
+    {
+        name: "plants",
+        world: "land",
+        container: about1ContainerDiv,
+        reset: () => { flags.canAnimatePlant = true },
+        layout: () => positionPlants(),
+        resize: () => positionPlants(),
+        enter: () => enterPlantsSection()
+    },
+    {
+        name: "buildings",
+        world: "land",
+        container: about2ContainerDiv,
+        reset: () => { flags.canAnimateBuilding = true },
+        layout: () => positionBuildings(),
+        enter: () => enterBuildingsSection()
+    },
+    {
+        name: "buildings-2",
+        world: "land",
+        container: about3ContainerDiv,
+        reset: () => { flags.canAnimateBuilding2 = true },
+        layout: () => positionBuildings2(),
+        enter: () => enterBuildings2Section()
+    },
+    ...bosses.map(createBossScene),
+    ...seaAnimalSpecies.map(createSeaAnimalScene)
+];

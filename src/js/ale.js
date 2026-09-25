@@ -1,14 +1,18 @@
 // ─── Ale: layer snapping ─────────────────────────────────────────────────────
+function setAleFrame(frameIndex) {
+    aleFramesDiv.style.left = `${-1 * frameIndex * gameConfig.ale.frameWidth}px`
+}
+
 function shiftAleToGroundLevel() {
     $(aleContainerDiv).stop().animate({
         bottom: `${containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop}px`
-    }, 300, () => { })
+    }, gameConfig.ale.snapDuration)
 }
 
 function shiftAleToSeaFloor() {
     $(aleContainerDiv).stop().animate({
         bottom: `${seaFloorDiv.offsetHeight}px`
-    }, 300, () => { })
+    }, gameConfig.ale.snapDuration)
 }
 
 function positionLayerHorizontalToTop() {
@@ -28,7 +32,7 @@ function positionLayerHorizontalToBottom() {
 
 // ─── Ale: jump & fall ────────────────────────────────────────────────────────
 function checkAleJumpFallSwim() {
-    if (scrollState.layersMovement === "horizontal") {
+    if (scrollState.layersMovement === LayersMovement.horizontal) {
         if (ale.isSwimming) {
             if (ale.isBelowSeaLevel) aleSwimUp()
         } else {
@@ -49,8 +53,8 @@ function aleJumpUp(elevationIndex) {
     ) {
         positionAleAtGroundLevel();
         $(aleContainerDiv).stop().animate({
-            bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + 300, "easeOutCubic"]
-        }, 300, () => {
+            bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop + gameConfig.ale.jump.height, "easeOutCubic"]
+        }, gameConfig.ale.jump.upDuration, () => {
             aleJumpDown(elevationIndex);
         });
         setAleJumpUpFrame();
@@ -61,7 +65,7 @@ function aleJumpDown(elevationIndex) {
     if (scrollState.position > ale.elevations[elevationIndex].offsetLeft - ale.rightEdge && scrollState.position < ale.elevations[elevationIndex].offsetLeft + ale.elevations[elevationIndex].offsetWidth - ale.leftEdge) {
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - ale.elevations[elevationIndex].offsetTop, "easeInCubic"]
-        }, 300, () => {
+        }, gameConfig.ale.jump.downDuration, () => {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
         });
@@ -78,7 +82,7 @@ function aleFall(elevationIndex) {
         setAleJumpDownAndFallFrame();
         $(aleContainerDiv).stop().animate({
             bottom: [containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop, "easeInCubic"]
-        }, 300, () => {
+        }, gameConfig.ale.fallDuration, () => {
             disableIsAleJumpingAndFalling();
             setAleStaticFrame()
         })
@@ -88,15 +92,15 @@ function aleFall(elevationIndex) {
 function setAleJumpUpFrame() {
     clearShiftAleFrameTimer();
     ale.isJumping = true;
-    aleFramesDiv.style.left = `${-1 * ale.startJumpFrame * ale.oneFrameWidth}px`
+    setAleFrame(gameConfig.ale.frames.jumpUp)
 }
 
 function setAleJumpDownAndFallFrame() {
-    aleFramesDiv.style.left = `${-1 * ale.stopJumpFrame * ale.oneFrameWidth}px`
+    setAleFrame(gameConfig.ale.frames.jumpDown)
 }
 
 function setAleStaticFrame() {
-    aleFramesDiv.style.left = "0px"
+    setAleFrame(gameConfig.ale.frames.idle)
 }
 
 function disableIsAleJumpingAndFalling() {
@@ -108,9 +112,9 @@ function disableIsAleJumpingAndFalling() {
 function aleSwimUp() {
     getSwimUpHeight();
     if (ale.swimUpHeight > 0) {
-        const targetBottom = `${seaFloorDiv.offsetHeight + ale.swimUpHeight}px`,
-            swimUpDuration = 3 * ale.swimUpHeight,
-            swimDownDuration = 6 * ale.swimUpHeight;
+        const targetBottom = `${seaFloorDiv.offsetHeight + ale.swimUpHeight}px`;
+        const swimUpDuration = gameConfig.ale.swim.upMsPerPx * ale.swimUpHeight;
+        const swimDownDuration = gameConfig.ale.swim.downMsPerPx * ale.swimUpHeight;
         $(aleContainerDiv).stop().animate({
             bottom: targetBottom
         }, swimUpDuration, () => {
@@ -125,8 +129,8 @@ function aleSwimDown(duration) {
     }, duration, () => {
         setAleStaticFrame()
     });
-    if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - ale.minSwimDownDistance) {
-        aleFramesDiv.style.left = `${-1 * ale.swimDownFrame * ale.oneFrameWidth}px`
+    if (aleContainerDiv.offsetTop + aleContainerDiv.offsetHeight <= containerDiv.offsetHeight - seaFloorDiv.offsetHeight - gameConfig.ale.swim.minDownDistance) {
+        setAleFrame(gameConfig.ale.frames.swimDown)
     } else {
         setAleStaticFrame()
     }
@@ -134,12 +138,12 @@ function aleSwimDown(duration) {
 
 // ─── Ale: run frame animation ─────────────────────────────────────────────────
 function animateAleRunSwim() {
-    if (ale.canRunSwim && !ale.isJumping && !ale.isFalling && scrollState.layersMovement !== "vertical") {
+    if (ale.canRunSwim && !ale.isJumping && !ale.isFalling && scrollState.layersMovement !== LayersMovement.vertical) {
         disableAnimateAleRunSwim();
         clearInterval(timers.shiftAleFrame);
         timers.shiftAleFrame = setInterval(() => {
             shiftAleFrame()
-        }, ale.frameTimeInterval)
+        }, gameConfig.ale.frameInterval)
     }
 }
 
@@ -150,15 +154,16 @@ function shiftAleFrame() {
         return;
     }
 
+    const frames = gameConfig.ale.frames;
     if (ale.isSwimming && ale.isBelowSeaLevel) {
-        ale.startFrame = ale.startSwimFrame;
-        ale.stopFrame = ale.stopSwimFrame;
+        ale.startFrame = frames.swimStart;
+        ale.stopFrame = frames.swimStop;
     } else {
-        ale.startFrame = ale.startRunFrame;
-        ale.stopFrame = ale.stopRunFrame;
+        ale.startFrame = frames.runStart;
+        ale.stopFrame = frames.runStop;
     }
 
-    aleFramesDiv.style.left = `${-1 * ale.oneFrameWidth * (ale.startFrame + ale.frameIndex)}px`;
+    setAleFrame(ale.startFrame + ale.frameIndex);
 
     if (ale.stopFrame < ale.startFrame + ale.frameIndex + ale.frameDirection) {
         ale.frameDirection *= -1;
@@ -170,9 +175,8 @@ function shiftAleFrame() {
 
     if (ale.startFrame + ale.frameIndex + ale.frameDirection < ale.startFrame) {
         if (ale.animatePosition1 === scrollState.position) {
-            ale.animatePosition2 = scrollState.position;
             clearShiftAleFrameTimer();
-            if (scrollState.layersMovement === "not moving 2") {
+            if (scrollState.layersMovement === LayersMovement.atRocket) {
                 aleHandsUp();
             }
             return;
@@ -204,13 +208,12 @@ function animateAleEyes() {
     clearRafInterval(timers.blinkAleEyes);
     timers.blinkAleEyes = setRafInterval(() => {
         blinkAleEyes()
-    }, 4000)
+    }, gameConfig.ale.blinkInterval)
 }
 
 function blinkAleEyes() {
-    if (scrollState.layersMovement !== "not moving 2") {
-        $(aleEyesCloseDiv).fadeTo(0, 1);
-        $(aleEyesCloseDiv).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
+    if (scrollState.layersMovement !== LayersMovement.atRocket) {
+        flashElement(aleEyesCloseDiv, gameConfig.ale.blinkDuration)
     }
 }
 
@@ -230,11 +233,11 @@ function getSwimUpHeight() {
 function orientAle() {
     if (scrollState.delta > 0) {
         aleFramesDiv.style.top = "0px";
-        aleEyesCloseDiv.style.left = "82px" // eyes-close overlay offset when facing right
+        aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetRight}px`
     }
     if (scrollState.delta < 0) {
-        aleFramesDiv.style.top = "-200px";
-        aleEyesCloseDiv.style.left = "68px" // eyes-close overlay offset when facing left
+        aleFramesDiv.style.top = `${-gameConfig.ale.frameHeight}px`;
+        aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetLeft}px`
     }
 }
 
@@ -242,7 +245,7 @@ function orientAle() {
 function happyAle() {
     if (!ale.isHappy) {
         clearInterval(timers.happyAle);
-        timers.happyAle = setInterval(() => { aleHandsUp() }, 3000);
+        timers.happyAle = setInterval(() => { aleHandsUp() }, gameConfig.ale.happy.interval);
         ale.isHappy = true
     }
 }
@@ -255,8 +258,8 @@ function clearHappyAleTimer() {
 }
 
 function aleHandsUp() {
-    aleFramesDiv.style.left = "-1600px"; // hands-up frame position in spritesheet (frame 8 × 200px)
-    setTimeout(() => { setAleStaticFrame() }, 1000)
+    setAleFrame(gameConfig.ale.frames.handsUp);
+    setTimeout(() => { setAleStaticFrame() }, gameConfig.ale.happy.handsUpDuration)
 }
 
 // ─── Ale: vertical positioning ───────────────────────────────────────────────
@@ -282,7 +285,7 @@ function positionAleContainerVertically() {
 }
 
 function positionAleAtGroundLevel() {
-    aleContainerDiv.style.bottom = `${.2 * containerDiv.offsetHeight}px`
+    aleContainerDiv.style.bottom = `${gameConfig.ale.groundLevelRatio * containerDiv.offsetHeight}px`
 }
 
 function positionAleAtSeaFloorLevel() {

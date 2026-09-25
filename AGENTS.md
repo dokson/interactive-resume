@@ -7,7 +7,7 @@ Single source of truth for AI coding agents (Claude Code, Cursor, OpenAI Codex C
 ```bash
 npm install          # install dependencies (required before first build)
 npm run deploy       # full build pipeline: inject-seo → minify → generate-manifest → generate-sitemap → copy-libs → generate-llms → generate-robots
-npm test             # run visual regression tests (compare screenshots against baselines)
+npm test             # run visual regression + game behaviour tests (Playwright)
 npm run test:update  # update baseline screenshots after intentional visual changes
 ```
 
@@ -64,61 +64,93 @@ All source JS lives in `src/js/`. The build minifies every file individually; no
 `index.html` loads scripts in this exact order (load order matters):
 
 ```
-─── (jQuery + easing.js) ──────────────────
+─── <head> ────────────────────────────────
+jquery.min.js, easing.min.js
+config.min.js                                ← gameConfig: every tunable number (read-only)
+─── <body> ────────────────────────────────
+preloader.min.js                             ← C64 preloader, starts its sequence immediately
 container-transparent-or-displaynone.min.js  ← declares deviceName + containerDiv
-preloader.min.js                             ← declares preloaderDiv
 ─── (EmailJS) ─────────────────────────────
 email.min.js
 init.min.js
 ale.min.js
 layers.min.js
-animation.min.js                             ← declares setRafInterval/clearRafInterval utility
+animation.min.js                             ← scene lifecycle + setRafInterval/clearRafInterval utility
 contact.min.js                               ← has top-level emailjs.init() + initContactButton()
-state.min.js                                 ← must be last: declares all global state + event handlers
+state.min.js                                 ← global state, DOM refs, bosses, sea species, scenes
+main.min.js                                  ← must be last: bootstrap + window event handlers
 ```
 
 Module responsibilities:
 
+- **`config.js`** — `gameConfig`, deep-frozen: every duration, interval, distance, sprite frame and layout ratio of the game, grouped by component (preloader, ale, world, plants, buildings, experience, bosses, seaAnimals, sea, stars, scrollHint, links, contact, fireworks). **Change behaviour here, not in the modules.**
 - **`container-transparent-or-displaynone.js`** — Device detection (`deviceName`) via feature detection (`ontouchstart`/`maxTouchPoints`) and `containerDiv` declaration
-- **`preloader.js`** — Commodore 64 preloader: `preloaderDiv` declaration, animated tape-loading sequence (starts immediately), then `finishPreloader()` (called on `window.onload`) waits for the sequence, shows a `RUN` prompt and hides the preloader on click/tap/key. Uses `font/C64_Pro_Mono-STYLE.woff` (Style64 license: keep the file unmodified and with its original name)
-- **`ale.js`** — Ale character: movement, jump/fall/swim, eyes, orientation, happy state
-- **`layers.js`** — Layer system, scroll/swipe, page dimensions, horizontal shift, touch events
-- **`animation.js`** — About/sea/experience animations, scroll hint, rAF interval utility
-- **`contact.js`** — Contact section, fireworks, EmailJS send; has top-level `emailjs.init()` and `initContactButton()` calls
-- **`init.js`** — `collectElements()`, `storeDivs()`, `initVariablesAfterShowContainer()`, `resetVariables()`, `resetFunctions()`
-- **`state.js`** — All global state organized in namespace objects (`ale`, `scrollState`, `flags`, `timers`) + DOM element declarations + window event handlers
+- **`preloader.js`** — Commodore 64 preloader: tape-loading sequence (starts immediately), then `finishPreloader()` (called on `window.onload`, returns a Promise) waits for the sequence, shows a `RUN` prompt and hides the preloader on click/tap/key. Uses `font/C64_Pro_Mono-STYLE.woff` (Style64 license: keep the file unmodified and with its original name)
+- **`ale.js`** — Ale character: movement, jump/fall/swim, sprite frames (`setAleFrame`), eyes, orientation, happy state
+- **`layers.js`** — Layer system, scroll/swipe, scroll phases (`setLayersMovement`), page dimensions, sea shift, touch events, world rise after RUN
+- **`animation.js`** — Scene behaviours (plants, buildings, bosses, sea animals, piecharts), scene lifecycle (`resetScenes`/`layoutScenes`/`resizeScenes`/`triggerEnteredScenes`), stars, scroll hint, rAF interval utility
+- **`contact.js`** — Contact section, links, fireworks, EmailJS send; has top-level `emailjs.init()` and `initContactButton()` calls
+- **`init.js`** — `storeDivs()` (DOM collection), `initVariablesAfterShowContainer()`, `resetVariables()`/`resetFunctions()` (delegate to the scene lifecycle)
+- **`state.js`** — Global state namespaces, DOM element declarations, `LayersMovement` phases, `bosses`, `seaAnimalSpecies` and the **`scenes`** registry
+- **`main.js`** — Bootstrap and `window` event handlers (`onload`, `onscroll`, `onresize`, `orientationchange`)
 - **`easing.js`** — Custom jQuery UI easing functions (easeInCubic, easeOutCubic, easeOutElastic)
+
+### Scenes (state.js)
+
+Every animated section of the world is one entry in `scenes`, carrying its whole lifecycle: `world` (`"land"` or `"sea"`; sea containers live inside `#sea-1`), `container` (its horizontal span triggers `enter` when the viewport centre crosses into it), `reset()` (restore the "not yet played" state, on load and when scrolling back to the start), `layout()` (place elements for the current state), optional `resize()`, and `enter()` (entry animation or idle loop). Bosses and sea animals are generated from the `bosses` / `seaAnimalSpecies` arrays by `createBossScene` / `createSeaAnimalScene`. **To add a scene:** add its markup, its tunables in `gameConfig`, its behaviour functions in `animation.js`, then one object in `scenes`.
+
+### Scroll phases
+
+`scrollState.layersMovement` is one of `LayersMovement.horizontal` (walking through the world), `.vertical` (climbing to the contact section), `.walkingToRocket` (last `gameConfig.world.aleToRocketDistance` px) and `.atRocket` (end of the page: links, fireworks, happy Ale). Compare against the `LayersMovement` constants, never string literals.
+
+### Timing map
+
+How the timings in `gameConfig` chain together (values in ms at today's config). Changing one link shifts everything after it.
+
+| Sequence | Chain | Total |
+|---|---|---|
+| Preloader | `startDelay` 300 → type `LOAD` (4 × `typeCharInterval` 110 + `afterTypePause` 250) → `pressPlayPause` 500 → `okPause` 300 → `searchingPause` 600 → `foundPause` 400 → raster stripes `loadingStripesDuration` 700 | ≈ 3.5 s, then waits for page load **and** the RUN input |
+| RUN → playable | type `RUN` (3 × 110 + 250) → `runBlankDuration` 120 → world rise `world.riseDuration` 1000 (also sets the CSS transition) → scroll enabled + Ale drop `ale.introDrop.duration` 500 | ≈ 1.7 s to scrolling, 2.2 s until Ale can run |
+| Jump onto an elevation | `jump.upDuration` 300 (rises `jump.height` px) → `jump.downDuration` 300 | 600; falling off = `fallDuration` 300 |
+| Swim stroke | up `swim.upMsPerPx` × scroll delta → down `swim.downMsPerPx` × delta (delta capped at sea height − Ale height) | down always takes 2× up |
+| Sea layer shift | moves `seaShiftStep` px every `seaShiftInterval` ms (1 px/ms) over `seaShiftRatio` × viewport height | ≈ 540 at 720 px height |
+| Boss entry | `enterDuration` (robot/squid 1000, alien 300) → piechart fade `experience.piechartFadeDuration` 500 → three text pairs every `piechartTextStagger` 300, each `piechartTextDuration` 1000; idle loop starts at landing. Text + chain drop in parallel over `dropDuration` 1000 | robot/squid 3100, alien 2400 |
+| Plants / buildings | item *i* starts at `stagger` × *i* (300), runs `duration` (800 / 1000) | plants 1700, buildings 1600 |
+| Sea animals | animal *i* starts at `stagger` × *i* (100), swims `swimInDistance` px in `duration` 600 | 600 + 100 × (count − 1) |
+| Fireworks | one firework every `launchInterval` 1000; each draws `rows` rings × `ringInterval` 40 = 320, then fades `fadeDuration` 1000 | new launch before the previous fade ends |
+| Idle cycles | Ale blink every `ale.blinkInterval` 4000 for 300 · sea animals every 3000 for 300 · alien eyes every 700 closed 230 · stars cycle a 4-colour Super Star palette every `stars.interval` 100 · scroll hint every 1000 visible 500 · robot hands every 4000 (frame 100) · squid hands every 4000 (8 toggles × 200) · alien steer ±15° step 5° every 100 | independent loops |
 
 ### Global state namespaces (state.js)
 
 Global mutable state is organized into four namespace objects to reduce global pollution and clarify ownership:
 
 - **`ale`** — Character physics & sprite state (isJumping, isFalling, isSwimming, frameIndex, elevations, etc.)
-- **`scrollState`** — Page position, touch coordinates, layers movement mode. Named `scrollState` (not `scroll`) to avoid overwriting the native `window.scroll` function.
-- **`flags`** — Animation control booleans (canAnimatePlant, canAnimateRobot, canDrawFireworks, etc.)
+- **`scrollState`** — Page position, touch coordinates, layers movement phase. Named `scrollState` (not `scroll`) to avoid overwriting the native `window.scroll` function.
+- **`flags`** — Animation control booleans (canAnimatePlant, canDrawFireworks, starPaletteIndex, etc.); per-boss and per-species state lives on the `bosses` / `seaAnimalSpecies` objects (`canAnimate`, `isAnimating`)
 - **`timers`** — All timer IDs (blinkAleEyes, shiftAleFrame, stars, alienEyes, drawFirework, etc.)
 
-DOM elements, arrays, counters, and constants remain as individual `var` declarations.
+DOM elements, arrays and counters remain as individual `var` declarations; tunable numbers belong in `gameConfig`.
 
 ### Animation approach
 
 - **jQuery `.animate()`** is used for movement animations (parallax, character positioning, slide-ins)
 - **`setRafInterval` / `clearRafInterval`** (defined in `animation.js`) wraps `requestAnimationFrame` with timestamp-based throttling. Used for visual cyclic animations (robot hands, squid hands, alien steer, fireworks, stars blink, alien eyes, Ale eyes). Benefits: syncs with display refresh, auto-pauses in background tabs.
+- **`flashElement(element, ms)`** (in `animation.js`) shows an overlay immediately and hides it after `ms` — use it for every blink (Ale, alien, sea animals, scroll hint). Never pair a 0 ms `fadeTo` with a following `.stop()`: the fade only applies on the next jQuery tick, so `.stop()` cancels it and the blink is lost.
 - **`setInterval`** is still used for periodic non-visual triggers (bubble creation every 3s, sea animal blink every 3s, etc.)
-- **Prefer composited CSS transitions (`transform`/`opacity`) over jQuery `.animate()` on layout properties** (`bottom`, `top`, `left`, `width`, `height`) for animations that run during page load or otherwise affect visible layout — animating layout properties triggers reflow and Cumulative Layout Shift.
+- **Prefer composited CSS transitions (`transform`/`opacity`) over jQuery `.animate()` on layout properties** (`bottom`, `top`, `left`, `width`, `height`) for animations that run during page load or otherwise affect visible layout — animating layout properties triggers reflow and Cumulative Layout Shift. Example: the world rise after RUN toggles `.layer-risen` (`transform`) instead of animating `top`.
 
-### Visual regression testing
+### Testing
 
-Playwright-based screenshot comparison across 12 key scroll positions. Baselines are stored in `tests/visual-regression.spec.js-snapshots/` and committed to git. Tests run locally only (baselines are platform-specific: `*-chromium-win32.png`).
+`npm test` runs two Playwright suites (locally only; `npm run deploy` first):
 
-- The section tests click the `RUN` prompt (`#preloader.c64-waiting`) before taking screenshots; the preloader test waits for `#preloader.c64-loading`
-- `npm test` — compare current state against baselines (fails if >1% pixel difference)
-- `npm run test:update` — regenerate baselines after intentional visual changes
+- **`tests/visual-regression.spec.js`** — screenshot comparison of the preloader and 12 scroll positions. Baselines in `tests/visual-regression.spec.js-snapshots/` (platform-specific `*-chromium-win32.png`), fail above 1% pixel difference. The section tests click `RUN`, then `settleGameAnimations()` finishes jQuery animations in the experience sections and stops the JS-driven cycles (stars, alien steer) in their rest state, because the CSS animation kill switch doesn't reach them.
+- **`tests/game.spec.js`** — behaviour tests in the real page: preloader sequence and RUN (click/key), frozen `gameConfig`, scene registry integrity, scene entry/reset, boss landing, scroll phases, progress bar, sea enter/leave, contact form validation, rAF interval utility, sitemap output.
+- `npm run test:update` — regenerate baselines after intentional visual changes only
 - Playwright config: `playwright.config.js` (uses `serve` as webServer on port 3000)
 
 ### Piechart objects
 
-Piecharts use a helper `getPiechartElements(prefix)` that returns an object with properties: `front`, `graphic1`, `graphic2`, `animation1`, `animation2`, `code1`, `code2`. These are stored as `piechartRobot`, `piechartSquid`, `piechartAlien` — access elements via `piechartRobot.front`, `piechartRobot.code1`, etc. Do NOT create individual alias variables for piechart elements.
+Piecharts use a helper `getPiechartElements(prefix)` that returns an object with properties: `front`, `graphic1`, `graphic2`, `animation1`, `animation2`, `code1`, `code2`. They are attached to each boss (`boss.piechart`) and also stored as `piechartRobot`, `piechartSquid`, `piechartAlien`. Do NOT create individual alias variables for piechart elements.
 
 ## Coding Standards & Best Practices
 

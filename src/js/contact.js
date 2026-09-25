@@ -1,6 +1,8 @@
 // ─── EmailJS init (must run before initContactButton) ────────────────────────
 emailjs.init("H_cQjD2uFvh4WSAUf");
 
+var SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+
 // ─── Contact & Links ────────────────────────────────────────────────────────
 function positionContactContainer() {
     contactContainerDiv.style.top = `${layerVerticalArray[layerVerticalArray.length - 1].offsetTop}px`;
@@ -15,7 +17,7 @@ function positionFireworksContainer() {
 function positionLinksContainer() {
     if (flags.canAnimateLinks) {
         setLinksContainerOpacity(0);
-        linksContainerDiv.style.top = "80%"
+        linksContainerDiv.style.top = gameConfig.links.startTop
     } else {
         linksContainerDiv.style.top = "0px"
     }
@@ -23,15 +25,13 @@ function positionLinksContainer() {
 
 function animateLinksContainer() {
     if (flags.canAnimateLinks) {
-        $(linksContainerDiv).stop().animate({ top: [0, "easeOutCubic"] }, 1000, () => { });
+        $(linksContainerDiv).stop().animate({ top: [0, "easeOutCubic"] }, gameConfig.links.duration);
         setLinksContainerOpacity(1);
         flags.canAnimateLinks = false
     }
 }
 
 function setLinksContainerOpacity(opacity) {
-    if (opacity > 1) { opacity = 1 }
-    if (opacity < 0) { opacity = 0 }
     const childCount = $(linksContainerDiv).children().length;
     for (let i = 0; i < childCount; i++) {
         $(linksContainerDiv.children[i]).fadeTo(0, opacity)
@@ -44,12 +44,12 @@ function setLinksContainerOpacity(opacity) {
 
 // ─── Contact confirmation & form ─────────────────────────────────────────────
 function positionContactConfirmationContainer() {
-    const leftPosition = (scrollState.layersMovement === "not moving 1" || scrollState.layersMovement === "not moving 2") ?
+    const leftPosition = (scrollState.layersMovement === LayersMovement.walkingToRocket || scrollState.layersMovement === LayersMovement.atRocket) ?
         aleContainerDiv.offsetLeft : ale.maxHorizontalDistance;
 
     for (let i = 0; i < contactConfirmationContainerArray.length; i++) {
         contactConfirmationContainerArray[i].style.left = `${leftPosition}px`;
-        contactConfirmationContainerArray[i].style.top = `${.8 * containerDiv.offsetHeight - 370}px`;
+        contactConfirmationContainerArray[i].style.top = `${(1 - gameConfig.ale.groundLevelRatio) * containerDiv.offsetHeight - gameConfig.contact.confirmationOffsetTop}px`;
     }
 }
 
@@ -99,7 +99,7 @@ function clearAllInputField() {
 // ─── Fireworks ───────────────────────────────────────────────────────────────
 function createFireworkSvg() {
     for (let i = 0; i < fireworkArray.length; i++) {
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const svg = document.createElementNS(SVG_NAMESPACE, "svg");
         svg.setAttribute("version", "1.2");
         svg.setAttribute("baseProfile", "tiny");
         svg.setAttribute("width", "100%");
@@ -116,7 +116,7 @@ function appendFireworkSvgToContainer() {
 function drawManyFireworks() {
     if (flags.canDrawFireworks) {
         clearInterval(timers.drawFirework);
-        timers.drawFirework = setInterval(() => { drawFirework() }, 1000);
+        timers.drawFirework = setInterval(() => { drawFirework() }, gameConfig.fireworks.launchInterval);
         flags.canDrawFireworks = false
     }
 }
@@ -127,19 +127,20 @@ function drawFirework() {
         resetFireworkSvg();
     } else {
         clearRafInterval(timers.drawOneLayerFirework);
-        timers.drawOneLayerFirework = setRafInterval(() => { drawOneLayerOfFirework() }, 40)
+        timers.drawOneLayerFirework = setRafInterval(() => { drawOneLayerOfFirework() }, gameConfig.fireworks.ringInterval)
     }
 }
 
 function drawOneLayerOfFirework() {
-    if (fireworkLayerNumber < fireworkRowNumber) {
+    const { rows, columns, dotRadius, color } = gameConfig.fireworks;
+    if (fireworkLayerNumber < rows) {
         fireworkLayerNumber += 1;
-        for (let i = 0; i < fireworkColumnNumber; i++) {
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        for (let i = 0; i < columns; i++) {
+            const circle = document.createElementNS(SVG_NAMESPACE, "circle");
             circle.setAttribute("cx", `${fireworkCenterX + Math.cos(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)}`);
             circle.setAttribute("cy", `${fireworkCenterY + Math.sin(i * fireworkOneRotationAngle) * (fireworkLayerNumber * fireworkOneRadiusDistance)}`);
-            circle.setAttribute("r", fireworkDotRadius);
-            circle.setAttribute("fill", "#ffffff");
+            circle.setAttribute("r", dotRadius);
+            circle.setAttribute("fill", color);
             fireworkSvgArray[drawFireworkCounter].appendChild(circle)
         }
     } else {
@@ -151,7 +152,7 @@ function drawOneLayerOfFirework() {
 }
 
 function makeFireworkDisappear(index) {
-    $(fireworkArray[index]).fadeTo(1000, 0)
+    $(fireworkArray[index]).fadeTo(gameConfig.fireworks.fadeDuration, 0)
 }
 
 function resetFireworkSvg() {
@@ -193,14 +194,14 @@ function sendEmail() {
                 "subject": subject,
                 "message": message
             };
-            setTimeout(() => { showContactConfirmationContainer(2); }, 200);
-            setTimeout(() => { send(templateParams); }, 2000);
+            setTimeout(() => { showContactConfirmationContainer(2); }, gameConfig.contact.confirmationShowDelay);
+            setTimeout(() => { send(templateParams); }, gameConfig.contact.sendDelay);
         } else {
-            setTimeout(() => { showContactConfirmationContainer(1); }, 200);
+            setTimeout(() => { showContactConfirmationContainer(1); }, gameConfig.contact.confirmationShowDelay);
         }
     } else {
         focusEmail();
-        setTimeout(() => { showContactConfirmationContainer(0); }, 200);
+        setTimeout(() => { showContactConfirmationContainer(0); }, gameConfig.contact.confirmationShowDelay);
     }
     return false;
 }
@@ -211,14 +212,14 @@ function send(templateParams) {
             console.log('Email sent successfully!', response.status, response.text);
             hideContactConfirmationContainer();
             positionContactConfirmationContainer();
-            setTimeout(() => { showContactConfirmationContainer(4); }, 200);
+            setTimeout(() => { showContactConfirmationContainer(4); }, gameConfig.contact.confirmationShowDelay);
             clearAllInputField();
         })
         .catch((error) => {
-            console.log('Email failed to send:', error);
+            console.error('Email failed to send:', error);
             hideContactConfirmationContainer();
             positionContactConfirmationContainer();
-            setTimeout(() => { showContactConfirmationContainer(3); }, 200);
+            setTimeout(() => { showContactConfirmationContainer(3); }, gameConfig.contact.confirmationShowDelay);
         });
 }
 

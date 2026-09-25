@@ -3,8 +3,8 @@ var rafIntervals = {};
 var rafIntervalNextId = 0;
 
 function setRafInterval(callback, interval) {
-    var id = ++rafIntervalNextId;
-    var lastTime = performance.now();
+    const id = ++rafIntervalNextId;
+    let lastTime = performance.now();
     function loop(now) {
         if (!rafIntervals[id]) return;
         rafIntervals[id] = requestAnimationFrame(loop);
@@ -24,11 +24,29 @@ function clearRafInterval(id) {
     }
 }
 
+// ─── Flash: show an overlay now, hide it after `visibleDuration` ─────────────
+// Opacity is set synchronously: a 0 ms jQuery fadeTo only applies on the next fx tick,
+// so a following .stop() used to cancel it and most blinks were lost.
+function flashElement(element, visibleDuration) {
+    $(element).stop(true).css("opacity", 1).delay(visibleDuration).animate({ opacity: 0 }, 0);
+}
+
+// ─── Viewport helpers ────────────────────────────────────────────────────────
+function viewportCenter(position) {
+    return position + .5 * containerDiv.offsetWidth;
+}
+
+function isViewportCenterOutside(container) {
+    const center = viewportCenter(scrollState.position);
+    return center < container.offsetLeft || center > container.offsetLeft + container.offsetWidth;
+}
+
 // ─── About: plants ───────────────────────────────────────────────────────────
 function animatePlants() {
-    for (let i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(300 * i).animate({
+    const { stagger, duration } = gameConfig.plants;
+    for (let i = 0; i < plantArray.length; i++) $(plantArray[i]).stop().delay(stagger * i).animate({
         top: [plantTargetTopObjectArray[i].offsetTop, "easeOutElastic"]
-    }, 800, () => { })
+    }, duration)
 }
 
 function positionPlants() {
@@ -37,19 +55,20 @@ function positionPlants() {
 
 // ─── About: buildings ────────────────────────────────────────────────────────
 function animateElementsLeft(elements, targets) {
+    const { stagger, duration } = gameConfig.buildings;
     for (let i = 0; i < elements.length; i++) {
-        $(elements[i]).stop().delay(300 * i).animate({
+        $(elements[i]).stop().delay(stagger * i).animate({
             left: [targets[i], "easeOutCubic"]
-        }, 1000, () => { });
+        }, duration);
     }
 }
 
 function animateBuildings() {
-    animateElementsLeft(buildingArray, buildingTargetLeftArray);
+    animateElementsLeft(buildingArray, gameConfig.buildings.first.targetLeft);
 }
 
 function animateBuildings2() {
-    animateElementsLeft(building2Array, building2TargetLeftArray);
+    animateElementsLeft(building2Array, gameConfig.buildings.second.targetLeft);
 }
 
 function positionElementsLeft(elements, positions) {
@@ -59,60 +78,55 @@ function positionElementsLeft(elements, positions) {
 }
 
 function positionBuildings() {
-    positionElementsLeft(buildingArray, buildingEarlyPositionArray);
+    positionElementsLeft(buildingArray, gameConfig.buildings.first.startLeft);
 }
 
 function positionBuildings2() {
-    positionElementsLeft(building2Array, building2EarlyPositionArray);
+    positionElementsLeft(building2Array, gameConfig.buildings.second.startLeft);
 }
 
 // ─── Sea animals ─────────────────────────────────────────────────────────────
-function positionSeaAnimals(animals, animalsPerRow, colSpacing, rowSpacing) {
+function positionSeaAnimals(species) {
+    const { swimInDistance, columnSpacing, rowSpacing, rows } = gameConfig.seaAnimals;
+    const animalsPerRow = rows[species.name];
     for (let animalIndex = 0, row = 0; row < animalsPerRow.length; row++)
         for (let col = 0; col < animalsPerRow[row]; col++) {
-            animals[animalIndex].style.left = `${seaAnimalSwimDistance + col * colSpacing}px`;
-            animals[animalIndex].style.top = `${row * rowSpacing}px`;
+            species.animals[animalIndex].style.left = `${swimInDistance + col * columnSpacing}px`;
+            species.animals[animalIndex].style.top = `${row * rowSpacing}px`;
             animalIndex += 1
         }
 }
 
-function animateSeaAnimals(animalArray) {
-    if (animalArray === fishArray) isFishStillAnimating = true;
-    if (animalArray === crabArray) isCrabStillAnimating = true;
-    if (animalArray === turtleArray) isTurtleStillAnimating = true;
-    for (let i = 0; i < animalArray.length; i++) $(animalArray[i]).stop().delay(100 * i).animate({
-        left: [animalArray[i].offsetLeft - seaAnimalSwimDistance, "easeOutCubic"]
-    }, 600, () => {
-        disableIsSeaAnimalStillAnimating(animalArray)
+function animateSeaAnimals(species) {
+    const { swimInDistance, stagger, duration } = gameConfig.seaAnimals;
+    species.isAnimating = true;
+    for (let i = 0; i < species.animals.length; i++) $(species.animals[i]).stop().delay(stagger * i).animate({
+        left: [species.animals[i].offsetLeft - swimInDistance, "easeOutCubic"]
+    }, duration, () => {
+        markSeaAnimalArrived(species)
     })
 }
 
-function disableIsSeaAnimalStillAnimating(animalArray) {
-    if (animalArray === fishArray) {
-        if (fishAnimateNumber >= animalArray.length - 1) { isFishStillAnimating = false; fishAnimateNumber = 0 }
-        else fishAnimateNumber += 1
-    }
-    if (animalArray === crabArray) {
-        if (crabAnimateNumber >= animalArray.length - 1) { isCrabStillAnimating = false; crabAnimateNumber = 0 }
-        else crabAnimateNumber += 1
-    }
-    if (animalArray === turtleArray) {
-        if (turtleAnimateNumber >= animalArray.length - 1) { isTurtleStillAnimating = false; turtleAnimateNumber = 0 }
-        else turtleAnimateNumber += 1
+function markSeaAnimalArrived(species) {
+    if (species.arrivedCount >= species.animals.length - 1) {
+        species.isAnimating = false;
+        species.arrivedCount = 0
+    } else {
+        species.arrivedCount += 1
     }
 }
 
 // ─── Sea: bubble ─────────────────────────────────────────────────────────────
 function createBubble() {
     clearInterval(timers.bubble);
-    timers.bubble = setInterval(() => { animateBubble() }, 3000)
+    timers.bubble = setInterval(() => { animateBubble() }, gameConfig.sea.bubbleInterval)
 }
 
 function animateBubble() {
     const topOffset = aleContainerDiv.offsetTop - (sea1Div.offsetTop - shiftUpLayerHorizontalDistance);
     positionBubble(topOffset);
     showBubble();
-    $(bubbleDiv).stop().animate({ top: "0px" }, 2 * topOffset, () => { hideBubble() })
+    $(bubbleDiv).stop().animate({ top: "0px" }, gameConfig.sea.bubbleMsPerPx * topOffset, () => { hideBubble() })
 }
 
 function hideBubble() {
@@ -124,224 +138,108 @@ function showBubble() {
 }
 
 function positionBubble(topOffset) {
-    bubbleDiv.style.left = `${scrollState.position + .5 * containerDiv.offsetWidth - sea1Div.offsetLeft}px`;
+    bubbleDiv.style.left = `${viewportCenter(scrollState.position) - sea1Div.offsetLeft}px`;
     bubbleDiv.style.top = `${topOffset}px`
 }
 
 // ─── Sea animals: blink ──────────────────────────────────────────────────────
 function blinkSeaAnimals(eyeArray) {
+    const { blinkMaxEyes, blinkDuration } = gameConfig.seaAnimals;
     const selectedEyes = [];
-    const blinkCount = Math.ceil(5 * Math.random());
+    const blinkCount = Math.ceil(blinkMaxEyes * Math.random());
     for (let i = 0; i < blinkCount; i++) {
         const randomIndex = Math.floor(Math.random() * eyeArray.length);
         selectedEyes.push(eyeArray[randomIndex])
     }
     for (const eye of selectedEyes) {
-        $(eye).fadeTo(0, 1);
-        $(eye).stop().delay(300).animate({ opacity: 0 }, 0, () => { })
+        flashElement(eye, blinkDuration)
     }
 }
 
 function makeSeaAnimalsBlinking(eyeArray) {
     clearInterval(timers.blinkSeaAnimals);
-    timers.blinkSeaAnimals = setInterval(() => { blinkSeaAnimals(eyeArray) }, 3000)
+    timers.blinkSeaAnimals = setInterval(() => { blinkSeaAnimals(eyeArray) }, gameConfig.seaAnimals.blinkInterval)
 }
 
 // ─── Sea floor ───────────────────────────────────────────────────────────────
 function positionSeaFloorObjectsVertically() {
+    const backRatio = gameConfig.sea.backObjectsBottomRatio;
     for (const obj of seaFloorFrontObjectArray)
-        obj.offsetHeight > sea1Div.offsetHeight ? obj.style.bottom = `${-1 * (obj.offsetHeight - sea1Div.offsetHeight)}px` : obj.style.bottom = "0px";
+        obj.style.bottom = obj.offsetHeight > sea1Div.offsetHeight ? `${-1 * (obj.offsetHeight - sea1Div.offsetHeight)}px` : "0px";
     for (const obj of seaFloorBackObjectArray)
-        obj.offsetHeight > sea1Div.offsetHeight ? obj.style.bottom = `${-.7 * containerDiv.offsetHeight - (obj.offsetHeight - sea1Div.offsetHeight)}px` : obj.style.bottom = "-70%"
+        obj.style.bottom = obj.offsetHeight > sea1Div.offsetHeight ? `${backRatio * containerDiv.offsetHeight - (obj.offsetHeight - sea1Div.offsetHeight)}px` : `${backRatio * 100}%`
 }
 
-// ─── Experience: containers & text ───────────────────────────────────────────
-function positionChainBlockAndStringContainer() {
-    for (let i = 0; i < chainBlockAndStringContainerArray.length; i++) {
-        if (i === 0) flags.canAnimateBoss = flags.canAnimateRobot;
-        if (i === 1) flags.canAnimateBoss = flags.canAnimateSquid;
-        if (i === 2) flags.canAnimateBoss = flags.canAnimateAlien;
-        chainBlockAndStringContainerArray[i].style.left = `${.5 * experienceTextContainerArray[i].offsetWidth - .5 * chainBlockAndStringContainerArray[i].offsetWidth}px`;
-        chainBlockAndStringContainerArray[i].style.bottom = flags.canAnimateBoss ?
-            `${.8 * containerDiv.offsetHeight + experienceTextContainerArray[i].offsetHeight}px` :
-            `${experienceTextContainerDistanceFromFloor + experienceTextContainerArray[i].offsetHeight}px`
-    }
+// ─── Experience: text containers & chains ────────────────────────────────────
+function positionBossChain(boss) {
+    const { textDistanceFromFloor, dropStartRatio } = gameConfig.experience;
+    const chain = chainBlockAndStringContainerArray[boss.index];
+    const text = experienceTextContainerArray[boss.index];
+    chain.style.left = `${.5 * text.offsetWidth - .5 * chain.offsetWidth}px`;
+    chain.style.bottom = boss.canAnimate ?
+        `${dropStartRatio * containerDiv.offsetHeight + text.offsetHeight}px` :
+        `${textDistanceFromFloor + text.offsetHeight}px`
 }
 
 function animateChainBlockAndStringContainer(index) {
+    const { textDistanceFromFloor, dropDuration } = gameConfig.experience;
     $(chainBlockAndStringContainerArray[index]).stop().animate({
-        bottom: [experienceTextContainerDistanceFromFloor + experienceTextContainerArray[index].offsetHeight, "easeOutCubic"]
-    }, 1000, () => { })
+        bottom: [textDistanceFromFloor + experienceTextContainerArray[index].offsetHeight, "easeOutCubic"]
+    }, dropDuration)
 }
 
-function positionExperienceTextContainer() {
-    for (let i = 0; i < experienceTextContainerArray.length; i++) {
-        if (i === 0) flags.canAnimateBoss = flags.canAnimateRobot;
-        if (i === 1) flags.canAnimateBoss = flags.canAnimateSquid;
-        if (i === 2) flags.canAnimateBoss = flags.canAnimateAlien;
-        experienceTextContainerArray[i].style.bottom = flags.canAnimateBoss ?
-            `${.8 * containerDiv.offsetHeight}px` :
-            `${experienceTextContainerDistanceFromFloor}px`
-    }
+function positionBossText(boss) {
+    const { textDistanceFromFloor, dropStartRatio } = gameConfig.experience;
+    experienceTextContainerArray[boss.index].style.bottom = boss.canAnimate ?
+        `${dropStartRatio * containerDiv.offsetHeight}px` :
+        `${textDistanceFromFloor}px`
 }
 
 function animateExperienceTextContainer(index) {
+    const { textDistanceFromFloor, dropDuration } = gameConfig.experience;
     $(experienceTextContainerArray[index]).stop().animate({
-        bottom: [experienceTextContainerDistanceFromFloor, "easeOutCubic"]
-    }, 1000, () => { })
+        bottom: [textDistanceFromFloor, "easeOutCubic"]
+    }, dropDuration)
 }
 
-function hidePiechartElements(frontDiv, textDivs) {
-    for (const div of textDivs) {
-        $(div).fadeTo(0, 0);
-    }
-    $(frontDiv).fadeTo(0, 0);
-}
-
-function hidePiechartByPrefix(piechart) {
-    hidePiechartElements(piechart.front, [
-        piechart.graphic1, piechart.graphic2,
-        piechart.animation1, piechart.animation2,
-        piechart.code1, piechart.code2
-    ]);
-}
-
-function positionExperience1Elements() {
-    robotDiv.style.left = `${experience1ContainerDiv.offsetWidth}px`;
-    hidePiechartByPrefix(piechartRobot);
-}
-
-function positionExperience2Elements() {
-    squidDiv.style.left = `${experience2ContainerDiv.offsetWidth}px`;
-    hidePiechartByPrefix(piechartSquid);
-}
-
-function positionExperience3Elements() {
-    alienDiv.style.left = `${experience3ContainerDiv.offsetWidth}px`;
-    hidePiechartByPrefix(piechartAlien);
-}
-
-// ─── Experience: animation dispatch ──────────────────────────────────────────
-function animateInformationAndEnemiesElements() {
-    if (scrollState.layersMovement !== "horizontal")
-        return;
-
-    if (!ale.isSwimming) {
-        for (let i = 0; i < landInformationContainerArray.length; i++) {
-            const container = landInformationContainerArray[i];
-            const containerLeft = container.offsetLeft;
-            const containerRight = containerLeft + container.offsetWidth;
-            const viewportCenter = scrollState.position + (containerDiv.offsetWidth * 0.5);
-            const previousViewportCenter = scrollState.previousPosition + (containerDiv.offsetWidth * 0.5);
-            const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
-            const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
-
-            if (wasOutsideViewport && isNowInsideViewport) {
-                if (container === about1ContainerDiv && flags.canAnimatePlant) {
-                    animatePlants();
-                    flags.canAnimatePlant = false;
-                }
-                if (container === about2ContainerDiv && flags.canAnimateBuilding) {
-                    animateBuildings();
-                    flags.canAnimateBuilding = false;
-                }
-                if (container === about3ContainerDiv && flags.canAnimateBuilding2) {
-                    animateBuildings2();
-                    flags.canAnimateBuilding2 = false;
-                }
-                if (container === experience1ContainerDiv) {
-                    if (!flags.canAnimateRobot) {
-                        animateRobotHands();
-                    } else {
-                        animateRobot();
-                        animateExperienceTextContainer(0);
-                        animateChainBlockAndStringContainer(0);
-                        flags.canAnimateRobot = false;
-                    }
-                }
-                if (container === experience2ContainerDiv) {
-                    if (!flags.canAnimateSquid) {
-                        animateSquidHands();
-                    } else {
-                        animateSquid();
-                        animateExperienceTextContainer(1);
-                        animateChainBlockAndStringContainer(1);
-                        flags.canAnimateSquid = false;
-                    }
-                }
-                if (container === experience3ContainerDiv) {
-                    if (!flags.canAnimateAlien) {
-                        animateAlienHand();
-                    } else {
-                        animateAlien();
-                        animateExperienceTextContainer(2);
-                        animateChainBlockAndStringContainer(2);
-                        flags.canAnimateAlien = false;
-                    }
-                }
-            }
-        }
-    }
-    if (ale.isSwimming) {
-        for (let i = 0; i < seaInformationContainerArray.length; i++) {
-            const container = seaInformationContainerArray[i];
-            const containerLeft = sea1Div.offsetLeft + container.offsetLeft;
-            const containerRight = containerLeft + container.offsetWidth;
-            const viewportCenter = scrollState.position + (containerDiv.offsetWidth * 0.5);
-            const previousViewportCenter = scrollState.previousPosition + (containerDiv.offsetWidth * 0.5);
-            const wasOutsideViewport = (previousViewportCenter < containerLeft || previousViewportCenter > containerRight);
-            const isNowInsideViewport = (viewportCenter > containerLeft && viewportCenter < containerRight);
-
-            if (wasOutsideViewport && isNowInsideViewport) {
-                if (container === skill1ContainerDiv) {
-                    makeSeaAnimalsBlinking(fishEyeArray);
-                    if (flags.canAnimateFish) {
-                        animateSeaAnimals(fishArray);
-                        flags.canAnimateFish = false;
-                    }
-                }
-                if (container === skill2ContainerDiv) {
-                    makeSeaAnimalsBlinking(crabEyeArray);
-                    if (flags.canAnimateCrab) {
-                        animateSeaAnimals(crabArray);
-                        flags.canAnimateCrab = false;
-                    }
-                }
-                if (container === skill3ContainerDiv) {
-                    makeSeaAnimalsBlinking(turtleEyeArray);
-                    if (flags.canAnimateTurtle) {
-                        animateSeaAnimals(turtleArray);
-                        flags.canAnimateTurtle = false;
-                    }
-                }
-            }
-        }
+// ─── Experience: bosses ──────────────────────────────────────────────────────
+function hidePiechart(piechart) {
+    for (const part of ["front", "graphic1", "graphic2", "animation1", "animation2", "code1", "code2"]) {
+        $(piechart[part]).fadeTo(0, 0);
     }
 }
 
-// ─── Experience: robot ───────────────────────────────────────────────────────
-function animateRobot() {
-    $(robotDiv).stop().animate({
-        left: "420px" // sprite landing position inside experience-1 container
-    }, 1000, () => {
-        animatePiechartAolFront();
-        animateRobotHands()
+function positionBoss(boss) {
+    boss.div.style.left = `${boss.containerDiv.offsetWidth}px`;
+    hidePiechart(boss.piechart);
+}
+
+function enterBoss(boss) {
+    const bossConfig = gameConfig.bosses[boss.name];
+    $(boss.div).stop().animate({
+        left: `${bossConfig.landingLeft}px`
+    }, bossConfig.enterDuration, () => {
+        animatePiechartFront(boss.piechart.front, () => {
+            animatePiechartText(boss.piechart, bossConfig.piechartOrder);
+        });
+        boss.startIdle()
     })
 }
 
+// ─── Experience: robot ───────────────────────────────────────────────────────
 function animateRobotHands() {
     spinRobotHands();
     clearInterval(timers.animateRobotHands);
     timers.animateRobotHands = setInterval(() => {
         spinRobotHands()
-    }, 4000)
+    }, gameConfig.bosses.robot.handsCycleInterval)
 }
 
 function spinRobotHands() {
     clearRafInterval(timers.spinRobotHands);
     timers.spinRobotHands = setRafInterval(() => {
         changeRobotHands()
-    }, 100)
+    }, gameConfig.bosses.robot.handsFrameInterval)
 }
 
 function changeRobotHands() {
@@ -349,8 +247,7 @@ function changeRobotHands() {
         changeRobotHandsCounter = 0;
         clearRafInterval(timers.spinRobotHands);
         setRobotHandsToDefault();
-        if (scrollState.position + .5 * containerDiv.offsetWidth < experience1ContainerDiv.offsetLeft ||
-            scrollState.position + .5 * containerDiv.offsetWidth > experience1ContainerDiv.offsetLeft + experience1ContainerDiv.offsetWidth)
+        if (isViewportCenterOutside(experience1ContainerDiv))
             clearInterval(timers.animateRobotHands)
     } else {
         for (let i = 0; i < robotHandChildrenLength; i++) {
@@ -385,37 +282,27 @@ function setRobotHandsToTransparent(index) {
 }
 
 // ─── Experience: squid ───────────────────────────────────────────────────────
-function animateSquid() {
-    $(squidDiv).stop().animate({
-        left: "430px" // sprite landing position inside experience-2 container
-    }, 1000, () => {
-        animatePiechartIncognitoFront();
-        animateSquidHands()
-    })
-}
-
 function animateSquidHands() {
     moveSquidHands();
     clearInterval(timers.animateSquidHands);
     timers.animateSquidHands = setInterval(() => {
         moveSquidHands()
-    }, 4000)
+    }, gameConfig.bosses.squid.handsCycleInterval)
 }
 
 function moveSquidHands() {
     clearRafInterval(timers.moveSquidHands);
     timers.moveSquidHands = setRafInterval(() => {
         openAndCloseSquidHands()
-    }, 200)
+    }, gameConfig.bosses.squid.handsFrameInterval)
 }
 
 function openAndCloseSquidHands() {
-    if (openAndCloseSquidHandsCounter >= 8) {
+    if (openAndCloseSquidHandsCounter >= gameConfig.bosses.squid.handsToggles) {
         openAndCloseSquidHandsCounter = 0;
         clearRafInterval(timers.moveSquidHands);
         openSquidHands();
-        if (scrollState.position + .5 * containerDiv.offsetWidth < experience2ContainerDiv.offsetLeft ||
-            scrollState.position + .5 * containerDiv.offsetWidth > experience2ContainerDiv.offsetLeft + experience2ContainerDiv.offsetWidth)
+        if (isViewportCenterOutside(experience2ContainerDiv))
             clearInterval(timers.animateSquidHands)
     } else if (openAndCloseSquidHandsCounter % 2 === 0) {
         openSquidHands()
@@ -440,7 +327,7 @@ function animateAlienHand() {
     clearRafInterval(timers.animateAlienHands);
     timers.animateAlienHands = setRafInterval(() => {
         rotateAlienHands()
-    }, 100)
+    }, gameConfig.bosses.alien.steerFrameInterval)
 }
 
 function rotateAlienHands() {
@@ -451,10 +338,7 @@ function rotateAlienHands() {
     } else {
         if (alienSteerAngle < alienSteerAngleLimit) { alienSteerAngleIncrement *= -1; alienSteerAngleLimit *= -1 }
     }
-    const isOutsideViewport =
-        scrollState.position + .5 * containerDiv.offsetWidth < experience3ContainerDiv.offsetLeft ||
-        scrollState.position + .5 * containerDiv.offsetWidth > experience3ContainerDiv.offsetLeft + experience3ContainerDiv.offsetWidth;
-    if (alienSteerAngle === 0 && isOutsideViewport) {
+    if (alienSteerAngle === 0 && isViewportCenterOutside(experience3ContainerDiv)) {
         clearRafInterval(timers.animateAlienHands);
         alienSteerDiv.style.transform = "rotate(0deg)";
     } else {
@@ -462,75 +346,120 @@ function rotateAlienHands() {
     }
 }
 
-function animateAlien() {
-    $(alienDiv).stop().animate({
-        left: "450px" // sprite landing position inside experience-3 container
-    }, 300, () => {
-        animatePiechartFoxnewsFront();
-        animateAlienHand()
-    })
-}
-
 // ─── Piecharts ───────────────────────────────────────────────────────────────
 function animatePiechartFront(frontDiv, callback) {
-    $(frontDiv).stop().animate({ opacity: 1 }, 500, () => {
+    $(frontDiv).stop().animate({ opacity: 1 }, gameConfig.experience.piechartFadeDuration, () => {
         callback();
     });
 }
 
 function animatePiechartTextPair(div1, div2, delayOffset) {
-    $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
-    $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, 1000, () => { });
+    const duration = gameConfig.experience.piechartTextDuration;
+    $(div1).stop().delay(delayOffset).animate({ opacity: 1 }, duration);
+    $(div2).stop().delay(delayOffset).animate({ opacity: 1 }, duration);
 }
 
 function animatePiechartText(piechart, order) {
     for (let i = 0; i < order.length; i++) {
-        animatePiechartTextPair(piechart[order[i] + "1"], piechart[order[i] + "2"], 300 * i);
+        animatePiechartTextPair(piechart[`${order[i]}1`], piechart[`${order[i]}2`], gameConfig.experience.piechartTextStagger * i);
     }
 }
 
-function animatePiechartAolFront() {
-    animatePiechartFront(piechartRobot.front, () => {
-        animatePiechartText(piechartRobot, ["code", "graphic", "animation"]);
-    });
+// ─── Scene entry handlers (wired in state.js `scenes`) ───────────────────────
+function enterPlantsSection() {
+    if (flags.canAnimatePlant) {
+        animatePlants();
+        flags.canAnimatePlant = false;
+    }
 }
 
-function animatePiechartIncognitoFront() {
-    animatePiechartFront(piechartSquid.front, () => {
-        animatePiechartText(piechartSquid, ["code", "animation", "graphic"]);
-    });
+function enterBuildingsSection() {
+    if (flags.canAnimateBuilding) {
+        animateBuildings();
+        flags.canAnimateBuilding = false;
+    }
 }
 
-function animatePiechartFoxnewsFront() {
-    animatePiechartFront(piechartAlien.front, () => {
-        animatePiechartText(piechartAlien, ["code", "animation", "graphic"]);
-    });
+function enterBuildings2Section() {
+    if (flags.canAnimateBuilding2) {
+        animateBuildings2();
+        flags.canAnimateBuilding2 = false;
+    }
+}
+
+function enterBossSection(boss) {
+    if (!boss.canAnimate) {
+        boss.startIdle();
+        return;
+    }
+    enterBoss(boss);
+    animateExperienceTextContainer(boss.index);
+    animateChainBlockAndStringContainer(boss.index);
+    boss.canAnimate = false;
+}
+
+function enterSeaAnimalSection(species) {
+    makeSeaAnimalsBlinking(species.eyes);
+    if (species.canAnimate) {
+        animateSeaAnimals(species);
+        species.canAnimate = false;
+    }
+}
+
+// ─── Scene lifecycle ─────────────────────────────────────────────────────────
+function resetScenes() {
+    for (const scene of scenes) scene.reset();
+}
+
+function layoutScenes() {
+    for (const scene of scenes) scene.layout();
+}
+
+function resizeScenes() {
+    for (const scene of scenes) scene.resize?.();
+}
+
+function triggerEnteredScenes() {
+    if (scrollState.layersMovement !== LayersMovement.horizontal)
+        return;
+    const world = ale.isSwimming ? "sea" : "land";
+    const offsetLeft = world === "sea" ? sea1Div.offsetLeft : 0;
+    const center = viewportCenter(scrollState.position);
+    const previousCenter = viewportCenter(scrollState.previousPosition);
+    for (const scene of scenes) {
+        if (scene.world !== world) continue;
+        const left = offsetLeft + scene.container.offsetLeft;
+        const right = left + scene.container.offsetWidth;
+        const wasOutside = previousCenter < left || previousCenter > right;
+        const isInside = center > left && center < right;
+        if (wasOutside && isInside) scene.enter();
+    }
 }
 
 // ─── Stars & alien eyes ──────────────────────────────────────────────────────
 function animateStars() {
     clearRafInterval(timers.stars);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     timers.stars = setRafInterval(() => {
         switchStarsColor();
-    }, 400);
+    }, gameConfig.stars.interval);
 }
 
 function animateAlienEyes() {
     clearRafInterval(timers.alienEyes);
     timers.alienEyes = setRafInterval(() => {
         switchAlienEyes();
-    }, 700);
+    }, gameConfig.bosses.alien.eyesInterval);
 }
 
-var starsVisible = true;
 function switchStarsColor() {
-    starsVisible = !starsVisible;
-    $(stars).fadeTo(0, starsVisible ? 1 : 0);
+    const palette = gameConfig.stars.palette;
+    flags.starPaletteIndex = (flags.starPaletteIndex + 1) % palette.length;
+    for (const star of stars) star.style.filter = palette[flags.starPaletteIndex];
 }
 
 function switchAlienEyes() {
-    $(alienEyes).fadeTo(0, 1);
-    $(alienEyes).stop().delay(230).animate({ opacity: 0 }, 0, () => { });
+    flashElement(alienEyes, gameConfig.bosses.alien.eyesClosedDuration);
 }
 
 // ─── Scroll / swipe hint text ────────────────────────────────────────────────
@@ -538,13 +467,12 @@ function animateScrollOrSwipeTextContainer() {
     if (flags.canAnimateScrollText) {
         flags.canAnimateScrollText = false;
         clearInterval(timers.scrollText);
-        timers.scrollText = setInterval(() => { turnOnAndOffScrollOrSwipeTextContainer() }, 1000)
+        timers.scrollText = setInterval(() => { turnOnAndOffScrollOrSwipeTextContainer() }, gameConfig.scrollHint.interval)
     }
 }
 
 function toggleScrollSwipeText(container) {
-    $(container).fadeTo(0, 1);
-    $(container).stop().delay(500).animate({ opacity: 0 }, 0, () => { });
+    flashElement(container, gameConfig.scrollHint.visibleDuration);
 }
 
 function turnOnAndOffScrollOrSwipeTextContainer() {

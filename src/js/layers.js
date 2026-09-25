@@ -1,9 +1,9 @@
 // ─── Scroll / swipe control ──────────────────────────────────────────────────
-function orientationChangeHandler(event) {
+function orientationChangeHandler() {
     disableScrollOrSwipe();
     setTimeout(() => {
         $(window).trigger("resize")
-    }, 500)
+    }, gameConfig.world.resizeAfterOrientationDelay)
 }
 
 function enableScrollOrSwipe() {
@@ -36,8 +36,7 @@ function handleMove(event) {
 }
 
 function handleEnd(event) {
-    event.preventDefault();
-    scrollState.touchEndX = event.changedTouches[0].pageX
+    event.preventDefault()
 }
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────
@@ -46,7 +45,7 @@ function runTheseFunctionsAfterScrollOrSwipe() {
     checkAleJumpFallSwim();
     moveLayers();
     shiftUpDownHorizontalLayers();
-    animateInformationAndEnemiesElements();
+    triggerEnteredScenes();
     animateAleRunSwim();
     hideScrollOrSwipeTextContainer();
     hideContactConfirmationContainer();
@@ -63,7 +62,7 @@ function updateScrollProgress() {
 }
 
 function deviceFunctionScrollSwipe() {
-    deviceName !== "computer" && scrollState.layersMovement === "vertical" && positionHorizontalLayersToHaveSameRightPosition()
+    deviceName !== "computer" && scrollState.layersMovement === LayersMovement.vertical && positionHorizontalLayersToHaveSameRightPosition()
 }
 
 // ─── Container & preloader ───────────────────────────────────────────────────
@@ -73,8 +72,11 @@ function showContainer() {
 
 function shiftUpHorizontalLayersAfterEverythingLoaded() {
     // Composited rise: transform keeps the intro out of Cumulative Layout Shift.
-    for (const layer of layerHorizontalArray) layer.classList.add("layer-risen");
-    setTimeout(finishShiftUpHorizontalLayersAfterEverythingLoaded, 1000)
+    for (const layer of layerHorizontalArray) {
+        layer.style.transitionDuration = `${gameConfig.world.riseDuration}ms`;
+        layer.classList.add("layer-risen")
+    }
+    setTimeout(finishShiftUpHorizontalLayersAfterEverythingLoaded, gameConfig.world.riseDuration)
 }
 
 function finishShiftUpHorizontalLayersAfterEverythingLoaded() {
@@ -90,8 +92,8 @@ function finishShiftUpHorizontalLayersAfterEverythingLoaded() {
 function shiftDownAleContainer() {
     setAleJumpDownAndFallFrame();
     $(aleContainerDiv).stop().animate({
-        bottom: "20%"
-    }, 500, () => {
+        bottom: gameConfig.ale.introDrop.bottom
+    }, gameConfig.ale.introDrop.duration, () => {
         setAleStaticFrame();
         enableAnimateAleRunSwim()
     });
@@ -104,7 +106,7 @@ function makePageScrollable() {
 
 // ─── Page dimensions ─────────────────────────────────────────────────────────
 function setFrontLayerVerticalHeight() {
-    layerVerticalArray[layerVerticalArray.length - 1].style.height = `${2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gapBetweenContactCloudAndBannersContainer}px`
+    layerVerticalArray[layerVerticalArray.length - 1].style.height = `${2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gameConfig.world.contactCloudGap}px`
 }
 
 function setBannersContainerVerticalPosition() {
@@ -112,7 +114,7 @@ function setBannersContainerVerticalPosition() {
 }
 
 function setPageHeight() {
-    pageDiv.style.height = `${layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + distanceBetweenAleAndRocket}px`
+    pageDiv.style.height = `${layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth + layerVerticalArray[layerVerticalArray.length - 1].offsetHeight + gameConfig.world.aleToRocketDistance}px`
 }
 
 function setLayerSpeed() {
@@ -148,7 +150,7 @@ function detectPageVerticalPosition() {
 
 function moveLayers() {
     setLayersMovement();
-    if (scrollState.layersMovement === "horizontal") {
+    if (scrollState.layersMovement === LayersMovement.horizontal) {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
             const layerOffset = -1 * layerHorizontalSpeedArray[i] * scrollState.position;
             layerHorizontalArray[i].style.left = `${layerOffset}px`;
@@ -157,7 +159,7 @@ function moveLayers() {
         clearHappyAleTimer();
         positionVerticalLayersHorizontally();
     }
-    if (scrollState.layersMovement === "vertical") {
+    if (scrollState.layersMovement === LayersMovement.vertical) {
         const lastHorizontalLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
         const horizontalOffset = scrollState.position - (lastHorizontalLayer.offsetWidth - containerDiv.offsetWidth);
 
@@ -171,11 +173,11 @@ function moveLayers() {
         clearShiftAleFrameTimer();
         clearHappyAleTimer();
     }
-    if (scrollState.layersMovement === "not moving 1") {
+    if (scrollState.layersMovement === LayersMovement.walkingToRocket) {
         positionLayersWhenNotMoving();
         clearHappyAleTimer();
     }
-    if (scrollState.layersMovement === "not moving 2") {
+    if (scrollState.layersMovement === LayersMovement.atRocket) {
         positionLayersWhenNotMoving();
         animateLinksContainer();
         happyAle();
@@ -188,13 +190,13 @@ function moveLayers() {
 
 function setLayersMovement() {
     if (scrollState.position * layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1] <= layerHorizontalArray[layerHorizontalArray.length - 1].offsetWidth - containerDiv.offsetWidth) {
-        scrollState.layersMovement = "horizontal"
-    } else if (scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket && scrollState.position < pageDiv.offsetHeight - containerDiv.offsetHeight) {
-        scrollState.layersMovement = "not moving 1"
+        scrollState.layersMovement = LayersMovement.horizontal
+    } else if (scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight - gameConfig.world.aleToRocketDistance && scrollState.position < pageDiv.offsetHeight - containerDiv.offsetHeight) {
+        scrollState.layersMovement = LayersMovement.walkingToRocket
     } else if (scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight) {
-        scrollState.layersMovement = "not moving 2"
+        scrollState.layersMovement = LayersMovement.atRocket
     } else {
-        scrollState.layersMovement = "vertical"
+        scrollState.layersMovement = LayersMovement.vertical
     }
 }
 
@@ -228,8 +230,8 @@ function positionHorizontalLayersAtBottomMost() {
 }
 
 function setAleLeftAndRightEdge() {
-    ale.rightEdge = .5 * (containerDiv.offsetWidth + aleDiv.offsetWidth) - 65;
-    ale.leftEdge = .5 * (containerDiv.offsetWidth - aleDiv.offsetWidth) + 65
+    ale.rightEdge = .5 * (containerDiv.offsetWidth + aleDiv.offsetWidth) - gameConfig.ale.edgeInset;
+    ale.leftEdge = .5 * (containerDiv.offsetWidth - aleDiv.offsetWidth) + gameConfig.ale.edgeInset
 }
 
 function positionVerticalLayersToHaveSameTopPosition() {
@@ -286,7 +288,7 @@ function shiftUpDownHorizontalLayersOnResize() {
     if (aleIsOutsideSea) {
         clearShiftUpDownLayerHorizontalTimer();
         ale.isSwimming = false;
-        if (scrollState.layersMovement === "horizontal") {
+        if (scrollState.layersMovement === LayersMovement.horizontal) {
             positionLayerHorizontalToBottom();
             positionVerticalLayersBottomToHorizontalLayersBottom()
         } else {
@@ -299,7 +301,7 @@ function shiftUpDownHorizontalLayersOnResize() {
 }
 
 function setShiftUpLayerHorizontalDistance() {
-    shiftUpLayerHorizontalDistance = .75 * containerDiv.offsetHeight
+    shiftUpLayerHorizontalDistance = gameConfig.world.seaShiftRatio * containerDiv.offsetHeight
 }
 
 function shiftUpLayerHorizontal() {
@@ -307,14 +309,14 @@ function shiftUpLayerHorizontal() {
     clearShiftUpDownLayerHorizontalTimer();
     timers.shiftUpLayer = setInterval(() => {
         moveUpLayerHorizontal()
-    }, shiftUpDownLayerHorizontalInterval);
+    }, gameConfig.world.seaShiftInterval);
     disableIsAleJumpingAndFalling()
 }
 
 function moveUpLayerHorizontal() {
-    if (scrollState.layersMovement === "horizontal") {
+    if (scrollState.layersMovement === LayersMovement.horizontal) {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
-            let newTop = layerHorizontalArray[i].offsetTop - shiftUpDownLayerHorizontalIncrement;
+            let newTop = layerHorizontalArray[i].offsetTop - gameConfig.world.seaShiftStep;
             if (newTop <= -shiftUpLayerHorizontalDistance) {
                 newTop = -shiftUpLayerHorizontalDistance;
                 layerHorizontalArray[i].style.top = `${newTop}px`;
@@ -335,13 +337,13 @@ function shiftDownLayerHorizontal() {
     clearShiftUpDownLayerHorizontalTimer();
     timers.shiftDownLayer = setInterval(() => {
         moveDownLayerHorizontal()
-    }, shiftUpDownLayerHorizontalInterval)
+    }, gameConfig.world.seaShiftInterval)
 }
 
 function moveDownLayerHorizontal() {
-    if (scrollState.layersMovement === "horizontal") {
+    if (scrollState.layersMovement === LayersMovement.horizontal) {
         for (let i = 0; i < layerHorizontalArray.length; i++) {
-            let newTop = layerHorizontalArray[i].offsetTop + shiftUpDownLayerHorizontalIncrement;
+            let newTop = layerHorizontalArray[i].offsetTop + gameConfig.world.seaShiftStep;
             if (newTop >= 0) {
                 newTop = 0;
                 layerHorizontalArray[i].style.top = `${newTop}px`;
@@ -381,7 +383,7 @@ function positionRocketAndAleContainerHorizontally() {
 
     const horizontalOffset = scrollState.position * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
 
-    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + 332; // max rightward offset for Ale during vertical scroll
+    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + gameConfig.world.aleMaxOffsetFromCenter;
 
     let alePosition = (containerDiv.offsetWidth * 0.5) + horizontalOffset;
 
@@ -389,7 +391,7 @@ function positionRocketAndAleContainerHorizontally() {
         alePosition = ale.maxHorizontalDistance;
     }
 
-    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + 170; // max rightward offset for rocket during vertical scroll
+    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + gameConfig.world.rocketMaxOffsetFromCenter;
     let rocketPosition = (containerDiv.offsetWidth - rocketDiv.offsetWidth) * 0.5 + horizontalOffset;
 
     if (rocketMaxPosition <= rocketPosition) {
@@ -397,16 +399,16 @@ function positionRocketAndAleContainerHorizontally() {
     }
 
     switch (scrollState.layersMovement) {
-        case "vertical":
+        case LayersMovement.vertical:
             rocketDiv.style.left = `${rocketPosition}px`;
             aleContainerDiv.style.left = `${alePosition}px`;
-            aleContainerDiv.style.padding = "0px 0px 150px 0px";
+            aleContainerDiv.style.padding = `0px 0px ${gameConfig.world.aleRocketPaddingBottom}px 0px`;
             break;
 
-        case "not moving 1":
-        case "not moving 2":
+        case LayersMovement.walkingToRocket:
+        case LayersMovement.atRocket:
             const pageOffset = scrollState.position -
-                (pageDiv.offsetHeight - containerDiv.offsetHeight - distanceBetweenAleAndRocket);
+                (pageDiv.offsetHeight - containerDiv.offsetHeight - gameConfig.world.aleToRocketDistance);
 
             aleContainerDiv.style.left = `${alePosition + pageOffset}px`;
             aleContainerDiv.style.padding = "0px 0px 0px 0px";

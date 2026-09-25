@@ -2,13 +2,13 @@
 // Source: jQuery UI 1.13 (MIT License)
 
 $.extend($.easing, {
-    easeInCubic: function (x, t, b, c, d) {
+    easeInCubic(x, t, b, c, d) {
         return c * (t /= d) * t * t + b;
     },
-    easeOutCubic: function (x, t, b, c, d) {
+    easeOutCubic(x, t, b, c, d) {
         return c * ((t = t / d - 1) * t * t + 1) + b;
     },
-    easeOutElastic: function (x, t, b, c, d) {
+    easeOutElastic(x, t, b, c, d) {
         var s = 1.70158;
         var p = 0;
         var a = c;

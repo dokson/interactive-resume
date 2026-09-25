@@ -1828,7 +1828,8 @@ img {
     height: 25em;
     overflow: hidden;
     background: #352879;
-    color: #6c5eb5;
+    /* Pepto light blue lightened to reach WCAG AA 4.5:1 on the C64 blue */
+    color: #a198d0;
     font-family: 'C64 Pro Mono', 'Courier New', Courier, monospace;
     font-size: min(calc((100vw - 32px) / 40), calc((100vh - 48px) / 25), 24px);
     line-height: 1em;
@@ -1845,7 +1846,7 @@ img {
     width: 1ch;
     height: 1em;
     vertical-align: top;
-    background: #6c5eb5;
+    background: currentColor;
     animation: c64-blink 1s steps(1) infinite
 }
 
@@ -2322,8 +2323,7 @@ img {
     background-image: url(../image/animation/squid-hand-open-d.png)
 }
 
-.star,
-.star-red {
+.star {
     position: absolute;
     width: 120px;
     height: 114px;
@@ -2331,10 +2331,6 @@ img {
 
 .star {
     background-image: url(../image/layers/star.png);
-}
-
-.star-red {
-    background-image: url(../image/layers/star-red.png);
 }
 
 .star-1 {

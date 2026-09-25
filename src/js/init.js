@@ -5,12 +5,10 @@ function collectElements(selector, targetArray) {
 }
 
 function storeDivs() {
-    collectElements(".fish", fishArray);
-    collectElements(".fish-eyes", fishEyeArray);
-    collectElements(".crab", crabArray);
-    collectElements(".crab-eyes", crabEyeArray);
-    collectElements(".turtle", turtleArray);
-    collectElements(".turtle-eyes", turtleEyeArray);
+    for (const species of seaAnimalSpecies) {
+        collectElements(`.${species.name}`, species.animals);
+        collectElements(`.${species.name}-eyes`, species.eyes);
+    }
     collectElements(".elevation", ale.elevations);
     collectElements(".plant", plantArray);
     collectElements(".building", buildingArray);
@@ -31,37 +29,19 @@ function storeDivs() {
 function initVariablesAfterShowContainer() {
     fireworkCenterX = .5 * fireworkArray[0].offsetWidth;
     fireworkCenterY = .5 * fireworkArray[0].offsetHeight;
-    fireworkOneRadiusDistance = (fireworkCenterY - fireworkDotRadius) / fireworkRowNumber;
-    fireworkOneRotationAngle = 2 * Math.PI / fireworkColumnNumber
+    fireworkOneRadiusDistance = (fireworkCenterY - gameConfig.fireworks.dotRadius) / gameConfig.fireworks.rows;
+    fireworkOneRotationAngle = 2 * Math.PI / gameConfig.fireworks.columns
 }
 
 function resetVariables() {
     scrollState.position = 0;
-    flags.canAnimatePlant = true;
-    flags.canAnimateBuilding = true;
-    flags.canAnimateBuilding2 = true;
-    flags.canAnimateRobot = true;
-    flags.canAnimateSquid = true;
-    flags.canAnimateAlien = true;
+    resetScenes();
     flags.canAnimateLinks = true;
     flags.canDrawFireworks = true;
-    if (!isFishStillAnimating) flags.canAnimateFish = true;
-    if (!isCrabStillAnimating) flags.canAnimateCrab = true;
-    if (!isTurtleStillAnimating) flags.canAnimateTurtle = true;
 }
 
 function resetFunctions() {
-    positionPlants();
-    positionBuildings();
-    positionBuildings2();
-    if (!isFishStillAnimating) positionSeaAnimals(fishArray, numberOfFishInEachRowArray, 150, 100);
-    if (!isCrabStillAnimating) positionSeaAnimals(crabArray, numberOfCrabInEachRowArray, 150, 100);
-    if (!isTurtleStillAnimating) positionSeaAnimals(turtleArray, numberOfTurtleInEachRowArray, 150, 100);
-    positionExperience1Elements();
-    positionExperience2Elements();
-    positionExperience3Elements();
+    layoutScenes();
     positionLinksContainer();
-    positionExperienceTextContainer();
-    positionChainBlockAndStringContainer();
     resetFireworkSvg()
 }

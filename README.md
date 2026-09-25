@@ -19,7 +19,7 @@ The project remained untouched until **2025**, when I decided to revisit and pol
 | Preloader      | Commodore 64 tape-loading boot screen (C64 Pro Mono font, Pepto palette), click/tap/key to `RUN`     |
 | Contact form   | [@emailjs/browser](https://www.emailjs.com/)                                                        |
 | Build pipeline | [Node.js](https://nodejs.org/) (minify, SEO injection, manifest generation)                         |
-| Testing        | [Playwright](https://playwright.dev/) visual regression (12 screenshot baselines)                   |
+| Testing        | [Playwright](https://playwright.dev/) visual regression (13 baselines) + game behaviour tests      |
 | CI/CD          | [GitHub Actions](https://github.com/features/actions)                                               |
 | Hosting        | [GitHub Pages](https://pages.github.com/) (custom domain: [`www.colace.me`](https://www.colace.me)) |
 | PDF sync       | CV.pdf auto-committed from [dokson/cv](https://github.com/dokson/cv)                                |
@@ -44,7 +44,7 @@ You are welcome to view the code and draw inspiration for your own interactive r
 
 ## 🔄 Updates
 
-**September 2026**: New Commodore 64-style preloader — BASIC V2 boot screen, animated tape-loading sequence with raster border stripes, and a click/tap/key "RUN" prompt to enter the resume.
+**September 2026**: New Commodore 64-style preloader — BASIC V2 boot screen, animated tape-loading sequence with raster border stripes, and a click/tap/key "RUN" prompt to enter the resume. The world now rises with a composited transform after RUN (mobile Cumulative Layout Shift from 0.61 to ~0), the preloader text meets WCAG AA contrast and is excluded from search snippets, and the sitemap `lastmod` is derived from each page's git history. The game code was restructured for maintainability: every timing and distance lives in one frozen `gameConfig`, each animated section is a declarative scene with its own lifecycle, and new behaviour tests cover the preloader, scenes, scroll phases, sea and contact form. The space stars now flash through a Super Mario Bros. Super Star palette (yellow, orange, green, white).
 
 **March 2026**: Full codebase refactoring and modernization — split monolithic JS into focused modules, modernized to ES2024+ syntax, replaced legacy IE/vendor code with feature detection, introduced global state namespaces, and added Playwright visual regression testing.
 
