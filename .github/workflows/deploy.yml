@@ -57,6 +57,23 @@ jobs:
           enable_jekyll: false
           disable_nojekyll: false
 
+      # Purging before Pages serves the new files lets Cloudflare cache 404s for newly added assets.
+      - name: Wait for GitHub Pages to publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          target=$(git ls-remote "https://github.com/${{ github.repository }}.git" refs/heads/gh-pages | cut -f1)
+          echo "Waiting for Pages build of gh-pages@${target}"
+          for attempt in $(seq 1 60); do
+            build=$(gh api "repos/${{ github.repository }}/pages/builds/latest" --jq '.status + " " + .commit')
+            echo "attempt ${attempt}: ${build}"
+            if [ "$build" = "built ${target}" ]; then exit 0; fi
+            case "$build" in errored*) echo "Pages build failed"; exit 1;; esac
+            sleep 10
+          done
+          echo "Timed out waiting for GitHub Pages"
+          exit 1
+
       - name: Purge Cloudflare cache
         run: |
           curl -s -X POST "https://api.cloudflare.com/client/v4/zones/a2f818496ab3200fc550c2e25c9ed426/purge_cache" \
