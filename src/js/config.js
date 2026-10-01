@@ -149,6 +149,8 @@ var gameConfig = deepFreeze({
 
     scrollHint: { interval: 1000, visibleDuration: 500 },
 
+    keyboard: { arrowScrollSpeed: 1 },
+
     links: { duration: 1000, startTop: "80%" },
 
     contact: { confirmationOffsetTop: 370, confirmationShowDelay: 200, sendDelay: 2000 },

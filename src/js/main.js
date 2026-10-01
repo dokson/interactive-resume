@@ -74,4 +74,10 @@ window.onresize = () => {
     enableScrollOrSwipe();
 };
 
+document.addEventListener("keydown", handleArrowKeys);
+document.addEventListener("keyup", stopArrowScroll);
+window.addEventListener("blur", () => {
+    scrollState.arrowDirection = 0
+});
+
 $(window).on("orientationchange", orientationChangeHandler);

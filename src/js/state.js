@@ -40,7 +40,8 @@ var scrollState = {
     layersMovement: undefined,
     canScrollOrSwipe: undefined,
     touchStartX: 0,
-    touchCurrentX: 0
+    touchCurrentX: 0,
+    arrowDirection: 0
 };
 
 // ─── Namespace: animation flags ─────────────────────────────────────────────

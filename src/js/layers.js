@@ -14,6 +14,30 @@ function disableScrollOrSwipe() {
     scrollState.canScrollOrSwipe = false
 }
 
+// All four arrows share one scroll, so left/right walk the world exactly like down/up
+const arrowDirections = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+function handleArrowKeys(event) {
+    const direction = arrowDirections[event.key];
+    if (!direction || !scrollState.canScrollOrSwipe || event.target.closest("input, textarea")) return;
+    event.preventDefault();
+    // Key repeats are ignored: a rAF loop scrolls at constant speed while the key is held
+    if (event.repeat || scrollState.arrowDirection === direction) return;
+    scrollState.arrowDirection = direction;
+    let previousTime = performance.now();
+    const step = (time) => {
+        if (scrollState.arrowDirection !== direction) return;
+        window.scrollBy(0, direction * gameConfig.keyboard.arrowScrollSpeed * (time - previousTime));
+        previousTime = time;
+        requestAnimationFrame(step)
+    };
+    requestAnimationFrame(step)
+}
+
+function stopArrowScroll(event) {
+    if (arrowDirections[event.key] === scrollState.arrowDirection) scrollState.arrowDirection = 0
+}
+
 // ─── Touch events ────────────────────────────────────────────────────────────
 function initTouchEvents() {
     document.addEventListener("touchstart", handleStart, false);

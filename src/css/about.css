@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 40px 20px;
     background-color: #00bff3;
-    font-family: frankfurter-medium-plain, Arial, sans-serif;
+    font-family: 'Jersey 15', Arial, sans-serif;
     color: #ffffff;
     line-height: 1.6;
 }
@@ -14,7 +14,8 @@ body {
 }
 
 h1 {
-    font-family: frankfurter-plain, Arial, sans-serif;
+    font-family: 'Bangers', Arial, sans-serif;
+    letter-spacing: 1px;
     font-size: 36px;
     color: #ed1c24;
     margin-bottom: 10px;
@@ -23,7 +24,8 @@ h1 {
 }
 
 h2 {
-    font-family: frankfurter-plain, Arial, sans-serif;
+    font-family: 'Bangers', Arial, sans-serif;
+    letter-spacing: 1px;
     font-size: 24px;
     color: #ed1c24;
     margin-top: 30px;
@@ -34,14 +36,14 @@ h2 {
 }
 
 h3 {
-    font-size: 18px;
+    font-size: 23px;
     color: #ffffff;
     margin-top: 20px;
     margin-bottom: 5px;
 }
 
 p {
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 12px;
 }
 
@@ -60,12 +62,12 @@ ul {
 }
 
 li {
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 6px;
 }
 
 .symbol {
-    font-family: poster-sans-bold, Arial, sans-serif;
+    font-family: 'Bangers', Arial, sans-serif;
 }
 
 table {
@@ -78,7 +80,7 @@ th, td {
     text-align: left;
     padding: 8px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    font-size: 15px;
+    font-size: 19px;
 }
 
 th {
@@ -91,7 +93,8 @@ th {
     background-color: #ed1c24;
     border-radius: 10px;
     padding: 15px 40px;
-    font-family: frankfurter-plain, Arial, sans-serif;
+    font-family: 'Bangers', Arial, sans-serif;
+    letter-spacing: 1px;
     color: #ffffff;
     font-size: 24px;
     text-decoration: none;
@@ -112,7 +115,7 @@ th {
 }
 
 .subtitle {
-    font-size: 18px;
+    font-size: 23px;
     text-align: center;
     margin-bottom: 30px;
     opacity: 0.9;
@@ -127,7 +130,7 @@ th {
 }
 
 .breadcrumb {
-    font-size: 14px;
+    font-size: 18px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -140,7 +143,8 @@ th {
     text-decoration: none;
     padding: 8px 20px;
     border-radius: 20px;
-    font-family: frankfurter-plain, Arial, sans-serif;
+    font-family: 'Bangers', Arial, sans-serif;
+    letter-spacing: 1px;
     font-size: 16px;
 }
 
@@ -157,28 +161,13 @@ th {
 }
 
 @font-face {
-    font-family: 'frankfurter-medium-plain';
-    src: url(../font/frankfurter-medium-plain.eot);
-    src: url(../font/frankfurter-medium-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-medium-plain.woff) format('woff'), url(../font/frankfurter-medium-plain.ttf) format('truetype'), url(../font/frankfurter-medium-plain.svg#frankfurter-medium-plain) format('svg');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+    font-family: 'Bangers';
+    src: url(../font/Bangers-Regular.woff2) format('woff2');
+    font-display: swap
 }
 
 @font-face {
-    font-family: 'frankfurter-plain';
-    src: url(../font/frankfurter-plain.eot);
-    src: url(../font/frankfurter-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-plain.woff) format('woff'), url(../font/frankfurter-plain.ttf) format('truetype'), url(../font/frankfurter-plain.svg#frankfurter-plain) format('svg');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'poster-sans-bold';
-    src: url(../font/poster-sans-bold.eot);
-    src: url(../font/poster-sans-boldd41d.eot?#iefix) format('embedded-opentype'), url(../font/poster-sans-bold.woff) format('woff'), url(../font/poster-sans-bold.ttf) format('truetype'), url(../font/poster-sans-bold.svg#poster-sans-bold) format('svg');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+    font-family: 'Jersey 15';
+    src: url(../font/Jersey15-Regular.woff2) format('woff2');
+    font-display: swap
 }

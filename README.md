@@ -17,6 +17,8 @@ The project remained untouched until **2025**, when I decided to revisit and pol
 | Libraries      | [jQuery 4](https://jquery.com/), custom easing functions                                            |
 | Animations     | `requestAnimationFrame`-based interval system for visual cycles                                     |
 | Preloader      | Commodore 64 tape-loading boot screen (C64 Pro Mono font, Pepto palette), click/tap/key to `RUN`     |
+| Fonts          | Press Start 2P (game UI), Jersey 15 (long text), Bangers (ribbons, headings), all [SIL OFL](https://openfontlicense.org/) |
+| Navigation     | Mouse wheel or any arrow key on desktop, swipe on touch devices                                     |
 | Contact form   | [@emailjs/browser](https://www.emailjs.com/)                                                        |
 | Build pipeline | [Node.js](https://nodejs.org/) (minify, SEO injection, manifest generation)                         |
 | Testing        | [Playwright](https://playwright.dev/) visual regression (13 baselines) + game behaviour tests      |
@@ -30,7 +32,7 @@ This project is based on code from [Robby Leonardi's interactive resume](http://
 
 Because the underlying code derives from a proprietary work, no open-source license is applied here, and the project is **not available for redistribution or commercial use**.
 
-The preloader uses the **C64 Pro Mono** typeface by [Style](https://style64.org/c64-truetype), embedded under its [license](https://style64.org/c64-truetype/license): the font file is not covered by this repository and may not be redistributed or offered for download. Commodore 64 is a trademark of its respective owner; this project is not affiliated with or endorsed by it.
+The preloader uses the **C64 Pro Mono** typeface by [Style](https://style64.org/c64-truetype), embedded under its [license](https://style64.org/c64-truetype/license): the font file is not covered by this repository and may not be redistributed or offered for download. The other fonts are licensed under the SIL Open Font License 1.1 (license files in `font/`). Commodore 64 is a trademark of its respective owner; this project is not affiliated with or endorsed by it.
 
 You are welcome to view the code and draw inspiration for your own interactive resume, but please build something that genuinely reflects your own story and style.
 

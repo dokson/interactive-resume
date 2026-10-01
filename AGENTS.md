@@ -99,6 +99,14 @@ Module responsibilities:
 
 Every animated section of the world is one entry in `scenes`, carrying its whole lifecycle: `world` (`"land"` or `"sea"`; sea containers live inside `#sea-1`), `container` (its horizontal span triggers `enter` when the viewport centre crosses into it), `reset()` (restore the "not yet played" state, on load and when scrolling back to the start), `layout()` (place elements for the current state), optional `resize()`, and `enter()` (entry animation or idle loop). Bosses and sea animals are generated from the `bosses` / `seaAnimalSpecies` arrays by `createBossScene` / `createSeaAnimalScene`. **To add a scene:** add its markup, its tunables in `gameConfig`, its behaviour functions in `animation.js`, then one object in `scenes`.
 
+### Fonts
+
+All fonts live in `font/`, each OFL font next to its `*-OFL.txt` license: C64 Pro Mono (preloader only), Press Start 2P (game UI: titles, gates, labels), Jersey 15 (long text: experience descriptions, about body), Bangers (ribbons, piecharts, about headings). Press Start 2P is wide: size game text down rather than letting it overflow fixed-width boxes.
+
+### Keyboard
+
+All four arrows go through `handleArrowKeys` (`layers.js`): down/right forward, up/left back. Key repeats are ignored; a rAF loop scrolls at `gameConfig.keyboard.arrowScrollSpeed` px/ms until `keyup` (or window blur).
+
 ### Scroll phases
 
 `scrollState.layersMovement` is one of `LayersMovement.horizontal` (walking through the world), `.vertical` (climbing to the contact section), `.walkingToRocket` (last `gameConfig.world.aleToRocketDistance` px) and `.atRocket` (end of the page: links, fireworks, happy Ale). Compare against the `LayersMovement` constants, never string literals.

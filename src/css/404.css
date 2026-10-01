@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url(../font/PressStart2P-Regular.woff2) format('woff2');
+    font-display: swap
+}
+
 a {
     text-decoration: none
 }
@@ -14,9 +20,9 @@ body {
     border-radius: 10px;
     padding-top: 15px;
     padding-bottom: 15px;
-    font-family: frankfurter-plain;
+    font-family: 'Press Start 2P', monospace;
     color: #ffffff;
-    font-size: 36px;
+    font-size: 22px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -44,33 +50,15 @@ body {
     height: 200px;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 30px;
-}
-
-@font-face {
-	font-family: 'frankfurter-medium-plain';
-	src: url(../font/frankfurter-medium-plain.eot);
-	src: url(../font/frankfurter-medium-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-medium-plain.woff) format('woff'), url(../font/frankfurter-medium-plain.ttf) format('truetype'), url(../font/frankfurter-medium-plain.svg#frankfurter-medium-plain) format('svg');
-	font-weight: 400;
-	font-style: normal
-}
-
-@font-face {
-	font-family: 'frankfurter-plain';
-	src: url(../font/frankfurter-plain.eot);
-	src: url(../font/frankfurter-plaind41d.eot?#iefix) format('embedded-opentype'), url(../font/frankfurter-plain.woff) format('woff'), url(../font/frankfurter-plain.ttf) format('truetype'), url(../font/frankfurter-plain.svg#frankfurter-plain) format('svg');
-	font-weight: 400;
-	font-style: normal
 }
 
 .four {
     position: relative;
     width: 200px;
     height: 204px;
-    top: -82px;
-    font-family: frankfurter-plain;
+    font-family: 'Press Start 2P', monospace;
     color: #ffffff;
-    font-size: 300px;
+    font-size: 180px;
     float: left;
 }
 
@@ -78,11 +66,9 @@ body {
     position: relative;
     width: 200px;
     height: 204px;
-    top: -82px;
-    left: -15px;
-    font-family: frankfurter-plain;
+    font-family: 'Press Start 2P', monospace;
     color: #ffffff;
-    font-size: 300px;
+    font-size: 180px;
     float: left;
 }
 
@@ -92,9 +78,9 @@ img {
 
 #text {
     position: relative;
-    font-family: frankfurter-medium-plain;
+    font-family: 'Press Start 2P', monospace;
     color: #ffffff;
-    font-size: 30px;
+    font-size: 18px;
     margin-bottom: 30px;
 }
 
