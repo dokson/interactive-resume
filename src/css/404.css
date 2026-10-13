@@ -1,126 +1,402 @@
 @font-face {
-    font-family: 'Press Start 2P';
-    src: url(../font/PressStart2P-Regular.woff2) format('woff2');
+    font-family: 'C64 Pro Mono';
+    src: url(../font/C64_Pro_Mono-STYLE.woff) format('woff');
     font-display: swap
 }
 
-a {
-    text-decoration: none
+:root {
+    /* Classic DOS / Windows 9x stop-screen blue (CGA blue) */
+    --bsod-blue: #0000aa;
+    --bsod-white: #ffffff;
+    /* C64 rows have no leading: 8×8 glyphs stacked edge to edge */
+    --bsod-line: 1em;
+    --bsod-reveal-step: 110ms;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    margin: 0px;
-    background-color: #00bff3;
+    margin: 0;
+    background: var(--bsod-blue);
+    color: var(--bsod-white);
+    font-family: 'C64 Pro Mono', 'Courier New', Courier, monospace;
+    text-transform: uppercase;
 }
 
-#button {
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+    background: var(--bsod-white);
+    color: var(--bsod-blue);
+    outline: none;
+}
+
+p,
+h1,
+pre {
+    margin: 0;
+    font: inherit;
+}
+
+/* ─── Blue screen ─────────────────────────────── */
+
+#bsod {
     position: relative;
-    width: 406px;
-    background-color: #ed1c24;
-    border-radius: 10px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    font-family: 'Press Start 2P', monospace;
-    color: #ffffff;
-    font-size: 22px;
-    margin-left: auto;
-    margin-right: auto;
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100svh;
+    padding: 1.4em 1.6em;
+    display: grid;
+    grid-template-columns: 25% 34% 1fr;
+    grid-template-rows: 1fr auto;
+    column-gap: 4%;
+    overflow: hidden;
+    /* The middle column holds exactly 40 characters, the width of the C64 screen */
+    font-size: clamp(7px, min(0.82vw, 1.9vh), 18px);
+    line-height: var(--bsod-line);
+    user-select: none;
 }
 
-#center {
+/* CRT scanlines */
+#bsod::after {
+    content: "";
     position: absolute;
-    width: 800px;
-    height: 370px;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0.12) 3px);
+}
+
+.bsod-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+}
+
+.bsod-col-right {
+    white-space: nowrap;
+}
+
+.bsod-centered {
+    margin: auto 0;
+}
+
+.bsod-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+/* C64 blinking block cursor */
+.bsod-cursor {
+    display: inline-block;
+    width: 1ch;
+    height: 1em;
+    vertical-align: -0.1em;
+    background: var(--bsod-white);
+    animation: bsod-blink-text 0.8s steps(1) infinite;
+}
+
+/* Reverse video, like the header line of a C64 disk directory */
+.bsod-inverse {
+    background: var(--bsod-white);
+    color: var(--bsod-blue);
+}
+
+/* Crash garbage: random PETSCII from corrupted screen memory, filled in by 404.js */
+.bsod-garbage {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.bsod-garbage > p {
+    min-height: var(--bsod-line);
+}
+
+/* 1541 drive LED, flashing as it does after a DOS error */
+.bsod-led {
+    display: inline-block;
+    width: 1.5em;
+    height: 0.5em;
+    vertical-align: 0.2em;
+    background: #ed1c24;
+    animation: bsod-blink-text 0.6s steps(1) infinite;
+}
+
+/* Alien glitches (404.js): invaders eating text, raster bands of an alien signal */
+.bsod-eaten {
+    white-space: pre;
+}
+
+.bsod-eater {
+    position: absolute;
+    z-index: 1;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.bsod-raster {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, #6c5eb5 0 0.25em, #ffffff 0.25em 0.375em, #b8c76f 0.375em 0.75em, #352879 0.75em 0.875em, #9ae29b 0.875em 1em);
+    mix-blend-mode: difference;
+}
+
+.bsod-raster[hidden] {
+    display: none;
+}
+
+.bsod-down::before {
+    content: "";
+    display: inline-block;
+    border-inline: 0.35em solid transparent;
+    border-top: 0.5em solid currentColor;
+    vertical-align: 0.1em;
+}
+
+.bsod-foot {
+    grid-row: 2;
+    padding-top: var(--bsod-line);
+}
+
+.bsod-foot-left { grid-column: 1; }
+.bsod-foot-middle { grid-column: 2; }
+.bsod-foot-right { grid-column: 3; }
+
+.bsod-key {
+    display: inline-block;
+    padding: 0 0.3em;
+    background: var(--bsod-white);
+    color: var(--bsod-blue);
+    border: 1px solid var(--bsod-white);
+}
+
+.bsod-key:hover,
+.bsod-key:focus-visible {
+    background: var(--bsod-blue);
+    color: var(--bsod-white);
+}
+
+#bsod-countdown {
+    white-space: nowrap;
+}
+
+.bsod-key-blink {
+    animation: bsod-blink 1s steps(1) infinite;
+}
+
+@keyframes bsod-blink {
+    50% { background: var(--bsod-blue); color: var(--bsod-white); }
+}
+
+/* Sequential reveal, block by block like a crashing terminal */
+.bsod-block {
+    opacity: 0;
+    animation: bsod-reveal 0s forwards;
+    animation-delay: calc(var(--step) * var(--bsod-reveal-step));
+}
+
+@keyframes bsod-reveal {
+    to { opacity: 1; }
+}
+
+/* ─── Debugger: 404 Invaders ──────────────────── */
+
+#debugger {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+    font-size: 12px;
+    line-height: 1.5;
+    border-top: 1px dashed var(--bsod-white);
+}
+
+#invaders-hud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding: 14px 20px;
+    border-bottom: 1px dashed var(--bsod-white);
+}
+
+.invaders-stats,
+.invaders-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+}
+
+.invaders-stats strong {
+    font-weight: normal;
+    padding: 0 4px;
+    background: var(--bsod-white);
+    color: var(--bsod-blue);
+}
+
+.invaders-stats b {
+    font-weight: normal;
+}
+
+kbd {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 4px;
+    font: inherit;
+    border: 1px solid var(--bsod-white);
+}
+
+/* The pixel fonts have no right arrow: draw both arrows as triangles */
+.kbd-arrow::before {
+    content: "";
+    display: inline-block;
+    border-block: 4px solid transparent;
+    vertical-align: 0;
+}
+
+.kbd-left::before {
+    border-inline-end: 6px solid currentColor;
+}
+
+.kbd-right::before {
+    border-inline-start: 6px solid currentColor;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.invaders-legend-touch {
+    display: none;
+}
+
+#invaders-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+#invaders-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#invaders-overlay {
+    position: absolute;
     left: 50%;
-    top: 50%;
-}
-
-#container {
-    position: relative;
-    width: 800px;
-    height: 370px;
-    left: -50%;
-    top: -50%;
+    top: 58%;
+    translate: -50% -50%;
+    width: max-content;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
     text-align: center;
+    pointer-events: none;
 }
 
-#container-404 {
-    position: relative;
-    width: 608px;
-    height: 200px;
-    margin-left: auto;
-    margin-right: auto;
+#invaders-overlay[hidden] {
+    display: none;
 }
 
-.four {
-    position: relative;
-    width: 200px;
-    height: 204px;
-    font-family: 'Press Start 2P', monospace;
-    color: #ffffff;
-    font-size: 180px;
-    float: left;
+#invaders-title {
+    font-size: 24px;
 }
 
-.zero {
-    position: relative;
-    width: 200px;
-    height: 204px;
-    font-family: 'Press Start 2P', monospace;
-    color: #ffffff;
-    font-size: 180px;
-    float: left;
+#invaders-hint {
+    animation: bsod-blink-text 1s steps(1) infinite;
 }
 
-img {
-    border-style: none;
+@keyframes bsod-blink-text {
+    50% { opacity: 0; }
 }
 
-#text {
-    position: relative;
-    font-family: 'Press Start 2P', monospace;
-    color: #ffffff;
-    font-size: 18px;
-    margin-bottom: 30px;
+#invaders-home {
+    display: none;
+    padding: 6px 8px;
+    pointer-events: auto;
 }
 
-@media (max-width: 850px) {
-    #center {
-        width: 90%;
+#invaders-overlay.invaders-over #invaders-home {
+    display: inline-block;
+}
+
+@media (pointer: coarse) {
+    .invaders-legend {
+        display: none;
+    }
+    .invaders-legend-touch {
+        display: block;
+    }
+}
+
+/* ─── Narrow screens: middle column only ──────── */
+
+@media (max-width: 760px) {
+    #bsod {
         height: auto;
-        position: static;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         min-height: 100vh;
+        min-height: 100svh;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto auto auto;
+        row-gap: var(--bsod-line);
+        font-size: clamp(7px, 2.2vw, 12px);
     }
-    #container {
-        width: 100%;
-        height: auto;
-        position: static;
+    .bsod-col-left .bsod-centered,
+    .bsod-col-right {
+        display: none;
     }
-    #container-404 {
-        width: 100%;
-        height: auto;
+    .bsod-foot {
+        grid-column: 1;
+        grid-row: auto;
+        padding-top: 0;
     }
-    .four, .zero {
-        width: auto;
-        height: auto;
-        top: 0;
-        left: 0;
-        font-size: 25vw;
-        float: none;
-        display: inline;
+    .bsod-foot-left {
+        padding-top: var(--bsod-line);
     }
-    #text {
-        font-size: 5vw;
-        padding: 0 10px;
+    #debugger {
+        font-size: 10px;
     }
-    #button {
-        width: auto;
-        max-width: 90%;
-        font-size: 5vw;
-        padding: 15px 20px;
+    #invaders-title {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .bsod-block {
+        animation: none;
+        opacity: 1;
+    }
+    .bsod-led,
+    .bsod-key-blink,
+    .bsod-cursor,
+    #invaders-hint {
+        animation: none;
     }
 }

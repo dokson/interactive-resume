@@ -7,29 +7,149 @@
     <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
     <meta name=robots content="noindex">
     <meta name=description content="Page not found on Alessandro Colace's interactive resume. Return to the homepage to explore his profile.">
+    <meta name=theme-color content="#0000aa">
     <link rel=canonical href=__SITE_URL__/404.html>
     <title>404 — Page Not Found | Alessandro Colace</title>
-    <link rel=icon type=image/x-icon href=favicon.ico>
+    <!-- Absolute asset paths: GitHub Pages serves this page for missing URLs at any depth -->
+    <link rel=icon type=image/x-icon href=/favicon.ico>
     <link rel=apple-touch-icon sizes=180x180 href=/image/icons/apple-touch-icon.png>
-    <link rel=stylesheet href=dist/404.min.css fetchpriority=high>
+    <link rel=stylesheet href=/dist/404.min.css fetchpriority=high>
+    <script src=/dist/404.min.js defer></script>
 </head>
 
 <body>
-    <div id=center>
-        <div id=container>
-            <div id=container-404>
-                <div class=four>4</div>
-                <div class=zero>0</div>
-                <div class=four>4</div>
+    <main id=bsod>
+        <div class="bsod-col bsod-col-left">
+            <p class=bsod-block style=--step:0>DRIVE 8 <span class=bsod-led title="1541 error LED"></span></p>
+            <div class="bsod-block bsod-centered" style=--step:2>
+                <p>LOAD"$",8</p>
+                <p>&nbsp;</p>
+                <p>SEARCHING FOR $</p>
+                <p>LOADING</p>
+                <p>READY.</p>
+                <p>LIST</p>
+                <p>&nbsp;</p>
+<pre><span class=bsod-inverse>0 "COLACE.ME       " AC 2A</span>
+12   "INDEX"            PRG
+4    "ABOUT"            PRG
+9    "CV.PDF"           SEQ
+0    "404.PAGE"         DEL
+30   "INVADERS"         PRG
+609 BLOCKS FREE.</pre>
+                <p>READY.</p>
+                <p>@</p>
+                <p>62,FILE NOT FOUND,00,00</p>
+                <p>READY.</p>
             </div>
-
-            <div id=text>Sorry, can't find the page that you are looking for!</div>
-
-            <a href="/" rel=home>
-                <div id=button>BACK TO RESUME</div>
-            </a>
         </div>
-    </div>
+
+        <div class="bsod-col bsod-col-middle">
+            <div class=bsod-block style=--step:1>
+<pre>    **** COMMODORE 64 BASIC V2 ****
+
+ 64K RAM SYSTEM  38911 BASIC BYTES FREE
+</pre>
+                <p>&nbsp;</p>
+                <p>READY.</p>
+                <p>LOAD"<span class=bsod-path>/404</span>",8,1</p>
+                <p>&nbsp;</p>
+                <p>SEARCHING FOR <span class=bsod-path>/404</span></p>
+                <h1>?FILE NOT FOUND&nbsp; ERROR</h1>
+                <p>READY.</p>
+            </div>
+            <div class=bsod-block style=--step:4>
+                <p>LIST</p>
+                <p>&nbsp;</p>
+                <p>10 REM *** 404 RECOVERY ***</p>
+                <p>20 PRINT "THIS PAGE WAS EATEN BY"</p>
+                <p>30 PRINT "INVADERS FROM SECTOR 404"</p>
+                <p>40 INPUT "WHERE TO";A$</p>
+                <p>50 IF A$="HOME" THEN <a href=/ rel=home>LOAD"/",8</a></p>
+                <p>60 IF A$="ABOUT" THEN <a href=/about.html>LOAD"/ABOUT",8</a></p>
+                <p>70 IF A$="CV" THEN <a href=/document/cv.pdf>LOAD"/CV.PDF",8</a></p>
+                <p>80 IF A$="FIGHT" THEN <a href=#debugger>GOTO 404</a></p>
+                <p>90 GOTO 40</p>
+                <p>404 REM SHOOT THEM, WIN THE PAGE BACK</p>
+                <p>READY.</p>
+            </div>
+            <div class=bsod-block style=--step:6>
+                <p>RUN</p>
+                <p>THIS PAGE WAS EATEN BY</p>
+                <p>INVADERS FROM SECTOR 404</p>
+                <p>WHERE TO? <span class=bsod-cursor></span></p>
+            </div>
+            <div class="bsod-block bsod-garbage" style=--step:10 aria-hidden=true>
+                <p></p>
+                <p></p>
+                <p></p>
+            </div>
+        </div>
+
+        <div class="bsod-col bsod-col-right">
+            <div class=bsod-block style=--step:3>
+                <p>POKE 53280,6:POKE 53281,6</p>
+                <p>READY.</p>
+                <p>SYS 49152</p>
+                <p>&nbsp;</p>
+<pre>B*
+   PC  SR AC XR YR SP
+.;E5D1 32 00 00 0A F6
+.M 0400 0437
+.:0400 10 01 07 05 20 05 01 14 PAGE EAT
+.:0408 05 0E 20 02 19 20 33 30 EN BY 30
+.:0410 20 09 0E 16 01 04 05 12  INVADER
+.:0418 13 2E 20 13 03 12 0F 0C S. SCROL
+.:0420 0C 20 04 0F 17 0E 20 01 L DOWN A
+.:0428 0E 04 20 13 08 0F 0F 14 ND SHOOT
+.:0430 20 02 01 03 0B 21 20 20  BACK!
+.X</pre>
+                <p>READY.</p>
+            </div>
+            <div class=bsod-block style=--step:5>
+                <p>?"DATA IS NEVER LOST,"</p>
+                <p>DATA IS NEVER LOST,</p>
+                <p>READY.</p>
+                <p>?"ONLY UNINDEXED."</p>
+                <p>ONLY UNINDEXED.</p>
+                <p>READY.</p>
+            </div>
+            <div class=bsod-block style=--step:7>
+                <p>PRINT FRE(0)</p>
+                <p>-26627</p>
+                <p>READY.</p>
+                <p>PRINT PEEK(56320)</p>
+                <p>&nbsp;127</p>
+                <p>READY.</p>
+                <p>REM PORT 2: NO FIRE BUTTON PRESSED. YET.</p>
+                <p>READY.</p>
+            </div>
+            <div class="bsod-block bsod-garbage" style=--step:10 aria-hidden=true>
+                <p></p>
+                <p></p>
+                <p></p>
+            </div>
+        </div>
+
+        <p class="bsod-block bsod-foot bsod-foot-left" style=--step:9>BREAK IN 404</p>
+        <p class="bsod-block bsod-foot bsod-foot-middle bsod-row" style=--step:9><span>SYS 64738 TO REBOOT</span><a class=bsod-key href=/ rel=home>ENTER</a></p>
+        <p class="bsod-block bsod-foot bsod-foot-right" style=--step:9>SCROLL <a class="bsod-key bsod-key-blink" href=#debugger><span class=bsod-down></span><span class=visually-hidden>DOWN</span></a> TO FIGHT THE INVADERS<span id=bsod-countdown></span></p>
+    </main>
+
+    <section id=debugger aria-label="404 Invaders mini-game">
+        <header id=invaders-hud>
+            <p class=invaders-stats><strong>404 INVADERS</strong><span>WAVE <b id=invaders-wave>1</b></span><span>ALIENS <b id=invaders-aliens>30</b></span><span>LIVES <b id=invaders-lives>3</b></span><span>SCORE <b id=invaders-score>0</b></span></p>
+            <p class=invaders-legend><span>MOVE <kbd class="kbd-arrow kbd-left"><span class=visually-hidden>LEFT</span></kbd><kbd class="kbd-arrow kbd-right"><span class=visually-hidden>RIGHT</span></kbd></span><span>FIRE <kbd>SPACE</kbd></span><span>REBOOT <kbd>ENTER</kbd></span></p>
+            <p class=invaders-legend-touch>DRAG TO MOVE, HOLD TO FIRE</p>
+        </header>
+        <div id=invaders-stage>
+            <canvas id=invaders-canvas aria-hidden=true></canvas>
+            <div id=invaders-overlay aria-live=polite>
+                <p id=invaders-title>THEY ATE YOUR PAGE</p>
+                <p id=invaders-hint>PRESS FIRE TO FIGHT BACK</p>
+                <a id=invaders-home class=bsod-key href=/ rel=home>SYS 64738</a>
+            </div>
+        </div>
+    </section>
 </body>
 
 </html>

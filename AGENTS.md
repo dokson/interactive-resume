@@ -101,7 +101,22 @@ Every animated section of the world is one entry in `scenes`, carrying its whole
 
 ### Fonts
 
-All fonts live in `font/`, each OFL font next to its `*-OFL.txt` license: C64 Pro Mono (preloader only), Press Start 2P (game UI: titles, gates, labels), Jersey 15 (long text: experience descriptions, about body), Bangers (ribbons, piecharts, about headings). Press Start 2P is wide: size game text down rather than letting it overflow fixed-width boxes.
+All fonts live in `font/`, each OFL font next to its `*-OFL.txt` license: C64 Pro Mono (preloader and the whole 404 page), Press Start 2P (game UI: titles, gates, labels), Jersey 15 (long text: experience descriptions, about body), Bangers (ribbons, piecharts, about headings). Press Start 2P is wide: size game text down rather than letting it overflow fixed-width boxes.
+
+### 404 page
+
+`404.html` is standalone: it loads only `dist/404.min.css` and `dist/404.min.js` (from `src/css/404.css` / `src/js/404.js`), none of the resume scripts, and uses **absolute** asset paths because GitHub Pages serves it for missing URLs at any depth. Two full-height sections:
+
+- **`#bsod`** — a crashed Commodore 64 on a blue screen (`#0000aa`), written as a believable C64 session: a disk directory, a BASIC `LOAD` ending in `?FILE NOT FOUND  ERROR`, a recovery program whose `LOAD` lines link to the real pages, and a machine-code monitor dump of screen memory in real screen codes. Keep lines ≤ 40 characters with C64-accurate output (`READY.` placement, the 1541 error channel `62,FILE NOT FOUND,00,00`). The copy blames the missing page on the invaders. `.bsod-path` shows the URL that was requested. Every `.bsod-block` fades in at `--step` × `--bsod-reveal-step`. After `invadersConfig.glitch.startDelay`, the **alien glitches** start, and they pause while the BSOD is off-screen:
+  - Invader sprites walk along plain-text `<p>` rows and eat characters.
+  - Bits flip into PETSCII glyphs.
+  - `.bsod-garbage` rows of corrupted screen memory keep changing.
+  - Raster bands flash across the screen.
+
+  PETSCII glyphs come from C64 Pro Mono's Private Use Area (`U+E000` + PETSCII code); `▼`, `→` and `·` are missing from the font, so draw them in CSS. With reduced motion the garbage rows stay static and nothing else moves. `ENTER` (Return on a Mac) reboots to `/` from every state, including during a match. The one exception is a link or button the user focused with the keyboard (`:focus-visible`): Enter activates that control instead. After `invadersConfig.autoDebugDelay` (5 s) the page scrolls itself to the game, unless the user scrolls, taps, clicks or presses a key first; the footer shows `… TO FIGHT THE INVADERS IN n`.
+- **`#debugger`** — "404 Invaders" on a `<canvas>`: 30 invaders laid out as the digits "404" (`invaderGlyphs`); they ate the page, so the player wins it back. Fire (Space) starts, resumes or continues; ←/→ (or A/D) move; holding fire keeps shooting. On touch screens, hold and drag. Keys are captured only while at least `viewThreshold` of the section is visible, so on the BSOD Space and the arrows still scroll the page. Scrolling away, blurring or hiding the tab pauses the game. States: `ready → playing ⇄ paused`, `playing → cleared` ("SECTOR 404 RECLAIMED!"; fire: next, faster wave) or `gameover` (fire: retry).
+
+The game's tunables live in the frozen `invadersConfig` at the top of `404.js`. The resume's `gameConfig` is not loaded on this page. The playfield is measured in sprite pixels and scaled to the stage, using an integer scale when there's room for one.
 
 ### Keyboard
 
