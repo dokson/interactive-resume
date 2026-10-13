@@ -25,7 +25,7 @@
         "test:update": "npx playwright test --update-snapshots"
     },
     "dependencies": {
-        "@emailjs/browser": "^4.4.1",
+        "@emailjs/browser": "^5.0.2",
         "jquery": "^4.0.0"
     },
     "devDependencies": {
