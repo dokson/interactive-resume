@@ -1,209 +1,308 @@
 # AGENTS.md
 
-Single source of truth for AI coding agents (Claude Code, Cursor, OpenAI Codex CLI, Cline, Aider, Gemini CLI, etc.) working with code in this repository. `CLAUDE.md` is a one-line `@AGENTS.md` pointer so Claude Code picks it up automatically.
+Single source of truth for AI coding agents. `CLAUDE.md` only points here (`@AGENTS.md`).
 
 ## Commands
 
 ```bash
-npm install          # install dependencies (required before first build)
-npm run deploy       # full build pipeline: inject-seo → minify → generate-manifest → generate-sitemap → copy-libs → generate-llms → generate-robots
-npm test             # run visual regression + game behaviour tests (Playwright)
-npm run test:update  # update baseline screenshots after intentional visual changes
+npm install          # once, before the first build
+npm run deploy       # full build into dist/
+npm test             # Playwright: visual regression + game behaviour
+npm run test:update  # regenerate baselines (intentional visual changes only)
 ```
 
-After any JS/CSS/HTML change, run `npm run deploy && npm test` before committing. If a visual regression test fails unexpectedly, investigate the diff in `test-results/` before updating baselines; run `npm run test:update` only when the visual change is intentional.
+- After any JS/CSS/HTML change: `npm run deploy && npm test` before committing.
+- Unexpected visual failure: inspect the diff in `test-results/` first. Update baselines only if the change is intentional.
 
-Individual build steps can be run in isolation:
+`deploy` runs these steps in order; each also runs alone:
 
 ```bash
-npm run deploy:inject-seo         # inject JSON-LD from src/json/seo-meta.json into dist/index.html
-npm run deploy:minify             # minify JS → dist/*.min.js, CSS → dist/*.min.css, HTML → dist/*.html
-npm run deploy:generate-manifest  # generate dist/site.webmanifest from package.json metadata
-npm run deploy:generate-sitemap   # generate sitemap.xml; lastmod = last git commit touching each page's content (CI checks out full history)
-npm run deploy:copy-libs          # copy npm dependency bundles (jQuery, EmailJS) into dist/
-npm run deploy:generate-llms      # resolve __PLACEHOLDER__ tokens in llms.txt → dist/llms.txt
-npm run deploy:generate-robots    # resolve __PLACEHOLDER__ tokens in robots.txt → dist/robots.txt
+npm run deploy:inject-seo            # src/json/seo-meta.json → JSON-LD before </head> in dist/index.html
+npm run deploy:minify                # JS → dist/*.min.js, CSS → dist/*.min.css, HTML → dist/*.html
+npm run deploy:generate-manifest     # dist/site.webmanifest from package.json
+npm run deploy:generate-sitemap      # sitemap.xml; lastmod from src/build/pages.js = last git commit touching each page (CI checks out full history)
+npm run deploy:copy-libs             # npm bundles (jQuery) → dist/
+npm run deploy:generate-llms         # llms.txt template → dist/llms.txt
+npm run deploy:generate-robots       # robots.txt template → dist/robots.txt
+npm run deploy:generate-logo-sprite  # image/logos/*.svg → <symbol> sprite dist/logos.svg
 ```
 
 ## Architecture
 
-This is a static HTML/CSS/JS site with a Node.js-only build pipeline. There is no framework.
+Static HTML/CSS/JS. No framework, no bundler. Node.js runs only the build.
 
 ### Source vs. dist
 
-- **`index.html`, `cv.html`, `404.html`, `about.html`** are source HTML files. `index.html` is the entry point for the interactive resume and references assets from `dist/` (minified JS/CSS) and static directories (`image/`, `font/`).
-- **`dist/`** is the build output directory. It is not committed. The CI workflow assembles `deploy/` from `dist/` plus static directories before pushing to `gh-pages`.
-- **`src/js/`** and **`src/css/`** contain the editable source files. Every `.js` is minified to `.min.js` in `dist/`, every `.css` to `.min.css`. `index.html` is also minified in-place in `dist/` (after SEO injection); `cv.html`, `404.html`, and `about.html` are minified from root into `dist/`. **Never edit files in `dist/` directly** — all changes must be made to source files.
+- Source HTML: `index.html` (the game; loads `dist/`, `image/`, `font/`), `cv.html`, `404.html`, `about.html`.
+- Source JS/CSS: `src/js/`, `src/css/`, each file minified on its own to `dist/*.min.js` / `*.min.css`.
+- `index.html` is minified in `dist/` after SEO injection; the other pages are minified from root into `dist/`.
+- `dist/` is build output, not committed. **Never edit `dist/`**; change the sources.
 
-### SEO injection
+### Config and placeholders
 
-`src/json/seo-meta.json` holds a Schema.org `Person` JSON-LD object. The inject-seo build step reads this and appends it as a `<script type="application/ld+json">` block just before `</head>` in `dist/index.html`. Edit `seo-meta.json` to update structured data without touching `index.html`.
-
-### package.json as config hub
-
-Build behaviour, web manifest values, external lib paths, and SEO keywords are all driven by `package.json`'s `config` block — not by separate config files. The build scripts read it directly via `require('../../package.json')`.
-
-### Centralized contact/social placeholders
-
-Contact and identity data (email, phone, LinkedIn, GitHub, X/Twitter, Wikidata, consulting brand, education, site URL/domain, profile image path) live **only** in `package.json`'s `config.contact` / `config.social` / `config.consulting` / `config.education` / `config.images` blocks. Source files (`about.html`, `index.html`, `404.html`, `src/json/seo-meta.json`, `llms.txt`, `robots.txt`) reference these via `__PLACEHOLDER__` tokens (e.g. `__EMAIL__`, `__PHONE_TEL__`, `__LINKEDIN__`, `__SITE_URL__`) — never hardcode the literal value in a source file. `src/build/placeholders.js` is the single module computing every token (including derived/obfuscated variants like `__EMAIL_OBFUSCATED__` and `__TWITTER_HANDLE__`); `minify.js`, `inject-seo.js`, `generate-llms.js`, and `generate-robots.js` all call its `buildReplacements`/`applyReplacements`. To change contact info, edit `package.json` only — never grep-and-replace across HTML/JSON/txt files. `llms.txt` and `robots.txt` at the repo root are **templates** (committed with literal `__PLACEHOLDER__` text, same as `about.html`'s `__BUILD_TIMESTAMP__`); their resolved output goes to `dist/`, and the CI workflow (`mv dist/llms.txt llms.txt`, `mv dist/robots.txt robots.txt`) promotes the resolved version to root only in the ephemeral deploy runner, never committed.
-
-**Known trade-off**: `npm test` and any local preview serve the raw root files directly (`npx serve .`, see `playwright.config.js`), so `href`/`src` attributes built from placeholders (e.g. `href=__LINKEDIN__`) are literal, unresolved, non-navigable strings until `npm run deploy` has run. Always run `npm run deploy` before manually clicking through links in a local preview. This does not affect the deployed site (CI always resolves before publishing).
+- `package.json` → `config` drives build behaviour, manifest values, external lib paths and SEO keywords. Build scripts `require` it; no other config files.
+- Contact and identity data live **only** in `config.contact`, `config.social`, `config.consulting`, `config.education`, `config.images`.
+- Sources reference them via `__PLACEHOLDER__` tokens (`__EMAIL__`, `__PHONE_TEL__`, `__LINKEDIN__`, `__SITE_URL__`…). Never hardcode the values.
+- Token users: `about.html`, `index.html`, `404.html`, `src/json/seo-meta.json`, `llms.txt`, `robots.txt`.
+- `src/build/placeholders.js` computes every token, derived ones included (`__PHONE_TEL__`, `__TWITTER_HANDLE__`).
+- `minify.js`, `inject-seo.js`, `generate-llms.js`, `generate-robots.js` apply them via `buildReplacements`/`applyReplacements`.
+- To change contact info, edit `package.json` only. Never grep-and-replace across files.
+- Root `llms.txt` and `robots.txt` are committed templates with literal tokens (like `about.html`'s `__DATE_MODIFIED__`).
+- Resolved copies go to `dist/`; CI moves them to root in the deploy runner only. Never commit them.
+- `src/build/pages.js` lists indexable pages and their last content commit. It feeds sitemap `lastmod`, `about.html`'s `__DATE_MODIFIED__` and the index `ProfilePage` `dateModified`. A new indexable page must be added there.
+- Trade-off: `npm test` and local preview serve raw root files (`npx serve .`). Placeholder links stay unresolved until `npm run deploy`; run it before clicking links locally.
+- The deployed site is unaffected: CI always resolves before publishing.
 
 ### External libraries
 
-jQuery and `@emailjs/browser` are npm dependencies. The `copy-libs` step extracts their pre-built browser bundles into `dist/` so `index.html` can load them as local scripts. `config.build.externalLibs` in `package.json` defines which file to extract from each package.
+- jQuery is the only npm runtime dependency. `copy-libs` copies the bundle named in `config.build.externalLibs` into `dist/`.
+- To add a frontend dependency after `npm install`:
+  1. Add it to `config.build.externalLibs`.
+  2. Reference the copied `.min.js` in `index.html` or `cv.html`.
+  3. Run `npm run deploy:copy-libs`.
 
 ### Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci && npm start`, then assembles `deploy/` (merging `dist/`, static assets, and root HTML files) and force-pushes it to `gh-pages` via `peaceiris/actions-gh-pages`. The live site uses CNAME `www.colace.me`.
+- Push to `main` → `.github/workflows/deploy.yml`: `npm ci && npm start`, assemble `deploy/` (`dist/` + static assets + root HTML), force-push to `gh-pages`.
+- Live site: CNAME `www.colace.me`.
 
-### JS module structure
+## Game JS (`src/js/`)
 
-All source JS lives in `src/js/`. The build minifies every file individually; no bundler is used. All functions are global declarations — the TypeScript server will flag cross-file globals as "undefined", but these are **always false positives**. Do not add imports, exports, or workarounds for them.
+- Every function is a global declaration; no modules.
+- TypeScript flags cross-file globals as undefined. Always false positives: add no imports, exports or workarounds.
 
-`index.html` loads scripts in this exact order (load order matters):
+### Load order
 
-```
-─── <head> ────────────────────────────────
+`index.html` loads scripts in this exact order:
+
+```text
+<head>
 jquery.min.js, easing.min.js
-config.min.js                                ← gameConfig: every tunable number (read-only)
-─── <body> ────────────────────────────────
-preloader.min.js                             ← C64 preloader, starts its sequence immediately
+config.min.js                                ← gameConfig, used by everything after it
+<body>
+preloader.min.js                             ← starts its sequence immediately
 container-transparent-or-displaynone.min.js  ← declares deviceName + containerDiv
-─── (EmailJS) ─────────────────────────────
-email.min.js
 init.min.js
 ale.min.js
 layers.min.js
-animation.min.js                             ← scene lifecycle + setRafInterval/clearRafInterval utility
-contact.min.js                               ← has top-level emailjs.init() + initContactButton()
-state.min.js                                 ← global state, DOM refs, bosses, sea species, scenes
-main.min.js                                  ← must be last: bootstrap + window event handlers
+animation.min.js
+ending.min.js
+state.min.js
+main.min.js                                  ← must be last: bootstrap + window handlers
 ```
 
-Module responsibilities:
+### Modules
 
-- **`config.js`** — `gameConfig`, deep-frozen: every duration, interval, distance, sprite frame and layout ratio of the game, grouped by component (preloader, ale, world, plants, buildings, experience, bosses, seaAnimals, sea, stars, scrollHint, links, contact, fireworks). **Change behaviour here, not in the modules.**
-- **`container-transparent-or-displaynone.js`** — Device detection (`deviceName`) via feature detection (`ontouchstart`/`maxTouchPoints`) and `containerDiv` declaration
-- **`preloader.js`** — Commodore 64 preloader: tape-loading sequence (starts immediately), then `finishPreloader()` (called on `window.onload`, returns a Promise) waits for the sequence, shows a `RUN` prompt and hides the preloader on click/tap/key. Uses `font/C64_Pro_Mono-STYLE.woff` (Style64 license: keep the file unmodified and with its original name)
-- **`ale.js`** — Ale character: movement, jump/fall/swim, sprite frames (`setAleFrame`), eyes, orientation, happy state
-- **`layers.js`** — Layer system, scroll/swipe, scroll phases (`setLayersMovement`), page dimensions, sea shift, touch events, world rise after RUN
-- **`animation.js`** — Scene behaviours (plants, buildings, bosses, sea animals, piecharts), scene lifecycle (`resetScenes`/`layoutScenes`/`resizeScenes`/`triggerEnteredScenes`), stars, scroll hint, rAF interval utility
-- **`contact.js`** — Contact section, links, fireworks, EmailJS send; has top-level `emailjs.init()` and `initContactButton()` calls
-- **`init.js`** — `storeDivs()` (DOM collection), `initVariablesAfterShowContainer()`, `resetVariables()`/`resetFunctions()` (delegate to the scene lifecycle)
-- **`state.js`** — Global state namespaces, DOM element declarations, `LayersMovement` phases, `bosses`, `seaAnimalSpecies` and the **`scenes`** registry
-- **`main.js`** — Bootstrap and `window` event handlers (`onload`, `onscroll`, `onresize`, `orientationchange`)
-- **`easing.js`** — Custom jQuery UI easing functions (easeInCubic, easeOutCubic, easeOutElastic)
+- `config.js`: `gameConfig`, deep-frozen. Every duration, interval, distance, sprite frame, layout ratio. **Change tunables here, not in modules.**
+- `container-transparent-or-displaynone.js`: `deviceName` (feature detection: `ontouchstart`/`maxTouchPoints`), `containerDiv`.
+- `preloader.js`: C64 tape-loading sequence. `finishPreloader()` (on `window.onload`, returns a Promise) shows `RUN`, hides on click/tap/key.
+- `ale.js`: movement, jump/fall/swim, frames (`setAleFrame`), eyes, orientation, happy state.
+- `layers.js`: layers, scroll/swipe, phases (`setLayersMovement`), page dimensions, sea shift, touch, world rise after RUN.
+- `animation.js`: scene behaviours and lifecycle (`resetScenes`/`layoutScenes`/`resizeScenes`/`triggerEnteredScenes`), stars, scroll hint, rAF utility, `flashElement`.
+- `ending.js`: fireworks, rocket portal (`setRocketBoardable`, `boardRocket`, `resetRocketLaunch`).
+- `init.js`: `storeDivs()`; `resetVariables()`/`resetFunctions()` delegate to the scene lifecycle and stop the fireworks.
+- `state.js`: state namespaces, DOM refs, `LayersMovement`, `bosses`, `seaAnimalSpecies`, `scenes`.
+- `main.js`: bootstrap, `window` handlers (`onload`, `onscroll`, `onresize`, `orientationchange`).
+- `easing.js`: jQuery UI easings (easeInCubic, easeOutCubic, easeOutElastic).
 
-### Scenes (state.js)
+### Global state (`state.js`)
 
-Every animated section of the world is one entry in `scenes`, carrying its whole lifecycle: `world` (`"land"` or `"sea"`; sea containers live inside `#sea-1`), `container` (its horizontal span triggers `enter` when the viewport centre crosses into it), `reset()` (restore the "not yet played" state, on load and when scrolling back to the start), `layout()` (place elements for the current state), optional `resize()`, and `enter()` (entry animation or idle loop). Bosses and sea animals are generated from the `bosses` / `seaAnimalSpecies` arrays by `createBossScene` / `createSeaAnimalScene`. **To add a scene:** add its markup, its tunables in `gameConfig`, its behaviour functions in `animation.js`, then one object in `scenes`.
+- Namespaces: `ale` (physics, sprite), `scrollState` (position, touch, phase), `flags` (animation booleans), `timers` (every timer ID).
+- Per-boss and per-species state (`canAnimate`, `isAnimating`) lives on the `bosses` / `seaAnimalSpecies` objects.
+- DOM elements, arrays and counters stay individual `var`s. Tunable numbers go in `gameConfig`.
+- Never name a global after a browser built-in (`scroll`, `location`, `history`, `navigator`, `screen`). Hence `scrollState`.
 
-### Fonts
+### Scenes
 
-All fonts live in `font/`, each OFL font next to its `*-OFL.txt` license: C64 Pro Mono (preloader and the whole 404 page), Press Start 2P (game UI: titles, gates, labels), Jersey 15 (long text: experience descriptions, about body), Bangers (ribbons, piecharts, about headings). Press Start 2P is wide: size game text down rather than letting it overflow fixed-width boxes.
+Each animated section is one `scenes` entry:
 
-### 404 page
+- `world`: `"land"` or `"sea"` (sea containers live inside `#sea-1`).
+- `container`: `enter` fires when the viewport centre crosses into its horizontal span.
+- `reset()`: restore "not yet played", on load and when scrolling back to the start.
+- `layout()`: place elements for the current state; optional `resize()`.
+- `enter()`: entry animation or idle loop.
 
-`404.html` is standalone: it loads only `dist/404.min.css` and `dist/404.min.js` (from `src/css/404.css` / `src/js/404.js`), none of the resume scripts, and uses **absolute** asset paths because GitHub Pages serves it for missing URLs at any depth. Two full-height sections:
+Bosses and sea animals are generated from `bosses` / `seaAnimalSpecies` by `createBossScene` / `createSeaAnimalScene`.
 
-- **`#bsod`** — a crashed Commodore 64 on a blue screen (`#0000aa`), written as a believable C64 session: a disk directory, a BASIC `LOAD` ending in `?FILE NOT FOUND  ERROR`, a recovery program whose `LOAD` lines link to the real pages, and a machine-code monitor dump of screen memory in real screen codes. Keep lines ≤ 40 characters with C64-accurate output (`READY.` placement, the 1541 error channel `62,FILE NOT FOUND,00,00`). The copy blames the missing page on the invaders. `.bsod-path` shows the URL that was requested. Every `.bsod-block` fades in at `--step` × `--bsod-reveal-step`. After `invadersConfig.glitch.startDelay`, the **alien glitches** start, and they pause while the BSOD is off-screen:
-  - Invader sprites walk along plain-text `<p>` rows and eat characters.
-  - Bits flip into PETSCII glyphs.
-  - `.bsod-garbage` rows of corrupted screen memory keep changing.
-  - Raster bands flash across the screen.
+**To add a scene:** markup → tunables in `gameConfig` → behaviour in `animation.js` → one object in `scenes`.
 
-  PETSCII glyphs come from C64 Pro Mono's Private Use Area (`U+E000` + PETSCII code); `▼`, `→` and `·` are missing from the font, so draw them in CSS. With reduced motion the garbage rows stay static and nothing else moves. `ENTER` (Return on a Mac) reboots to `/` from every state, including during a match. The one exception is a link or button the user focused with the keyboard (`:focus-visible`): Enter activates that control instead. After `invadersConfig.autoDebugDelay` (5 s) the page scrolls itself to the game, unless the user scrolls, taps, clicks or presses a key first; the footer shows `… TO FIGHT THE INVADERS IN n`.
-- **`#debugger`** — "404 Invaders" on a `<canvas>`: 30 invaders laid out as the digits "404" (`invaderGlyphs`); they ate the page, so the player wins it back. Fire (Space) starts, resumes or continues; ←/→ (or A/D) move; holding fire keeps shooting. On touch screens, hold and drag. Keys are captured only while at least `viewThreshold` of the section is visible, so on the BSOD Space and the arrows still scroll the page. Scrolling away, blurring or hiding the tab pauses the game. States: `ready → playing ⇄ paused`, `playing → cleared` ("SECTOR 404 RECLAIMED!"; fire: next, faster wave) or `gameover` (fire: retry).
+### Piecharts
 
-The game's tunables live in the frozen `invadersConfig` at the top of `404.js`. The resume's `gameConfig` is not loaded on this page. The playfield is measured in sprite pixels and scaled to the stage, using an integer scale when there's room for one.
+- `getPiechartElements(prefix)` returns `front`, `graphic1`, `graphic2`, `animation1`, `animation2`, `code1`, `code2`.
+- Stored on each boss (`boss.piechart`) and as `piechartRobot`, `piechartSquid`, `piechartAlien`. Do NOT add alias variables.
 
-### Keyboard
+### Scroll phases and keyboard
 
-All four arrows go through `handleArrowKeys` (`layers.js`): down/right forward, up/left back. Key repeats are ignored; a rAF loop scrolls at `gameConfig.keyboard.arrowScrollSpeed` px/ms until `keyup` (or window blur).
+- `scrollState.layersMovement` is `LayersMovement.horizontal` (world), `.vertical` (climb), `.walkingToRocket` (last `world.aleToRocketDistance` px) or `.atRocket` (page end).
+- Compare against the `LayersMovement` constants, never string literals.
+- Desktop: within 1px of the bottom counts as the end. Zoom/scaling makes `scrollY` fractional; its max can stop short of `pageDiv.offsetHeight - containerDiv.offsetHeight`.
+- Arrows go through `handleArrowKeys` (`layers.js`): down/right forward, up/left back.
+- Key repeats are ignored. A rAF loop scrolls at `keyboard.arrowScrollSpeed` px/ms until `keyup` or window blur.
 
-### Scroll phases
+### Animation
 
-`scrollState.layersMovement` is one of `LayersMovement.horizontal` (walking through the world), `.vertical` (climbing to the contact section), `.walkingToRocket` (last `gameConfig.world.aleToRocketDistance` px) and `.atRocket` (end of the page: links, fireworks, happy Ale). Compare against the `LayersMovement` constants, never string literals.
+- jQuery `.animate()`: movement (parallax, positioning, slide-ins).
+- `setRafInterval`/`clearRafInterval` (`animation.js`): throttled rAF for visual cycles. Syncs with refresh, pauses in background tabs.
+- `setInterval`: non-visual periodic triggers only (bubbles, sea animal blink).
+- Blinks: use `flashElement(element, ms)`. Never pair a 0 ms `fadeTo` with a following `.stop()`: the fade lands on the next jQuery tick, so `.stop()` cancels it.
+- Prefer composited `transform`/`opacity` over animating `top`/`bottom`/`left`/`width`/`height` during load or on visible layout. Layout animation causes reflow and CLS.
+- Example: the world rise after RUN toggles `.layer-risen` (`transform`) instead of animating `top`.
+
+### Ending
+
+- The ending's only link is the rocket to `about.html`; profiles, CV and contacts are on the About page.
+- `#rocket` stays `inert` until `.atRocket`, then gets `.rocket-boardable` and its "BOARD ▶" sign.
+- Rocket layers, back to front: `.rocket-back` (glass) → `#ale-container` (later sibling of `#rocket`) → `.rocket-container` (front frame, `z-index: 6`, porthole cut out).
+- Only Ale's head shows through the porthole; `world.aleRocketPaddingBottom` lifts him there.
+- **Never put a `transform` on `#rocket`.** It becomes a stacking context and pulls the front frame below Ale.
+- Launch (click, tap, Enter): Web Animations API, composited `transform`, timings in `gameConfig.launch`. Then the page navigates.
+- Reduced motion: the link navigates immediately. A back/forward-cache restore runs `resetRocketLaunch()`.
+- `#about-sign` SVG faces are painted far-to-near so the nearer stroke wins.
+- Fireworks: one `<canvas>` (`#fireworks-canvas`) behind sign, rocket and clouds; original pixel art on a `fireworks.cellSize` grid.
+- Firework sprites are row strings in `FIREWORK_SPRITES` (`ending.js`). Never copy Nintendo's actual sprites.
+- Fireworks launch only at `.atRocket`, finish in-flight ones elsewhere, and are skipped with reduced motion. `stopFireworks()` clears them.
+- `hideStarsInFinalScene()` hides climb stars inside the final scene, on load and resize.
+- Touch: `handleEnd` (`layers.js`) lets `touchend` on links through; cancelling it would swallow the tap's click.
+
+### Ending on narrow windows
+
+- Laid out for wide windows: rocket at `world.rocketMaxOffsetFromCenter`, Ale at `world.aleMaxOffsetFromCenter` + `aleToRocketDistance`.
+- `positionRocketAndAleContainerHorizontally()` shifts both left until Ale ends `world.aleEndMarginRight` px inside the right edge.
+- `positionAboutSign()` keeps `#title-about-me` `aboutSign.rocketGap` px clear of the rocket.
+- It slides left until the first letter (`aboutSign.textLeft`, viewBox x) is `aboutSign.marginLeft` from the edge, then scales (`transform`) down to `aboutSign.minScale`.
+- Current config: nothing moves from 1504px up; everything fits down to the 1000px mobile layout viewport.
 
 ### Timing map
 
-How the timings in `gameConfig` chain together (values in ms at today's config). Changing one link shifts everything after it.
+How `gameConfig` timings chain. Changing one link shifts everything after it.
 
-| Sequence | Chain | Total |
-|---|---|---|
-| Preloader | `startDelay` 300 → type `LOAD` (4 × `typeCharInterval` 110 + `afterTypePause` 250) → `pressPlayPause` 500 → `okPause` 300 → `searchingPause` 600 → `foundPause` 400 → raster stripes `loadingStripesDuration` 700 | ≈ 3.5 s, then waits for page load **and** the RUN input |
-| RUN → playable | type `RUN` (3 × 110 + 250) → `runBlankDuration` 120 → world rise `world.riseDuration` 1000 (also sets the CSS transition) → scroll enabled + Ale drop `ale.introDrop.duration` 500 | ≈ 1.7 s to scrolling, 2.2 s until Ale can run |
-| Jump onto an elevation | `jump.upDuration` 300 (rises `jump.height` px) → `jump.downDuration` 300 | 600; falling off = `fallDuration` 300 |
-| Swim stroke | up `swim.upMsPerPx` × scroll delta → down `swim.downMsPerPx` × delta (delta capped at sea height − Ale height) | down always takes 2× up |
-| Sea layer shift | moves `seaShiftStep` px every `seaShiftInterval` ms (1 px/ms) over `seaShiftRatio` × viewport height | ≈ 540 at 720 px height |
-| Boss entry | `enterDuration` (robot/squid 1000, alien 300) → piechart fade `experience.piechartFadeDuration` 500 → three text pairs every `piechartTextStagger` 300, each `piechartTextDuration` 1000; idle loop starts at landing. Text + chain drop in parallel over `dropDuration` 1000 | robot/squid 3100, alien 2400 |
-| Plants / buildings | item *i* starts at `stagger` × *i* (300), runs `duration` (800 / 1000) | plants 1700, buildings 1600 |
-| Sea animals | animal *i* starts at `stagger` × *i* (100), swims `swimInDistance` px in `duration` 600 | 600 + 100 × (count − 1) |
-| Fireworks | one firework every `launchInterval` 1000; each draws `rows` rings × `ringInterval` 40 = 320, then fades `fadeDuration` 1000 | new launch before the previous fade ends |
-| Idle cycles | Ale blink every `ale.blinkInterval` 4000 for 300 · sea animals every 3000 for 300 · alien eyes every 700 closed 230 · stars cycle a 4-colour Super Star palette every `stars.interval` 100 · scroll hint every 1000 visible 500 · robot hands every 4000 (frame 100) · squid hands every 4000 (8 toggles × 200) · alien steer ±15° step 5° every 100 | independent loops |
+| Sequence           | Chain (ms)                                                                                                                                                                                                      | Total                                    |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Preloader          | `startDelay` 300 → `LOAD` (4 × `typeCharInterval` 110 + `afterTypePause` 250) → `pressPlayPause` 500 → `okPause` 300 → `searchingPause` 600 → `foundPause` 400 → `loadingStripesDuration` 700                   | ≈ 3.5 s, then waits for load **and** RUN |
+| RUN → playable     | `RUN` (3 × 110 + 250) → `runBlankDuration` 120 → `world.riseDuration` 1000 (also the CSS transition) → scroll on + `ale.introDrop.duration` 500                                                                 | ≈ 1.7 s to scroll, 2.2 s to run          |
+| Jump               | `jump.upDuration` 300 (`jump.height` px) → `jump.downDuration` 300; falling off: `fallDuration` 300                                                                                                             | 600                                      |
+| Swim stroke        | up `swim.upMsPerPx` × delta → down `swim.downMsPerPx` × delta; delta ≤ sea height − Ale height                                                                                                                  | down = 2 × up                            |
+| Sea shift          | `seaShiftStep` px every `seaShiftInterval` (1 px/ms) over `seaShiftRatio` × viewport height                                                                                                                     | ≈ 540 at 720 px                          |
+| Boss entry         | `enterDuration` (robot/squid 1000, alien 300) → `experience.piechartFadeDuration` 500 → 3 text pairs, `piechartTextStagger` 300 apart, `piechartTextDuration` 1000 each                                         | robot/squid 3100, alien 2400             |
+| Plants / buildings | item *i* starts at `stagger` × *i* (300), runs `duration` (800 / 1000)                                                                                                                                          | 1700 / 1600                              |
+| Sea animals        | animal *i* starts at `stagger` × *i* (100), swims `swimInDistance` px in `duration` 600                                                                                                                         | 600 + 100 × (n − 1)                      |
+| Rocket launch      | `launch.aleWalkDuration` 500 → `aleClimbDuration` 250 → `ignitionDuration` 500 (shake ±`shakeDistance` px every `shakeInterval` 60, flame every `exhaustFlickerInterval` 80) → `liftOffDuration` 800 → navigate | ≈ 2.05 s                                 |
 
-### Global state namespaces (state.js)
+- Boss text and chain drop run in parallel over `dropDuration` 1000; the idle loop starts at landing.
+- Fireworks (independent of the launch): a step every `frameInterval` 33; next volley of 1, 3 or 6 `volleyInterval` 1500 after the last, `volleyStagger` 280 apart.
+- Fireworks shapes: burst `burstRadius` 3 steps × `burstFrameHold` 2; star `starGrowFrames` 12; sparks `particleLife` 36–54 frames, blinking the last `flickerFrames` 14; comet every `cometInterval` 1800–4000.
+- Idle loops (every / for): Ale blink `ale.blinkInterval` 4000 / 300; sea animals 3000 / 300; alien eyes 700 / 230 closed; scroll hint 1000 / 500.
+- More idle loops: stars palette (4 colours) every `stars.interval` 100; robot hands 4000 (frame 100); squid hands 4000 (8 × 200); alien steer ±15° in 5° steps every 100.
+- Stars are original pixel art. Keep the sprite yellow: the palette is CSS filters on it.
 
-Global mutable state is organized into four namespace objects to reduce global pollution and clarify ownership:
+## Coding standards (`src/js/`)
 
-- **`ale`** — Character physics & sprite state (isJumping, isFalling, isSwimming, frameIndex, elevations, etc.)
-- **`scrollState`** — Page position, touch coordinates, layers movement phase. Named `scrollState` (not `scroll`) to avoid overwriting the native `window.scroll` function.
-- **`flags`** — Animation control booleans (canAnimatePlant, canDrawFireworks, starPaletteIndex, etc.); per-boss and per-species state lives on the `bosses` / `seaAnimalSpecies` objects (`canAnimate`, `isAnimating`)
-- **`timers`** — All timer IDs (blinkAleEyes, shiftAleFrame, stars, alienEyes, drawFirework, etc.)
+- `const`/`let`, never `var` inside functions. Globals in `state.js` use `var` (cross-file scope without modules).
+- Arrow functions for anonymous callbacks; named functions stay `function name() { }`.
+- Template literals: `` `${value}px` ``, not `value + "px"`.
+- `for...of` when the index is unused; `for (let i = ...)` for parallel arrays or staggered delays.
+- Nested loops use distinct counters (`i`/`j`): a shared name shadows with `let` and clobbers with `var`.
+- `className`, not `setAttribute("class", ...)`. `querySelectorAll`, not `getElementsByTagName` loops.
+- Meaningful names (`elevationIndex`, `topOffset`); single letters only for simple loop counters.
+- No Yoda conditions, no comma operators, no scientific notation (`1000`, not `1e3`), no string `setTimeout`.
+- HTML: never auto-wrap long lines (`"html.format.wrapLineLength": 0`). Mid-tag breaks destroy the layout.
 
-DOM elements, arrays and counters remain as individual `var` declarations; tunable numbers belong in `gameConfig`.
+## Fonts
 
-### Animation approach
+- All in `font/`; each OFL font next to its `*-OFL.txt`.
+- C64 Pro Mono (`C64_Pro_Mono-STYLE.woff`): preloader, whole 404 page. Style64 license: keep it unmodified, original name.
+- Press Start 2P: game UI, About nav/chips/labels. It is wide: size text down rather than overflow fixed-width boxes.
+- Jersey 15: long text. Bangers: ribbons, piecharts, About headings. Manrope: only the About COalesCE wordmark (Latin, 400).
 
-- **jQuery `.animate()`** is used for movement animations (parallax, character positioning, slide-ins)
-- **`setRafInterval` / `clearRafInterval`** (defined in `animation.js`) wraps `requestAnimationFrame` with timestamp-based throttling. Used for visual cyclic animations (robot hands, squid hands, alien steer, fireworks, stars blink, alien eyes, Ale eyes). Benefits: syncs with display refresh, auto-pauses in background tabs.
-- **`flashElement(element, ms)`** (in `animation.js`) shows an overlay immediately and hides it after `ms` — use it for every blink (Ale, alien, sea animals, scroll hint). Never pair a 0 ms `fadeTo` with a following `.stop()`: the fade only applies on the next jQuery tick, so `.stop()` cancels it and the blink is lost.
-- **`setInterval`** is still used for periodic non-visual triggers (bubble creation every 3s, sea animal blink every 3s, etc.)
-- **Prefer composited CSS transitions (`transform`/`opacity`) over jQuery `.animate()` on layout properties** (`bottom`, `top`, `left`, `width`, `height`) for animations that run during page load or otherwise affect visible layout — animating layout properties triggers reflow and Cumulative Layout Shift. Example: the world rise after RUN toggles `.layer-risen` (`transform`) instead of animating `top`.
+## About page
 
-### Testing
+- `about.html` + `src/css/about.css`, no JavaScript.
+- Red is `#e3171f`, darkened from the game's `#ed1c24` so white text passes 4.5:1.
+- Every box has rounded corners (`--radius`). Only page frames (top bar, `main`, footer, grass strip) and language-meter cells stay square.
+- Functional text never below 11px (Press Start 2P).
+- Ale sprite: `.sprite-ale`, frame k at `background-position: k/8 * 100%`.
+- Company pills: `.pill` links inside a `.nobr` span with the following punctuation, so a comma never starts a line.
+- Section order: Career → COalesCE → tech stack.
+- Tech stack lists products and tools only. Concepts (RAG, Agentic AI, MLOps…) go in the summary.
+- Visible cards: Data Engineering, Data Platforms, Cloud. The other twelve sit in a native `<details>` "full toolbox".
+- Skill card top colour follows grid position (`nth-child`), so cards move without class changes.
+- Chips use `<use href=dist/logos.svg#NAME>`. Add a mark by dropping `image/logos/NAME.svg`; no mark available → text only.
+- Contact buttons are icon-only: each needs `aria-label` and `title`.
+- JSON-LD (`ProfilePage` + `BreadcrumbList`) describes only visible content.
 
-`npm test` runs two Playwright suites (locally only; `npm run deploy` first):
+## Images
 
-- **`tests/visual-regression.spec.js`** — screenshot comparison of the preloader and 12 scroll positions. Baselines in `tests/visual-regression.spec.js-snapshots/` (platform-specific `*-chromium-win32.png`), fail above 1% pixel difference. The section tests click `RUN`, then `settleGameAnimations()` finishes jQuery animations in the experience sections and stops the JS-driven cycles (stars, alien steer) in their rest state, because the CSS animation kill switch doesn't reach them.
-- **`tests/game.spec.js`** — behaviour tests in the real page: preloader sequence and RUN (click/key), frozen `gameConfig`, scene registry integrity, scene entry/reset, boss landing, scroll phases, progress bar, sea enter/leave, contact form validation, rAF interval utility, sitemap output.
-- `npm run test:update` — regenerate baselines after intentional visual changes only
-- Playwright config: `playwright.config.js` (uses `serve` as webServer on port 3000)
+- Every image goes in its module's subfolder: `image/ale/`, `image/animation/`, `image/ending/`, `image/layers/`. **Never** in `image/` root.
+- About page: `image/certs/` (badges), `image/logos/` (tech marks).
+- `image/layers/urchin.png` and `urchin-eyes.png` are unused on purpose (future sea species). Don't delete them.
 
-### Piechart objects
+### Brand marks
 
-Piecharts use a helper `getPiechartElements(prefix)` that returns an object with properties: `front`, `graphic1`, `graphic2`, `animation1`, `animation2`, `code1`, `code2`. They are attached to each boss (`boss.piechart`) and also stored as `piechartRobot`, `piechartSquid`, `piechartAlien`. Do NOT create individual alias variables for piechart elements.
+Applies to `image/logos/` and the summary-pill company marks.
 
-## Coding Standards & Best Practices
+- Prefer Simple Icons (CC0). Microsoft Fabric and Hermes Agent are MIT-licensed.
+- Otherwise reduce the vendor's own SVG artwork (favicon symbol or logo) to one colour.
+- No official SVG: trace the largest official PNG (e.g. Denodo, Jev with `shape-rendering="crispEdges"`).
+- Wordmarks (YNAP) use `class="logo logo-wordmark"`: 42×12 instead of the 14px square. Traced wordmarks need `fill-rule="evenodd"`.
+- Never redraw a mark by hand. Compare the result with the source at chip size.
 
-When editing JavaScript files in `src/js/`, please adhere to the following:
+## 404 page
 
-- **Use `const`/`let`**, never `var` inside functions. Global state in `state.js` uses `var` (required for cross-file scope without modules).
-- **Use arrow functions** for all anonymous callbacks (`() => { }`, not `function () { }`). Keep named function declarations as `function name() { }`.
-- **Use template literals** for string concatenation with values: `` `${value}px` ``, not `value + "px"`.
-- **Use `for...of`** where the loop index is not needed. Keep `for (let i = ...)` when the index is used for parallel array access or staggered delays.
-- **Use `className`** instead of `setAttribute("class", ...)` for class manipulation.
-- **Use `querySelectorAll`** for DOM collection instead of manual `getElementsByTagName` loops.
-- **Use meaningful variable names**: `elevationIndex`, `animalArray`, `topOffset` — never single-letter names like `e`, `t`, `i`, `n` for anything other than simple loop counters.
-- **Avoid Yoda conditions**: Write `variable === val` instead of `val === variable`.
-- **Avoid comma operators**: Do not chain expressions with commas. Write them as separate statements.
-- **No scientific notation**: Write `1000`, `2000`, not `1e3`, `2e3`.
-- **No `setTimeout` with strings**: Always use the function form.
-- **HTML Formatting**: Do not use automatic line-wrapping or formatters that wrap long HTML lines (e.g., in `index.html`). The extensive use of inline classes and IDs for animations means that line breaks mid-tag will destroy the layout. Use settings like `"html.format.wrapLineLength": 0`.
-- **Nested loops use distinct counters** (`i`/`j`): a shared name shadows with `let` and clobbers with `var`.
+- Standalone: only `dist/404.min.css` and `dist/404.min.js` (from `src/css/404.css`, `src/js/404.js`). No resume scripts, no `gameConfig`.
+- **Absolute** asset paths: GitHub Pages serves it for missing URLs at any depth.
+- Tunables: frozen `invadersConfig` at the top of `404.js`.
 
-## Architecture & Maintenance Guidelines
+### `#bsod`
 
-- **SEO & Metadata**: To keep SEO optimal according to most recent standards:
-  - Update `src/json/seo-meta.json` to change the Schema.org `Person` JSON-LD injects.
-  - Update `index.html` `<head>` tags to change Open Graph (`og:*`), Twitter Cards (`twitter:*`), and standard meta descriptions. ALWAYS ensure `og:image` and `twitter:image` are defined.
-  - Update `package.json` -> `config.keywords` to change the site manifest keywords.
-  - **Periodic SEO audits**: the `.claude/claude-seo/` git submodule (from `AgriciDaniel/claude-seo`) ships specialised SEO skills (`seo-audit`, `seo-page`, `seo-schema`, `seo-technical`, `seo-geo`, ...). Use them every few months — or after any significant content/meta change — to re-audit the site. The skills aren't auto-loaded into Claude Code (they live outside `.claude/skills/`), so either copy/symlink the desired skill folder into `.claude/skills/`, run the repo's `install.ps1`/`install.sh`, or invoke the methodology manually by reading the relevant `SKILL.md`. Apply findings to `index.html`, `about.html`, `seo-meta.json`, `llms.txt`, `robots.txt`, and the build pipeline as appropriate.
-  - `robots.txt` (root, template) lists per-crawler rules grouped by category — search engines (Googlebot, Bingbot, YandexBot, Applebot), social preview crawlers (Twitterbot, facebookexternalhit, LinkedInBot), and AI answer engines/GEO (GPTBot, OAI-SearchBot, and other named training/user-fetch/search-index bot tokens). When adding a new crawler, place it in the matching category and keep the `Disallow: /document/cv.pdf` line consistent with the others.
-- **Image Directory Structure**: Images in the `image/` directory must be categorized semantically to match the JS modules they belong to. When adding new images, place them in the appropriate subfolder (`image/ale/`, `image/animation/`, `image/contact/`, or `image/layers/`). **NEVER** place images directly in the root `image/` directory; every image must belong to one of these specific sections.
-- **Adding External Libraries**: If you `npm install` a new frontend dependency:
-  1. Add it to `package.json` -> `config.build.externalLibs`.
-  2. Reference the copied `.min.js` file in `index.html` or `cv.html`.
-  3. Run `npm run deploy:copy-libs` to sync it to `dist/`.
-- **Namespace naming**: Never use browser built-in names (`scroll`, `location`, `history`, `navigator`, `screen`) for global namespace objects. Use descriptive alternatives (`scrollState`, etc.).
+- Crashed C64 session on `#0000aa`. Lines ≤ 40 characters with C64-accurate output (`READY.` placement, `62,FILE NOT FOUND,00,00`).
+- `.bsod-path` shows the requested URL. Each `.bsod-block` fades in at `--step` × `--bsod-reveal-step`.
+- Alien glitches start after `invadersConfig.glitch.startDelay` and pause while the BSOD is off-screen.
+- PETSCII glyphs: C64 Pro Mono Private Use Area (`U+E000` + code). `▼`, `→`, `·` are missing: draw them in CSS.
+- Reduced motion: `.bsod-garbage` rows stay static, nothing else moves.
+- `ENTER` (Return on Mac) reboots to `/` from every state, even mid-match. Exception: a `:focus-visible` link or button gets activated instead.
+- After `invadersConfig.autoDebugDelay` (5 s) the page scrolls to the game, unless the user scrolls, taps, clicks or presses a key.
+
+### `#debugger` (404 Invaders)
+
+- `<canvas>` game; 30 invaders form "404" (`invaderGlyphs`).
+- Fire (Space) starts/resumes/continues; ←/→ or A/D move; hold fire to keep shooting. Touch: hold and drag.
+- Keys are captured only while ≥ `viewThreshold` of the section is visible, so Space and arrows still scroll on the BSOD.
+- Scrolling away, blur or a hidden tab pauses.
+- States: `ready → playing ⇄ paused`; `playing → cleared` (fire: faster wave) or `gameover` (fire: retry).
+- Playfield in sprite pixels, scaled to the stage; integer scale when it fits.
+
+## Testing
+
+- Playwright, locally only; run `npm run deploy` first. `playwright.config.js` serves the root with `serve` on port 3000.
+- `tests/visual-regression.spec.js`: preloader + 12 scroll positions; fails above 1% pixel difference.
+- Baselines: `tests/visual-regression.spec.js-snapshots/`, platform-specific (`*-chromium-win32.png`).
+- Section tests click `RUN`, then `settleGameAnimations()` finishes jQuery animations and stops JS cycles (stars, alien steer) at rest.
+- The CSS animation kill switch doesn't reach JS-driven cycles; `stopFireworks()` clears fireworks.
+- `tests/game.spec.js`: behaviour in the real page (preloader, `gameConfig` freeze, scenes, scroll phases, end detection, sitemap…).
+- `npm run test:update` only after inspecting the diffs, for intentional visual changes.
+
+## SEO
+
+- `src/json/seo-meta.json`: Schema.org `Person` JSON-LD. Edit it, not `index.html`.
+- `index.html` `<head>`: Open Graph, Twitter Cards, meta description. Always define `og:image` and `twitter:image`.
+- `package.json` → `config.keywords`: manifest keywords.
+
+### Audits (`claude-seo` submodule)
+
+- `.claude/claude-seo/` (submodule, `AgriciDaniel/claude-seo`) ships SEO skills (`seo-audit`, `seo-page`, `seo-schema`, `seo-technical`, `seo-geo`…).
+- Re-audit every few months or after significant content/meta changes. Apply findings to pages, `seo-meta.json`, `llms.txt`, `robots.txt`, build.
+- Not auto-loaded: copy/symlink a skill into `.claude/skills/`, run `install.ps1`/`install.sh`, or read its `SKILL.md`.
+- Clone/pull doesn't populate it: `git submodule update --init` once, then `git config submodule.recurse true`.
+- Dependabot bumps it weekly (`gitsubmodule`). Manually: `git submodule update --remote .claude/claude-seo`, commit the gitlink.
+
+### `robots.txt`
+
+- Root template. Allows every crawler everywhere: search, AI answers, AI training.
+- Named crawlers are grouped by category (search, social previews, AI answers, AI training). Add a new `User-agent` to its group.
+- Every group repeats `Content-Signal: search=yes, ai-input=yes, ai-train=yes`: a named crawler ignores the `*` group (RFC 9309).
+- Cloudflare's AI crawler blocking sits in front (training crawlers got 403 in October 2026). Check the Cloudflare dashboard too.
+
+### `llms.txt`
+
+- Root template per llmstxt.org: H1, `>` summary, disambiguation, `## Pages`, `## Profiles`, fact sections, `## Optional` last.
+- No weight in Google Search; it is for other AI systems.

@@ -18,7 +18,7 @@ function getShortName(fullName) {
 const manifest = {
     name: `${packageJson.author} - ${packageJson.description}`,
     short_name: getShortName(packageJson.author),
-    description: `${packageJson.description} of ${packageJson.author} | ${packageJson.job_title} - based on ${packageJson.based_on}`,
+    description: `${packageJson.description} of ${packageJson.author} | ${packageJson.job_title}`,
     icons: packageJson.config.manifest.icons.map(icon => ({
         ...icon,
         src: `../${packageJson.config.manifest.iconsPath}${icon.src}`

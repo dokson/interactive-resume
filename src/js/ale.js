@@ -231,14 +231,18 @@ function getSwimUpHeight() {
 
 // ─── Ale: orientation ─────────────────────────────────────────────────────────
 function orientAle() {
-    if (scrollState.delta > 0) {
-        aleFramesDiv.style.top = "0px";
-        aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetRight}px`
-    }
-    if (scrollState.delta < 0) {
-        aleFramesDiv.style.top = `${-gameConfig.ale.frameHeight}px`;
-        aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetLeft}px`
-    }
+    if (scrollState.delta > 0) faceAleRight();
+    if (scrollState.delta < 0) faceAleLeft()
+}
+
+function faceAleRight() {
+    aleFramesDiv.style.top = "0px";
+    aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetRight}px`
+}
+
+function faceAleLeft() {
+    aleFramesDiv.style.top = `${-gameConfig.ale.frameHeight}px`;
+    aleEyesCloseDiv.style.left = `${gameConfig.ale.eyesCloseOffsetLeft}px`
 }
 
 // ─── Ale: happy state ────────────────────────────────────────────────────────

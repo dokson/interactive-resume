@@ -51,11 +51,9 @@ var flags = {
     canAnimatePlant: undefined,
     canAnimateBuilding: undefined,
     canAnimateBuilding2: undefined,
-    canAnimateLinks: undefined,
     canHideScrollText: true,
     canAnimateScrollText: true,
-    contactConfirmationVisible: true,
-    canDrawFireworks: true,
+    isRocketLaunching: false,
     starPaletteIndex: 0
 };
 
@@ -76,8 +74,8 @@ var timers = {
     scrollText: undefined,
     shiftUpLayer: undefined,
     shiftDownLayer: undefined,
-    drawFirework: undefined,
-    drawOneLayerFirework: undefined
+    fireworks: undefined,
+    launchWalk: undefined
 };
 
 // ─── DOM elements: page structure ───────────────────────────────────────────
@@ -94,6 +92,10 @@ var aleDiv = document.getElementById("ale");
 var aleFramesDiv = document.getElementById("ale-slides");
 var aleEyesCloseDiv = document.getElementById("ale-eyes-close");
 var rocketDiv = document.getElementById("rocket");
+var rocketBackDiv = rocketDiv.querySelector(".rocket-back");
+var rocketFrontDiv = rocketDiv.querySelector(".rocket-container");
+var rocketExhaustDiv = rocketDiv.querySelector(".rocket-exhaust");
+var rocketLaunchAnimations = [];
 var groundAndGrassContainer1Div = document.getElementById("ground-and-grass-container-1");
 
 // ─── DOM elements: layers ───────────────────────────────────────────────────
@@ -192,7 +194,7 @@ var skill3ContainerDiv = document.getElementById("skill-3-container");
 
 /**
  * @typedef {object} SeaAnimalSpecies
- * @property {"fish"|"crab"|"turtle"} name  CSS class of the animals (eyes use `${name}-eyes`) and key into gameConfig.seaAnimals.rows
+ * @property {"puffer"|"spinefish"|"jelly"} name  CSS class of the animals (eyes use `${name}-eyes`) and key into gameConfig.seaAnimals.rows
  * @property {HTMLElement} containerDiv
  * @property {HTMLElement[]} animals
  * @property {HTMLElement[]} eyes
@@ -207,34 +209,33 @@ function createSeaAnimalSpecies(name, containerDiv) {
 }
 
 var seaAnimalSpecies = [
-    createSeaAnimalSpecies("fish", skill1ContainerDiv),
-    createSeaAnimalSpecies("crab", skill2ContainerDiv),
-    createSeaAnimalSpecies("turtle", skill3ContainerDiv)
+    createSeaAnimalSpecies("puffer", skill1ContainerDiv),
+    createSeaAnimalSpecies("spinefish", skill2ContainerDiv),
+    createSeaAnimalSpecies("jelly", skill3ContainerDiv)
 ];
 
-// ─── DOM elements: contact / links / fireworks ──────────────────────────────
-var contactContainerDiv = document.getElementById("contact-container");
-var linksContainerDiv = document.getElementById("links-container");
+// ─── DOM elements: ending / fireworks ───────────────────────────────────────
+var endingContainerDiv = document.getElementById("ending-container");
+var aboutSignTitleSvg = document.getElementById("title-about-me");
 var scrollOrSwipeTextContainer1Div = document.getElementById("scroll-or-swipe-text-container-1");
 var scrollOrSwipeTextContainer2Div = document.getElementById("scroll-or-swipe-text-container-2");
-var contactConfirmationContainerArray = [];
-var emailAddressDiv = document.getElementById("email-address");
-var emailSubjectDiv = document.getElementById("email-subject");
-var emailMessageDiv = document.getElementById("email-message");
 var stars = document.getElementsByClassName("star");
 var alienEyes = document.getElementById("alien-close-eyes");
 
 var fireworksContainerDiv = document.getElementById("fireworks-container");
-var fireworkArray = [];
-var fireworkSvgArray = [];
+var fireworksCanvas = document.getElementById("fireworks-canvas");
+var fireworksContext = fireworksCanvas.getContext("2d");
 
 // ─── Firework state ────────────────────────────────────────────────────────
-var drawFireworkCounter = 0;
-var fireworkLayerNumber = 0;
-var fireworkCenterX;
-var fireworkCenterY;
-var fireworkOneRadiusDistance;
-var fireworkOneRotationAngle;
+var fireworkLaunchQueue = [];
+var fireworkShells = [];
+var fireworkBursts = [];
+var fireworkStars = [];
+var fireworkComets = [];
+var fireworkParticles = [];
+var fireworksFrame = 0;
+var fireworksNextVolleyFrame = 0;
+var fireworksNextCometFrame = 0;
 
 // ─── Derived layout values ──────────────────────────────────────────────────
 var shiftUpLayerHorizontalDistance;

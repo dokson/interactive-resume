@@ -3,6 +3,7 @@ const path = require('path');
 
 const packageJson = require(path.join(__dirname, '../../package.json'));
 const { buildReplacements, applyReplacements } = require('./placeholders');
+const { findPage, lastContentChange } = require('./pages');
 
 const rootDir = path.resolve(__dirname, '..', '..');
 const distDir = path.join(rootDir, 'dist');
@@ -29,11 +30,10 @@ async function injectJsonLd() {
             throw new Error(`Invalid JSON-LD in ${seoMetaPath}: ${jsonError.message}`);
         }
 
-        // Full ISO 8601 datetime with timezone; a bare date fails dateModified validation.
-        const buildTimestamp = new Date().toISOString();
+        // Same date as the sitemap <lastmod>: the last content commit, never the build time.
         const profilePage = (parsedSeoMeta['@graph'] || []).find(node => node['@type'] === 'ProfilePage');
         if (profilePage) {
-            profilePage.dateModified = buildTimestamp;
+            profilePage.dateModified = lastContentChange(findPage('index.html'));
         }
 
         const indentedSeoMeta = JSON.stringify(parsedSeoMeta, null, 4)

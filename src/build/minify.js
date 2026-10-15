@@ -79,12 +79,10 @@ const htmlMinifyOptions = {
     useShortDoctype: true
 };
 
-// Build time stamped into __BUILD_TIMESTAMP__ placeholders (freshness signal for AI search / GEO).
-// Full ISO 8601 with timezone: Search Console rejects a bare date in dateModified.
-const buildTimestamp = new Date().toISOString();
-
+// __DATE_MODIFIED__ (dateModified, og:updated_time) is the page's last content commit, the same
+// date as its sitemap <lastmod>: stamping the build time would claim freshness on every deploy.
 const { buildReplacements, applyReplacements } = require('./placeholders');
-const replacements = buildReplacements(packageJson, { buildTimestamp });
+const { findPage, lastContentChange } = require('./pages');
 
 (async () => {
     for (const { input, output } of htmlFiles) {
@@ -93,6 +91,8 @@ const replacements = buildReplacements(packageJson, { buildTimestamp });
             continue;
         }
         try {
+            const page = findPage(path.basename(input));
+            const replacements = buildReplacements(packageJson, { dateModified: page && lastContentChange(page) });
             const source = applyReplacements(fs.readFileSync(input, 'utf8'), replacements);
             const minified = await minifyHTML(source, htmlMinifyOptions);
             fs.writeFileSync(output, minified, 'utf8');

@@ -1,19 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
-
-const repoRoot = path.join(__dirname, '../..');
-
-// Last commit touching the page's content; dependency bumps don't count as content changes.
-function lastContentChange(filePath, sources) {
-    try {
-        const date = execFileSync('git', ['log', '-1', '--format=%cs', '--', ...sources], { cwd: repoRoot, encoding: 'utf8' }).trim();
-        if (date) return date;
-    } catch {
-        // not a git checkout: fall back to the file's mtime
-    }
-    return fs.statSync(filePath).mtime.toISOString().split('T')[0];
-}
+const { pages, lastContentChange } = require('./pages');
 
 console.log('🗺️ Generating sitemap.xml...');
 
@@ -21,12 +8,7 @@ try {
     const config = require('../../package.json');
     const homepage = config.homepage || 'https://www.colace.me';
 
-    // Define public indexable pages
-    const pages = [
-        { file: 'index.html', urlPath: '/', changefreq: 'weekly', priority: '1.0', sources: ['index.html', 'src/js', 'src/css', 'src/json', 'image', 'font'] },
-        { file: 'about.html', urlPath: '/about.html', changefreq: 'monthly', priority: '0.8', sources: ['about.html'] }
-    ];
-
+    // <changefreq> and <priority> are omitted: Google and Bing ignore them; <lastmod> is the signal.
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -37,14 +19,13 @@ try {
             let loc = homepage + page.urlPath;
             // Avoid double slashes in the domain (e.g. https://www.colace.me//index.html)
             loc = loc.replace(/([^:]\/)\/+/g, "$1");
-            const lastmod = lastContentChange(filePath, page.sources);
+            // W3C Datetime, date precision (the calendar day of the last content commit)
+            const lastmod = lastContentChange(page).slice(0, 10);
 
             sitemapContent += `
   <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
   </url>\n`;
         }
     }

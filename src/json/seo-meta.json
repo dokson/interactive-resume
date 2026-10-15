@@ -15,8 +15,7 @@
                 "alternateName": [
                     "Colace Alessandro",
                     "Ale Colace",
-                    "Colace",
-                    "dokson GitHub",
+                    "dokson",
                     "coalesce coach",
                     "Mr Data"
                 ],
@@ -26,9 +25,9 @@
                     "Data Engineer",
                     "Cloud Data Architect",
                     "MLOps Engineer",
-                    "Fractional CDO"
+                    "Fractional CTO / CDO / CIO"
                 ],
-                "description": "Milan-based AI Engineer and Forward Deployed Engineer, founder of COalesCE (coalesce.coach), an independent technology consultancy covering cloud data platforms, AI in production, legacy modernisation, cybersecurity, custom software and technical governance. Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six Google Cloud professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
+                "description": "Milan-based AI Engineer and Forward Deployed Engineer, founder of COalesCE (coalesce.coach), an independent technology consultancy covering cloud data platforms, AI in production, legacy modernisation, cybersecurity, custom software and technical governance. Specializes in Palantir AIP, Palantir Foundry, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Agentic AI, MLOps, LLMOps, and enterprise cloud data platforms on GCP, AWS, and Azure. Holds six professional certifications, four of them Google Cloud Professional certifications. Master's degree in Computer Engineering from Università di Bologna, Summa Cum Laude. Over fifteen years of experience spanning data engineering, big data architecture, AI transformation, and operational leadership.",
                 "url": "__SITE_URL__/",
                 "image": "__PROFILE_IMAGE_URL__",
                 "email": "__EMAIL__",
@@ -38,6 +37,7 @@
                     "__LINKEDIN__",
                     "__GITHUB__",
                     "__TWITTER__",
+                    "__RESEARCHGATE__",
                     "__CONSULTING_URL__"
                 ],
                 "address": {

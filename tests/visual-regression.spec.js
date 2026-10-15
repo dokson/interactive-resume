@@ -39,6 +39,7 @@ async function settleGameAnimations(page) {
         $(flashOverlays).stop(true).css("opacity", 0);
         clearRafInterval(timers.animateAlienHands);
         alienSteerDiv.style.transform = "rotate(0deg)";
+        stopFireworks();
     });
 }
 
@@ -59,13 +60,13 @@ const sections = [
     { name: '03-about-buildings', percent: 15 },
     { name: '04-experience-1', percent: 25 },
     { name: '05-sea-entry',    percent: 35 },
-    { name: '06-skills-fish',  percent: 42 },
-    { name: '07-skills-crabs', percent: 50 },
+    { name: '06-skills-spinefish', percent: 42 },
+    { name: '07-experience-career', percent: 50 },
     { name: '08-experience-2', percent: 58 },
     { name: '09-experience-3', percent: 68 },
     { name: '10-about-buildings-2', percent: 78 },
     { name: '11-vertical-section', percent: 88 },
-    { name: '12-contact',      percent: 100 },
+    { name: '12-ending',       percent: 100 },
 ];
 
 test.describe('Visual Regression', () => {

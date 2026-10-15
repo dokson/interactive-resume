@@ -2,33 +2,21 @@
 // across all source files (HTML, JSON-LD, llms.txt, robots.txt) at build time.
 // Update package.json's config.contact / config.social — never a placeholder's target file.
 
-function obfuscateDomainDisplay(url) {
-    const stripped = url.replace(/^https?:\/\/(www\.)?/, '');
-    return stripped
-        .split(/([./])/)
-        .map(part => (part === '.' || part === '/') ? `<span class=symbol>${part}</span>` : part)
-        .join('');
-}
-
-function buildReplacements(packageJson, { buildTimestamp } = {}) {
+function buildReplacements(packageJson, { dateModified } = {}) {
     const { contact, social, domain, consulting, education, images, location } = packageJson.config;
-    const [emailUser, emailDomain] = contact.email.split('@');
 
     const replacements = {
         __SITE_URL__: packageJson.homepage,
         __SITE_DOMAIN__: domain,
         __EMAIL__: contact.email,
-        __EMAIL_OBFUSCATED__: `${emailUser}<span class=symbol>@</span>${emailDomain.replace('.', '<span class=symbol>.</span>')}`,
         __PHONE__: contact.phone,
         __PHONE_TEL__: contact.phone.replace(/\s+/g, ''),
-        __PHONE_OBFUSCATED__: contact.phone.replace(/^\+/, '<span class=symbol>+</span>'),
         __LINKEDIN__: social.linkedin,
-        __LINKEDIN_DISPLAY__: obfuscateDomainDisplay(social.linkedin),
         __GITHUB__: social.github,
-        __GITHUB_DISPLAY__: obfuscateDomainDisplay(social.github),
         __TWITTER__: social.twitter,
         __TWITTER_HANDLE__: `@${new URL(social.twitter).pathname.slice(1)}`,
         __WIKIDATA__: social.wikidata,
+        __RESEARCHGATE__: social.researchgate,
         __CONSULTING_NAME__: consulting.name,
         __CONSULTING_URL__: consulting.url,
         __EDUCATION_NAME__: education.name,
@@ -44,8 +32,8 @@ function buildReplacements(packageJson, { buildTimestamp } = {}) {
         __JOB_TITLE__: packageJson.job_title,
     };
 
-    if (buildTimestamp) {
-        replacements.__BUILD_TIMESTAMP__ = buildTimestamp;
+    if (dateModified) {
+        replacements.__DATE_MODIFIED__ = dateModified;
     }
 
     return replacements;

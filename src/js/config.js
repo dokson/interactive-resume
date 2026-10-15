@@ -58,12 +58,14 @@ var gameConfig = deepFreeze({
     world: {
         riseDuration: 1000,
         aleToRocketDistance: 300,
-        contactCloudGap: 400,
+        endingCloudGap: 400,
         seaShiftRatio: 0.75,
         seaShiftStep: 40,
         seaShiftInterval: 40,
         aleMaxOffsetFromCenter: 332,
         rocketMaxOffsetFromCenter: 170,
+        aleEndMarginRight: 20,
+        aboutSign: { textLeft: 460, rocketGap: 30, marginLeft: 10, minScale: 0.6 },
         aleRocketPaddingBottom: 150,
         resizeAfterOrientationDelay: 500
     },
@@ -124,9 +126,9 @@ var gameConfig = deepFreeze({
         blinkMaxEyes: 5,
         blinkDuration: 300,
         rows: {
-            fish: [5, 5, 3, 3],
-            crab: [4, 5, 3, 3],
-            turtle: [5, 5, 4, 3]
+            puffer: [5, 5, 3, 3],
+            spinefish: [4, 5, 3, 3],
+            jelly: [5, 5, 4, 3]
         }
     },
 
@@ -136,7 +138,7 @@ var gameConfig = deepFreeze({
         backObjectsBottomRatio: -0.7
     },
 
-    // Super Mario Bros. Super Star: the yellow sprite cycles through a palette of CSS filters.
+    // Original pixel-art star (happy face, Super Mario style): the yellow sprite cycles through a palette of CSS filters.
     stars: {
         interval: 100,
         palette: [
@@ -151,17 +153,54 @@ var gameConfig = deepFreeze({
 
     keyboard: { arrowScrollSpeed: 1 },
 
-    links: { duration: 1000, startTop: "80%" },
+    // Rocket portal to the About page: Ale walks into the rocket, the exhaust ignites while it shakes, it lifts off, then the page navigates.
+    launch: {
+        aleWalkDuration: 500,
+        aleClimbDuration: 250,
+        ignitionDuration: 500,
+        shakeDistance: 3,
+        shakeInterval: 60,
+        exhaustFlickerInterval: 80,
+        liftOffDuration: 800
+    },
 
-    contact: { confirmationOffsetTop: 370, confirmationShowDelay: 200, sendDelay: 2000 },
-
+    // Mario-style sky show at the end of the page (ending.js). Speeds and gravity are in px per frame at
+    // frameInterval; sprite sizes are in cells of cellSize px; heights are fractions of the sky, from the top.
     fireworks: {
-        rows: 8,
-        columns: 16,
-        dotRadius: 5,
-        color: "#ffffff",
-        launchInterval: 1000,
-        ringInterval: 40,
-        fadeDuration: 1000
+        frameInterval: 33,
+        cellSize: 5,
+        volleySizes: [1, 3, 6],
+        volleyInterval: 1500,
+        volleyStagger: 280,
+        showMix: ["burst", "burst", "star", "starBits", "starBits"],
+        launchSpread: [0.06, 0.94],
+        burstHeight: [0.1, 0.5],
+        shellGravity: 0.45,
+        shellDrift: 0.4,
+        trailLife: 7,
+        trailColor: "#fff2b3",
+        burstRadius: [3, 6, 9],
+        burstFrameHold: 2,
+        burstColors: ["#ffffff", "#fff200", "#f7941d", "#ed1c24"],
+        burstSparks: 12,
+        burstSparkSpeed: [3, 5],
+        starRadius: [14, 22],
+        starGrowFrames: 12,
+        starDotSpacing: 2,
+        starBits: 18,
+        starBitSpeed: [3, 7],
+        starBitPalette: ["#29b6f6", "#ed1c24", "#d9d9e8", "#9b59d0", "#fff200", "#8dc63f"],
+        palette: ["#ed1c24", "#f7941d", "#fff200", "#00bff3", "#8dc63f", "#ff9999"],
+        particleGravity: 0.08,
+        particleDrag: 0.955,
+        particleLife: [36, 54],
+        flickerFrames: 14,
+        sparkleLife: 8,
+        cometInterval: [1800, 4000],
+        cometSpeed: [8, 12],
+        cometHeight: [0.05, 0.3],
+        cometTail: 28,
+        cometSparkleEvery: 3,
+        cometTailPalettes: [["#ffffff", "#fff200", "#f7941d", "#ed1c24"], ["#ffffff", "#ff9999", "#9b59d0", "#29b6f6", "#8dc63f"]]
     }
 });

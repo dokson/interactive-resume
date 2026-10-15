@@ -445,6 +445,12 @@ function animateStars() {
     }, gameConfig.stars.interval);
 }
 
+// At the end of the page the top of the climb's sky becomes the final scene: a star that would
+// sit there, over the clouds by the rocket, stays hidden at every viewport height.
+function hideStarsInFinalScene() {
+    for (const star of stars) star.style.visibility = star.offsetTop < containerDiv.offsetHeight ? "hidden" : "";
+}
+
 function animateAlienEyes() {
     clearRafInterval(timers.alienEyes);
     timers.alienEyes = setRafInterval(() => {

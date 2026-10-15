@@ -19,7 +19,7 @@ const arrowDirections = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -
 
 function handleArrowKeys(event) {
     const direction = arrowDirections[event.key];
-    if (!direction || !scrollState.canScrollOrSwipe || event.target.closest("input, textarea")) return;
+    if (!direction || !scrollState.canScrollOrSwipe) return;
     event.preventDefault();
     // Key repeats are ignored: a rAF loop scrolls at constant speed while the key is held
     if (event.repeat || scrollState.arrowDirection === direction) return;
@@ -59,8 +59,9 @@ function handleMove(event) {
     }
 }
 
+// Cancelling touchend suppresses the synthetic click, so let taps on links through.
 function handleEnd(event) {
-    event.preventDefault()
+    if (!event.target.closest("a")) event.preventDefault()
 }
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────
@@ -72,7 +73,6 @@ function runTheseFunctionsAfterScrollOrSwipe() {
     triggerEnteredScenes();
     animateAleRunSwim();
     hideScrollOrSwipeTextContainer();
-    hideContactConfirmationContainer();
     updateScrollProgress();
     deviceFunctionScrollSwipe()
 }
@@ -130,7 +130,7 @@ function makePageScrollable() {
 
 // ─── Page dimensions ─────────────────────────────────────────────────────────
 function setFrontLayerVerticalHeight() {
-    layerVerticalArray[layerVerticalArray.length - 1].style.height = `${2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gameConfig.world.contactCloudGap}px`
+    layerVerticalArray[layerVerticalArray.length - 1].style.height = `${2 * containerDiv.offsetHeight + bannersContainerDiv.offsetHeight + gameConfig.world.endingCloudGap}px`
 }
 
 function setBannersContainerVerticalPosition() {
@@ -156,14 +156,18 @@ function setLayerSpeed() {
 
 // ─── Scroll position & layer movement ────────────────────────────────────────
 function detectPageVerticalPosition() {
+    const endPosition = pageDiv.offsetHeight - containerDiv.offsetHeight;
     scrollState.previousPosition = scrollState.position;
     if (deviceName === "computer") {
-        scrollState.position = window.scrollY
+        // Zoom and display scaling make scrollY fractional, so its maximum can fall short of the end:
+        // the bottom of the document (within 1px) is the end.
+        const root = document.documentElement;
+        const isAtDocumentBottom = window.scrollY + root.clientHeight >= root.scrollHeight - 1;
+        scrollState.position = isAtDocumentBottom ? endPosition : window.scrollY
     } else {
         scrollState.position = scrollState.positionOnTouch + (scrollState.touchStartX - scrollState.touchCurrentX);
         if (scrollState.position < 0) scrollState.position = 0;
-        if (scrollState.position > pageDiv.offsetHeight - containerDiv.offsetHeight)
-            scrollState.position = pageDiv.offsetHeight - containerDiv.offsetHeight
+        if (scrollState.position > endPosition) scrollState.position = endPosition
     }
     scrollState.delta = scrollState.position - scrollState.previousPosition;
     if (scrollState.position <= 0) {
@@ -203,12 +207,12 @@ function moveLayers() {
     }
     if (scrollState.layersMovement === LayersMovement.atRocket) {
         positionLayersWhenNotMoving();
-        animateLinksContainer();
         happyAle();
-        drawManyFireworks();
+        startFireworks();
     }
     positionRocketAndAleContainerHorizontally();
-    positionContactContainer();
+    setRocketBoardable(scrollState.layersMovement === LayersMovement.atRocket);
+    positionEndingContainer();
     positionFireworksContainer();
 }
 
@@ -405,22 +409,29 @@ function positionRocketAndAleContainerHorizontally() {
     const lastLayerSpeed = layerHorizontalSpeedArray[layerHorizontalSpeedArray.length - 1];
     const lastLayer = layerHorizontalArray[layerHorizontalArray.length - 1];
 
+    const { aleMaxOffsetFromCenter, rocketMaxOffsetFromCenter, aleToRocketDistance, aleEndMarginRight } = gameConfig.world;
     const horizontalOffset = scrollState.position * lastLayerSpeed - (lastLayer.offsetWidth - containerDiv.offsetWidth);
+    const center = containerDiv.offsetWidth * 0.5;
+    // On narrow windows Ale's final spot (aleToRocketDistance right of his max) would pass the right
+    // edge: shift his and the rocket's resting spots left together so the ending keeps its layout.
+    const endOverflow = Math.max(0, center + aleMaxOffsetFromCenter + aleToRocketDistance + aleDiv.offsetWidth * 0.5 + aleEndMarginRight - containerDiv.offsetWidth);
 
-    ale.maxHorizontalDistance = (containerDiv.offsetWidth * 0.5) + gameConfig.world.aleMaxOffsetFromCenter;
+    ale.maxHorizontalDistance = center + aleMaxOffsetFromCenter - endOverflow;
 
-    let alePosition = (containerDiv.offsetWidth * 0.5) + horizontalOffset;
+    let alePosition = center + horizontalOffset;
 
     if (ale.maxHorizontalDistance <= alePosition) {
         alePosition = ale.maxHorizontalDistance;
     }
 
-    const rocketMaxPosition = (containerDiv.offsetWidth * 0.5) + gameConfig.world.rocketMaxOffsetFromCenter;
+    const rocketMaxPosition = center + rocketMaxOffsetFromCenter - endOverflow;
     let rocketPosition = (containerDiv.offsetWidth - rocketDiv.offsetWidth) * 0.5 + horizontalOffset;
 
     if (rocketMaxPosition <= rocketPosition) {
         rocketPosition = rocketMaxPosition;
     }
+
+    positionAboutSign(rocketMaxPosition);
 
     switch (scrollState.layersMovement) {
         case LayersMovement.vertical:
@@ -449,4 +460,20 @@ function positionRocketAndAleContainerHorizontally() {
             aleContainerDiv.style.padding = "0px 0px 0px 0px";
             break;
     }
+}
+
+// The "ABOUT ME" title keeps clear of the rocket's resting spot: it slides left as far as the window edge
+// allows, then shrinks (composited transform around its first letter where the extrusion meets the clouds).
+function positionAboutSign(rocketLeft) {
+    const { textLeft, rocketGap, marginLeft, minScale } = gameConfig.world.aboutSign;
+    const titleStyle = getComputedStyle(aboutSignTitleSvg);
+    const titleLeft = containerDiv.offsetWidth * 0.5 + parseFloat(titleStyle.marginLeft) + textLeft;
+    const titleWidth = aboutSignTitleSvg.width.baseVal.value - textLeft;
+    const cloudLine = aboutSignTitleSvg.parentElement.offsetHeight - parseFloat(titleStyle.top);
+    const overlap = Math.max(0, titleLeft + titleWidth + rocketGap - rocketLeft);
+    const shift = Math.min(overlap, Math.max(0, titleLeft - marginLeft));
+    const scale = Math.max(minScale, Math.min(1, (titleWidth - overlap + shift) / titleWidth));
+
+    aboutSignTitleSvg.style.transformOrigin = `${textLeft}px ${cloudLine}px`;
+    aboutSignTitleSvg.style.transform = overlap > 0 ? `translateX(${-shift}px) scale(${scale})` : "";
 }

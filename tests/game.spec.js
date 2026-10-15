@@ -58,7 +58,7 @@ test.describe('Config', () => {
         const frozen = await page.evaluate(() => [
             Object.isFrozen(gameConfig),
             Object.isFrozen(gameConfig.ale.jump),
-            Object.isFrozen(gameConfig.seaAnimals.rows.fish)
+            Object.isFrozen(gameConfig.seaAnimals.rows.puffer)
         ]);
         expect(frozen).toEqual([true, true, true]);
     });
@@ -131,6 +131,19 @@ test.describe('Scroll phases', () => {
         await page.waitForFunction(() => ale.isHappy);
     });
 
+    test('the bottom of the page is the end even when scrollY is fractional', async ({ page }) => {
+        await enterGame(page);
+        const end = await maxScroll(page);
+        await scrollTo(page, end - 100);
+        // Zoom and display scaling stop scrollY short of the end, e.g. at 26179.6 instead of 26180.
+        const state = await page.evaluate((y) => {
+            Object.defineProperty(window, 'scrollY', { configurable: true, get: () => y });
+            window.onscroll();
+            return { position: scrollState.position, phase: scrollState.layersMovement };
+        }, end - 0.4);
+        expect(state).toEqual({ position: end, phase: 'at-rocket' });
+    });
+
     test('scroll progress bar tracks the position', async ({ page }) => {
         await enterGame(page);
         const end = await maxScroll(page);
@@ -155,34 +168,8 @@ test.describe('Sea', () => {
     });
 });
 
-test.describe('Contact form', () => {
-    test('an invalid email shows the first confirmation and focuses the field', async ({ page }) => {
-        await enterGame(page);
-        await page.evaluate(() => {
-            emailAddressDiv.value = 'not-an-email';
-            sendEmail();
-        });
-        await page.waitForFunction(() => flags.contactConfirmationVisible);
-        const opacity = await page.evaluate(() => getComputedStyle(contactConfirmationContainerArray[0].children[0].children[0]).opacity);
-        expect(opacity).toBe('1');
-        expect(await page.evaluate(() => document.activeElement === emailAddressDiv)).toBe(true);
-    });
-
-    test('a valid email with an empty subject shows the second confirmation', async ({ page }) => {
-        await enterGame(page);
-        await page.evaluate(() => {
-            emailAddressDiv.value = 'someone@example.com';
-            emailSubjectDiv.value = '';
-            emailMessageDiv.value = 'hi';
-            sendEmail();
-        });
-        await page.waitForFunction(() => getComputedStyle(contactConfirmationContainerArray[1].children[0].children[0]).opacity === '1');
-        expect(await page.evaluate(() => document.activeElement === emailSubjectDiv)).toBe(true);
-    });
-});
-
 test.describe('Blinks', () => {
-    test('the contact alien blinks at the configured rhythm', async ({ page }) => {
+    test('the ending alien blinks at the configured rhythm', async ({ page }) => {
         await enterGame(page);
         const result = await page.evaluate(async () => {
             let closes = 0;

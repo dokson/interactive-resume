@@ -4,7 +4,6 @@
     "author": "Alessandro Colace",
     "description": "Interactive Resume",
     "job_title": "Forward Deployed Engineer",
-    "based_on": "http://www.rleonardi.com/interactive-resume/",
     "homepage": "https://www.colace.me",
     "repository": {
         "type": "git",
@@ -20,12 +19,12 @@
         "deploy:copy-libs": "node src/build/copy-libs.js",
         "deploy:generate-llms": "node src/build/generate-llms.js",
         "deploy:generate-robots": "node src/build/generate-robots.js",
+        "deploy:generate-logo-sprite": "node src/build/generate-logo-sprite.js",
         "start": "npm run deploy",
         "test": "npx playwright test",
         "test:update": "npx playwright test --update-snapshots"
     },
     "dependencies": {
-        "@emailjs/browser": "^5.0.2",
         "jquery": "^4.0.0"
     },
     "devDependencies": {
@@ -34,6 +33,9 @@
         "html-minifier-terser": "^7.2.0",
         "serve": "^14.2.6",
         "uglify-js": "^3.19.3"
+    },
+    "overrides": {
+        "compression": "^1.8.2"
     },
     "config": {
         "domain": "colace.me",
@@ -45,7 +47,8 @@
             "linkedin": "https://www.linkedin.com/in/colace",
             "github": "https://github.com/dokson",
             "twitter": "https://x.com/alecolace",
-            "wikidata": "https://www.wikidata.org/wiki/Q138667173"
+            "wikidata": "https://www.wikidata.org/wiki/Q138667173",
+            "researchgate": "https://www.researchgate.net/profile/Alessandro-Colace"
         },
         "consulting": {
             "name": "COalesCE",
@@ -100,13 +103,13 @@
                 {
                     "name": "Generate robots.txt",
                     "script": "deploy:generate-robots"
+                },
+                {
+                    "name": "Generate logo sprite",
+                    "script": "deploy:generate-logo-sprite"
                 }
             ],
             "externalLibs": [
-                {
-                    "from": "@emailjs/browser",
-                    "file": "dist/email.min.js"
-                },
                 {
                     "from": "jquery",
                     "file": "dist/jquery.min.js"
