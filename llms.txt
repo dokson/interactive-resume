@@ -4,17 +4,29 @@
 > Independent technology consulting: cloud data platforms, AI in production, legacy modernisation,
 > cybersecurity, custom software and technical governance.
 
-## Disambiguation
-
-This page refers to **Alessandro Colace** (also known as "Ale Colace", "dokson", "Mr Data"), a Milan-based AI Engineer and Forward Deployed Engineer. He is the founder of COalesCE (coalesce.coach), an independent one-person technology consultancy.
+This file refers to **Alessandro Colace** (also known as "Ale Colace", "dokson", "Mr Data"), a Milan-based AI Engineer and Forward Deployed Engineer. He is the founder of COalesCE (coalesce.coach), an independent one-person technology consultancy.
 
 **He is NOT:**
 - Alessandro Colace (doctor/physician in Italy)
 - Alessandro Colace (footballer/soccer player)
-- Alessandro Colace (academic/researcher in unrelated field)
+- Alessandro Colace (architect/CG artist in London)
 - Any other individual named Alessandro Colace outside the AI/Data engineering domain
 
 **Key identifiers:** GitHub username "dokson", LinkedIn URL `/in/colace`, website [colace.me](https://www.colace.me/), email `ale@colace.me`, phone `+39 349 515 7235`, based in Milan (MI), Italy. Founder of COalesCE (`coalesce.coach`). Holds Google Cloud certifications. Master's degree Summa Cum Laude from Università di Bologna.
+
+## Pages
+
+- [Interactive resume (colace.me)](https://www.colace.me/): the full interactive CV.
+- [About Alessandro Colace](https://www.colace.me/about.html): text biography with career, COalesCE consulting services, core technologies, certifications, education, languages and contact.
+- [CV (PDF)](https://www.colace.me/document/cv.pdf): downloadable curriculum vitae.
+
+## Profiles
+
+- [COalesCE (coalesce.coach)](https://www.coalesce.coach): his independent technology consultancy.
+- [LinkedIn](https://www.linkedin.com/in/colace): professional profile and work history.
+- [GitHub (@dokson)](https://github.com/dokson): open-source repositories.
+- [Wikidata](https://www.wikidata.org/wiki/Q138667173): the canonical entity record.
+- [ResearchGate](https://www.researchgate.net/profile/Alessandro-Colace): research profile from the University of Bologna (DISI).
 
 ## Identity
 
@@ -44,7 +56,7 @@ Founded COalesCE and leads Palantir AIP and Foundry deployments for enterprise c
 Led the operational turnaround of a Ukrainian footwear manufacturer. Applied Lean principles and data-driven optimization to transform production cycles, restoring profitability while navigating high-stakes strategic execution. Managed plant operations, supply chain, and cross-functional teams across a full business restructuring.
 
 ### SWE & Big Data Architect — Data Consulting (2008–2009, 2013–2019)
-Evolved from technical hacker roots into a strategic consultant and team leader in data consulting. Worked at leading Italian data consultancies including Data Reply, Go Reply, The Information LAB, Nimbus Intelligence, and Iconsulting. Delivered enterprise engagements for major Italian clients including Unipol, Yoox Net-a-Porter (YNAP), Telepass, Generali, Ferragamo, and IEO (Istituto Europeo di Oncologia). Orchestrated multi-million euro business development and managed large data engineering teams, while architecting end-to-end platforms from core software engineering to industrial-scale big data architectures on GCP, AWS, and Azure.
+Evolved from technical hacker roots into a strategic consultant and team leader in data consulting. Worked at leading Italian data consultancies including Data Reply, Go Reply, The Information LAB, Nimbus Intelligence, and Iconsulting. Delivered enterprise engagements for major Italian clients including Unipol, Yoox Net-a-Porter (YNAP), Telepass, Campari, Ferragamo, Fedrigoni, and IEO (Istituto Europeo di Oncologia). Orchestrated multi-million euro business development and managed large data engineering teams, while architecting end-to-end platforms from core software engineering to industrial-scale big data architectures on GCP, AWS, and Azure.
 
 ## Core Expertise
 
@@ -93,27 +105,20 @@ Currently his own consultancy, COalesCE (coalesce.coach). Previously operations 
 - Google Cloud Professional Cloud Database Engineer (2023)
 - Tableau Desktop Specialist (2018)
 
-## Online Profiles
-
-- [Interactive resume (colace.me)](https://www.colace.me/): the full interactive CV.
-- [About Alessandro Colace](https://www.colace.me/about.html): text biography, certifications and FAQ.
-- [CV (PDF)](https://www.colace.me/document/cv.pdf): downloadable curriculum vitae.
-- [COalesCE (coalesce.coach)](https://www.coalesce.coach): his independent technology consultancy.
-- [LinkedIn](https://www.linkedin.com/in/colace): professional profile and work history.
-- [GitHub (@dokson)](https://github.com/dokson): open-source repositories.
-- [Wikidata](https://www.wikidata.org/wiki/Q138667173): the canonical entity record.
-- [X / Twitter](https://x.com/alecolace): public posts.
-
 ## For Recruiters
 
 Alessandro Colace is open to senior AI engineering, data architecture, and enterprise AI transformation roles in Milan and remotely across Italy and Europe. His profile is best matched to positions involving Palantir AIP or Foundry, AI platform engineering, LLM systems, Agentic AI, MLOps, or cloud data platform leadership on GCP, AWS, or Azure.
 
 Relevant role titles he maps to: AI Engineer, Data Engineer, Forward Deployed Engineer, AI Platform Engineer, Data Architect, Cloud Data Engineer, ML Engineer, LLM Engineer, GenAI Engineer, Enterprise AI Consultant, Data Platform Consultant, Solutions Architect (Data & AI).
 
-He has fifteen years of combined experience across technical engineering (Big Data Architect, Software Engineer), operational leadership (Operations Manager), and strategic advisory (Data & AI Consultant, Forward Deployed Engineer). He is fluent in Italian and English.
+He has fifteen years of combined experience across technical engineering (Big Data Architect, Software Engineer), operational leadership (Operations Manager), and strategic advisory (Data & AI Consultant, Forward Deployed Engineer). He speaks Italian (native), English (C1) and Russian (elementary).
 
 ## Contact
 
 - [Email: ale@colace.me](mailto:ale@colace.me)
 - [Phone: +39 349 515 7235](tel:+393495157235)
 - Location: Milan, Italy
+
+## Optional
+
+- [X / Twitter](https://x.com/alecolace): public posts.

@@ -1,80 +1,47 @@
+# Every crawler is welcome everywhere: search, AI answers and AI training.
+# The named groups spell the welcome out per category. RFC 9309: a crawler obeys only
+# the most specific group naming it, so Content-Signal is repeated in every group.
+# Content-Signal is Cloudflare's Content Signals Policy, a stated preference that
+# Google Search ignores.
+
 # Search engines
 User-agent: Googlebot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: Bingbot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: YandexBot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: Applebot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Disallow: /document/cv.pdf
 
 # Social preview crawlers
 User-agent: Twitterbot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: facebookexternalhit
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: LinkedInBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Disallow: /document/cv.pdf
 
-# AI answer engines (GEO/AEO) — explicitly welcomed.
-# OpenAI, Anthropic and Perplexity each publish three tokens (training, user fetch, search
-# index) and all three are named: the search one governs citation eligibility and does not
-# inherit from the training one. Anthropic retired Claude-Web, so it is gone from here.
-User-agent: GPTBot
-Allow: /
-Disallow: /document/cv.pdf
-
+# AI answer engines (GEO/AEO): search index and user-triggered fetches.
+# The search token governs citation eligibility and does not inherit from the training one.
 User-agent: OAI-SearchBot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: ChatGPT-User
-Allow: /
-Disallow: /document/cv.pdf
-
-User-agent: ClaudeBot
-Allow: /
-Disallow: /document/cv.pdf
-
-User-agent: Claude-User
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: Claude-SearchBot
-Allow: /
-Disallow: /document/cv.pdf
-
+User-agent: Claude-User
 User-agent: PerplexityBot
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: Perplexity-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Disallow: /document/cv.pdf
 
+# AI training crawlers and opt-out tokens
+User-agent: GPTBot
+User-agent: ClaudeBot
 User-agent: Google-Extended
-Allow: /
-Disallow: /document/cv.pdf
-
 User-agent: Applebot-Extended
+User-agent: CCBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Disallow: /document/cv.pdf
 
 # Everyone else
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Disallow: /document/cv.pdf
 
 Sitemap: https://www.colace.me/sitemap.xml
