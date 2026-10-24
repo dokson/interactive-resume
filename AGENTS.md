@@ -243,13 +243,14 @@ How `gameConfig` timings chain. Changing one link shifts everything after it.
 - Functional text never below 11px (Press Start 2P).
 - Ale sprite: `.sprite-ale`, frame k at `background-position: k/8 * 100%`.
 - Company pills: `.pill` links inside a `.nobr` span with the following punctuation, so a comma never starts a line.
-- Section order: Career → COalesCE → tech stack.
+- Section order: Career → COalesCE → tech stack → certifications → education/languages → FAQ → contact.
 - Tech stack lists products and tools only. Concepts (RAG, Agentic AI, MLOps…) go in the summary.
 - Visible cards: Data Engineering, Data Platforms, Cloud. The other twelve sit in a native `<details>` "full toolbox".
 - Skill card top colour follows grid position (`nth-child`), so cards move without class changes.
 - Chips use `<use href=dist/logos.svg#NAME>`. Add a mark by dropping `image/logos/NAME.svg`; no mark available → text only.
 - Contact buttons are icon-only: each needs `aria-label` and `title`.
-- JSON-LD (`ProfilePage` + `BreadcrumbList`) describes only visible content.
+- JSON-LD (`ProfilePage` + `BreadcrumbList` + `FAQPage`) describes only visible content.
+- FAQ: one native `<details class="card faq">` per question (`<h3>` in the `<summary>`). Each answer is the `FAQPage` answer text word for word: change both together. Structured data for hidden text breaks Google's guidelines, so the index carries no FAQ.
 
 ## Images
 

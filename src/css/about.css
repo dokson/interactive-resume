@@ -964,6 +964,52 @@ mark {
     text-transform: uppercase;
 }
 
+/* ─── FAQ ───────────────────────────────── */
+
+/* Questions open in place: native <details>, no JavaScript. Each answer is the FAQPage JSON-LD text word
+   for word, so the structured data only describes what a visitor can read. */
+.faq-list {
+    display: grid;
+    gap: 16px;
+}
+
+.faq summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.faq summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq summary::before {
+    content: '';
+    flex: none;
+    border-block: 6px solid transparent;
+    border-left: 9px solid var(--red);
+    transition: transform 0.15s;
+}
+
+.faq[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.faq h3 {
+    font-family: var(--font-title);
+    font-size: 26px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    line-height: 1.15;
+}
+
+.faq p {
+    padding: 0 22px 20px 45px;
+}
+
 /* ─── Consulting ────────────────────────── */
 
 #consulting {
@@ -1449,6 +1495,14 @@ mark {
     body {
         padding: 12px 10px 32px;
         font-size: 20px;
+    }
+
+    .faq summary {
+        padding: 14px 16px;
+    }
+
+    .faq p {
+        padding: 0 16px 18px;
     }
 
     .contact-links {
