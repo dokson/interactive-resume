@@ -5,6 +5,8 @@
 const invadersConfig = Object.freeze({
     autoDebugDelay: 5000,
     viewThreshold: 0.6,
+    // Max finger/mouse travel (CSS px) for a stage press to count as a tap outside play
+    tapSlop: 10,
     fieldMinWidth: 220,
     fieldMinHeight: 150,
     maxUnit: 6,
@@ -129,6 +131,7 @@ const game = {
     fieldHeight: invadersConfig.fieldMinHeight,
     keys: { left: false, right: false, fire: false },
     pointer: { active: false, x: 0 },
+    tap: null, // pressed outside play, acted on at release: { pointerId, x, y } in client px
     inView: false,
     isVisible: false,
     frameRequest: 0,
@@ -462,6 +465,8 @@ function overlayMessage(state) {
 function setGameState(state) {
     game.state = state;
     game.keys.fire = false;
+    // While playing the stage owns every touch (drag, hold); otherwise vertical swipes scroll the page
+    invadersStage.classList.toggle("invaders-playing", state === "playing");
     const message = overlayMessage(state);
     invadersOverlay.hidden = message === null;
     invadersOverlay.classList.toggle("invaders-over", state === "cleared" || state === "gameover");
@@ -503,16 +508,19 @@ function boxesOverlap(boxA, boxB) {
 }
 
 /**
- * Fits the playfield to the stage: one sprite pixel = `game.unit` CSS px (integer when ≥ 2, so pixels stay crisp),
- * canvas backed at devicePixelRatio. Keeps player and formation inside the new bounds; sets up the first wave on first call.
+ * Fits the playfield to the stage: one sprite pixel = `game.unit` CSS px (integer when ≥ 2, so pixels stay crisp;
+ * below 2 a whole number of device pixels, so every sprite pixel has the same size), canvas backed at devicePixelRatio.
+ * Keeps player and formation inside the new bounds; sets up the first wave on first call.
  */
 function resizeGame() {
     const width = invadersStage.clientWidth;
     const height = invadersStage.clientHeight;
     if (width === 0 || height === 0) return;
-    const fitUnit = Math.min(width / invadersConfig.fieldMinWidth, height / invadersConfig.fieldMinHeight, invadersConfig.maxUnit);
-    game.unit = fitUnit >= 2 ? Math.floor(fitUnit) : fitUnit;
     game.pixelRatio = window.devicePixelRatio ?? 1;
+    const fitUnit = Math.min(width / invadersConfig.fieldMinWidth, height / invadersConfig.fieldMinHeight, invadersConfig.maxUnit);
+    const devicePixels = Math.floor(fitUnit * game.pixelRatio);
+    if (fitUnit >= 2) game.unit = Math.floor(fitUnit);
+    else game.unit = devicePixels >= 1 ? devicePixels / game.pixelRatio : fitUnit;
     game.fieldWidth = width / game.unit;
     game.fieldHeight = height / game.unit;
     invadersCanvas.width = Math.round(width * game.pixelRatio);
@@ -754,10 +762,17 @@ function pointerFieldX(event) {
     return (event.clientX - invadersStage.getBoundingClientRect().left) / game.unit;
 }
 
+// Outside play a press acts on release, and only as a tap: a swipe that turns into a page scroll
+// (pointercancel, or travel beyond tapSlop) must not start or restart a game.
+function isPendingTap(event) {
+    const tap = game.tap;
+    return tap !== null && tap.pointerId === event.pointerId && Math.hypot(event.clientX - tap.x, event.clientY - tap.y) <= invadersConfig.tapSlop;
+}
+
 function handlePointerDown(event) {
     if (isInteractiveTarget(event.target)) return;
     if (game.state !== "playing") {
-        primaryAction();
+        game.tap = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
         return;
     }
     game.pointer.active = true;
@@ -767,10 +782,18 @@ function handlePointerDown(event) {
 
 function handlePointerMove(event) {
     if (game.pointer.active) game.pointer.x = pointerFieldX(event);
+    if (game.tap && !isPendingTap(event)) game.tap = null;
+}
+
+function handlePointerUp(event) {
+    const isTap = isPendingTap(event);
+    releasePointer();
+    if (isTap) primaryAction();
 }
 
 function releasePointer() {
     game.pointer.active = false;
+    game.tap = null;
 }
 
 function releaseAllInput() {
@@ -802,10 +825,12 @@ window.addEventListener("blur", () => {
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) pauseGame();
 });
+// Window resize also covers devicePixelRatio changes; the observer catches stage-only changes (e.g. the HUD reflowing once the C64 font loads)
 window.addEventListener("resize", resizeGame);
+new ResizeObserver(resizeGame).observe(invadersStage);
 invadersStage.addEventListener("pointerdown", handlePointerDown);
 invadersStage.addEventListener("pointermove", handlePointerMove);
-invadersStage.addEventListener("pointerup", releasePointer);
+invadersStage.addEventListener("pointerup", handlePointerUp);
 invadersStage.addEventListener("pointercancel", releasePointer);
 
 showRequestedPath();

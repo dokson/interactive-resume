@@ -23,7 +23,7 @@ The project remained untouched until **2025**, when I decided to revisit and pol
 | Fonts          | C64 Pro Mono, Press Start 2P, Jersey 15, Bangers, Manrope; all but C64 Pro Mono under [SIL OFL](https://openfontlicense.org/) |
 | Navigation     | Mouse wheel or any arrow key on desktop, swipe on touch devices                                                               |
 | Build pipeline | [Node.js](https://nodejs.org/) (minify, SEO injection, manifest generation)                                                   |
-| Testing        | [Playwright](https://playwright.dev/) visual regression (13 baselines) + game behaviour tests                                 |
+| Testing        | [Playwright](https://playwright.dev/) visual regression (desktop + Android portrait/landscape baselines) + game behaviour tests |
 | CI/CD          | [GitHub Actions](https://github.com/features/actions)                                                                         |
 | Hosting        | [GitHub Pages](https://pages.github.com/) (custom domain: [`www.colace.me`](https://www.colace.me))                           |
 | PDF sync       | CV.pdf auto-committed from [dokson/cv](https://github.com/dokson/cv)                                                          |
@@ -62,6 +62,7 @@ You are welcome to view the code and draw inspiration for your own interactive r
 - Redesigned About page.
 - The rocket is the new ending: board it to reach the About page. The contact form and EmailJS are gone.
 - Mario-style fireworks, sea creatures, seaweed and trees.
+- Mobile: a portrait phone gets a narrow layout (the world 1.7× larger), a landscape one a layout tall enough for every scene; swipes no longer scroll the page underneath; the 404 game no longer starts on a scroll.
 
 **September 2026**: Commodore 64 tape-loading preloader with click-to-RUN (mobile CLS from 0.61 to ~0); data-driven game engine with a central `gameConfig`, declarative scenes and behaviour tests.
 

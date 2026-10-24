@@ -39,10 +39,12 @@ function stopArrowScroll(event) {
 }
 
 // ─── Touch events ────────────────────────────────────────────────────────────
+// Not passive: document-level touch listeners default to passive, so preventDefault() was ignored and the
+// page scrolled natively under the swipe, toggling the address bar and firing a full relayout each time.
 function initTouchEvents() {
-    document.addEventListener("touchstart", handleStart, false);
-    document.addEventListener("touchmove", handleMove, false);
-    document.addEventListener("touchend", handleEnd, false)
+    document.addEventListener("touchstart", handleStart);
+    document.addEventListener("touchmove", handleMove, { passive: false });
+    document.addEventListener("touchend", handleEnd, { passive: false })
 }
 
 function handleStart(event) {
@@ -464,16 +466,32 @@ function positionRocketAndAleContainerHorizontally() {
 
 // The "ABOUT ME" title keeps clear of the rocket's resting spot: it slides left as far as the window edge
 // allows, then shrinks (composited transform around its first letter where the extrusion meets the clouds).
+// Too narrow even at minScale but tall enough (portrait phones): it floats above the rocket instead,
+// centred, with its extrusion fading out where the clouds would have hidden it. Windows short on both
+// counts keep the minScale sign beside the rocket.
 function positionAboutSign(rocketLeft) {
-    const { textLeft, rocketGap, marginLeft, minScale } = gameConfig.world.aboutSign;
+    const { textLeft, rocketGap, marginLeft, minScale, aboveRocketGap, aboveDepth, aboveMarginTop } = gameConfig.world.aboutSign;
     const titleStyle = getComputedStyle(aboutSignTitleSvg);
     const titleLeft = containerDiv.offsetWidth * 0.5 + parseFloat(titleStyle.marginLeft) + textLeft;
     const titleWidth = aboutSignTitleSvg.width.baseVal.value - textLeft;
     const cloudLine = aboutSignTitleSvg.parentElement.offsetHeight - parseFloat(titleStyle.top);
     const overlap = Math.max(0, titleLeft + titleWidth + rocketGap - rocketLeft);
     const shift = Math.min(overlap, Math.max(0, titleLeft - marginLeft));
-    const scale = Math.max(minScale, Math.min(1, (titleWidth - overlap + shift) / titleWidth));
+    const besideScale = Math.min(1, (titleWidth - overlap + shift) / titleWidth);
+    // Container y of the clouds' line (#about-sign rests on it), then the room above the rocket's sign.
+    const cloudY = containerDiv.offsetHeight - parseFloat(getComputedStyle(aboutSignTitleSvg.parentElement).bottom);
+    const roomBottom = cloudY - rocketDiv.offsetHeight - aboveRocketGap;
+    const aboveScale = Math.min(1, (containerDiv.offsetWidth - 2 * marginLeft) / titleWidth, (roomBottom - aboveMarginTop) / aboveDepth);
 
     aboutSignTitleSvg.style.transformOrigin = `${textLeft}px ${cloudLine}px`;
-    aboutSignTitleSvg.style.transform = overlap > 0 ? `translateX(${-shift}px) scale(${scale})` : "";
+    if (besideScale >= minScale || aboveScale < minScale) {
+        aboutSignTitleSvg.style.transform = overlap > 0 ? `translateX(${-shift}px) scale(${Math.max(minScale, besideScale)})` : "";
+        aboutSignTitleSvg.style.maskImage = "";
+        return;
+    }
+    const left = 0.5 * (containerDiv.offsetWidth - titleWidth * aboveScale);
+    // Scaling around the cloud line pulls the faded depth (svg y = aboveDepth) towards it: lift so it ends at roomBottom.
+    const lift = cloudY - roomBottom - (cloudLine - aboveDepth) * aboveScale;
+    aboutSignTitleSvg.style.transform = `translate(${left - titleLeft}px, ${-lift}px) scale(${aboveScale})`;
+    aboutSignTitleSvg.style.maskImage = `linear-gradient(#000 ${0.5 * aboveDepth}px, transparent ${aboveDepth}px)`;
 }

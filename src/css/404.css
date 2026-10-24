@@ -5,6 +5,8 @@
 }
 
 :root {
+    /* Opt out of Chrome Android's auto-darkening: the page is blue and white by design */
+    color-scheme: only light;
     /* Classic DOS / Windows 9x stop-screen blue (CGA blue) */
     --bsod-blue: #0000aa;
     --bsod-white: #ffffff;
@@ -15,6 +17,10 @@
 
 html {
     scroll-behavior: smooth;
+    /* No text boosting after rotation (iOS) or uneven font scaling (Android): it would break the 40-column grid.
+       100%, not none, so user zoom and text scaling still work. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -30,11 +36,18 @@ a {
     text-decoration: none;
 }
 
-a:hover,
 a:focus-visible {
     background: var(--bsod-white);
     color: var(--bsod-blue);
     outline: none;
+}
+
+/* Hover effects only where a hover exists: touch browsers keep :hover stuck after a tap */
+@media (hover: hover) {
+    a:hover {
+        background: var(--bsod-white);
+        color: var(--bsod-blue);
+    }
 }
 
 p,
@@ -57,10 +70,15 @@ pre {
     grid-template-rows: 1fr auto;
     column-gap: 4%;
     overflow: hidden;
-    /* The middle column holds exactly 40 characters, the width of the C64 screen */
+    /* The middle column holds exactly 40 characters, the width of the C64 screen (glyphs are 1em wide):
+       0.34 × (100vw − 3.2em padding) = 33.1vw ≥ 40em = 32.8vw at 0.82vw. The right column (0.33 × the same
+       width = 32.1vw) spills its 40-character lines into the 1.6em (1.3vw) right padding. Below 854px the 7px
+       floor wins: 40em = 280px, so the right column would clip under 837px and the middle one overrun the gap
+       under 846px. The narrow layout therefore takes over at 860px. */
     font-size: clamp(7px, min(0.82vw, 1.9vh), 18px);
     line-height: var(--bsod-line);
     user-select: none;
+    -webkit-user-select: none;
 }
 
 /* CRT scanlines */
@@ -180,10 +198,16 @@ pre {
     border: 1px solid var(--bsod-white);
 }
 
-.bsod-key:hover,
 .bsod-key:focus-visible {
     background: var(--bsod-blue);
     color: var(--bsod-white);
+}
+
+@media (hover: hover) {
+    .bsod-key:hover {
+        background: var(--bsod-blue);
+        color: var(--bsod-white);
+    }
 }
 
 #bsod-countdown {
@@ -290,10 +314,15 @@ kbd {
     position: relative;
     flex: 1;
     min-height: 0;
+    /* Vertical swipes scroll the page; while playing (class set by 404.js) the stage takes every touch: drag and hold */
     touch-action: pan-y;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+}
+
+#invaders-stage.invaders-playing {
+    touch-action: none;
 }
 
 #invaders-canvas {
@@ -335,9 +364,23 @@ kbd {
 }
 
 #invaders-home {
+    position: relative;
     display: none;
     padding: 6px 8px;
     pointer-events: auto;
+}
+
+/* Invisible 44px touch target around the small key, layout unchanged */
+#invaders-home::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    min-width: 44px;
+    min-height: 44px;
+    translate: -50% -50%;
 }
 
 #invaders-overlay.invaders-over #invaders-home {
@@ -355,7 +398,8 @@ kbd {
 
 /* ─── Narrow screens: middle column only ──────── */
 
-@media (max-width: 760px) {
+/* 40 columns at 2.2vw + 3.2em padding = 95vw; at the 7px floor (≤ 318px) 302px, so still no clipping at 320px */
+@media (max-width: 860px) {
     #bsod {
         height: auto;
         min-height: 100vh;

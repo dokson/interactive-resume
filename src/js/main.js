@@ -41,6 +41,8 @@ window.onload = () => {
     openSquidHands();
     hideBubble();
     setRobotHandsToDefault();
+    // Assigned only now: a resize during loading (address bar, rotation) would reach divs storeDivs() has not stored yet.
+    window.onresize = handleResize;
 };
 
 window.onscroll = () => {
@@ -50,7 +52,7 @@ window.onscroll = () => {
     }
 };
 
-window.onresize = () => {
+function handleResize() {
     setFrontLayerVerticalHeight();
     setBannersContainerVerticalPosition();
     setPageHeight();
@@ -69,7 +71,7 @@ window.onresize = () => {
     positionSeaFloorObjectsVertically();
     hideStarsInFinalScene();
     enableScrollOrSwipe();
-};
+}
 
 document.addEventListener("keydown", handleArrowKeys);
 document.addEventListener("keyup", stopArrowScroll);

@@ -79,9 +79,10 @@ Static HTML/CSS/JS. No framework, no bundler. Node.js runs only the build.
 <head>
 jquery.min.js, easing.min.js
 config.min.js                                ← gameConfig, used by everything after it
+viewport.min.js                              ← deviceName + touch layout viewport, before any layout
 <body>
 preloader.min.js                             ← starts its sequence immediately
-container-transparent-or-displaynone.min.js  ← declares deviceName + containerDiv
+container-transparent-or-displaynone.min.js  ← declares containerDiv
 init.min.js
 ale.min.js
 layers.min.js
@@ -94,7 +95,8 @@ main.min.js                                  ← must be last: bootstrap + windo
 ### Modules
 
 - `config.js`: `gameConfig`, deep-frozen. Every duration, interval, distance, sprite frame, layout ratio. **Change tunables here, not in modules.**
-- `container-transparent-or-displaynone.js`: `deviceName` (feature detection: `ontouchstart`/`maxTouchPoints`), `containerDiv`.
+- `viewport.js`: `deviceName` (feature detection: `ontouchstart`/`maxTouchPoints`); on touch devices rewrites the viewport meta (see "Touch layout").
+- `container-transparent-or-displaynone.js`: `containerDiv`.
 - `preloader.js`: C64 tape-loading sequence. `finishPreloader()` (on `window.onload`, returns a Promise) shows `RUN`, hides on click/tap/key.
 - `ale.js`: movement, jump/fall/swim, frames (`setAleFrame`), eyes, orientation, happy state.
 - `layers.js`: layers, scroll/swipe, phases (`setLayersMovement`), page dimensions, sea shift, touch, world rise after RUN.
@@ -102,7 +104,7 @@ main.min.js                                  ← must be last: bootstrap + windo
 - `ending.js`: fireworks, rocket portal (`setRocketBoardable`, `boardRocket`, `resetRocketLaunch`).
 - `init.js`: `storeDivs()`; `resetVariables()`/`resetFunctions()` delegate to the scene lifecycle and stop the fireworks.
 - `state.js`: state namespaces, DOM refs, `LayersMovement`, `bosses`, `seaAnimalSpecies`, `scenes`.
-- `main.js`: bootstrap, `window` handlers (`onload`, `onscroll`, `onresize`, `orientationchange`).
+- `main.js`: bootstrap, `window` handlers (`onload`, `onscroll`, `onresize`, `orientationchange`). `onresize` (`handleResize`) is assigned at the end of `onload`: a resize while loading (address bar, rotation) would reach divs `storeDivs()` has not stored yet.
 - `easing.js`: jQuery UI easings (easeInCubic, easeOutCubic, easeOutElastic).
 
 ### Global state (`state.js`)
@@ -139,6 +141,20 @@ Bosses and sea animals are generated from `bosses` / `seaAnimalSpecies` by `crea
 - Arrows go through `handleArrowKeys` (`layers.js`): down/right forward, up/left back.
 - Key repeats are ignored. A rAF loop scrolls at `keyboard.arrowScrollSpeed` px/ms until `keyup` or window blur.
 
+### Touch layout (mobile)
+
+- `index.html` ships `width=1000`; `viewport.js` rewrites it on touch devices before the game markup is laid out. Desktop keeps the window width.
+- Portrait: `viewport.portraitWidth` (600), so a 360px phone draws the world at 0.6× instead of 0.36×.
+- Landscape: `max(viewport.minWidth, viewport.minHeight × innerWidth / innerHeight)`, so the layout is at least `minHeight` (680) tall: the 548px splash and its ribbon (bottom 20%) stay on screen.
+- Recomputed only on an orientation change, never on resize: the address bar changes `innerHeight` on every swipe and the world would jump.
+- Scenes wider than the layout (charts, bosses) pass by while swiping; only the screens that stay put adapt. `@media (max-width: 760px)` (portrait layout and narrow desktop windows) in `style.css`:
+  - `#splash-container` shifts left by `--splash-shift` so the title's letters (x 549–1080 of 1300) sit centred at full size; its ribbon and swipe hint shift back.
+  - `#banners-container` centres on the climb.
+- `viewport.js` also puts `.touch-layout` on `<html>` (touch devices only, both orientations; desktop never). `style.css` uses it to enlarge the smallest labels: certification dates (18px) and names (16px, wrapping in the banner), skill chart headers (14px, filling the 150px column).
+- Skill scale labels: BEGINNER, ELEMENTARY, COMPETENT, ADVANCED, EXPERT. ELEMENTARY (10 characters) is the longest a 14px header holds on one line: keep new labels at 10 characters or fewer.
+- `touchmove`/`touchend` listeners are non-passive (document-level ones default to passive and `preventDefault()` was ignored: native scroll, address bar toggling, a relayout per swipe). `touchstart` stays passive.
+- `html` has `text-size-adjust: 100%`: Android text autosizing would inflate fixed-size labels out of their boxes.
+
 ### Animation
 
 - jQuery `.animate()`: movement (parallax, positioning, slide-ins).
@@ -170,7 +186,8 @@ Bosses and sea animals are generated from `bosses` / `seaAnimalSpecies` by `crea
 - `positionRocketAndAleContainerHorizontally()` shifts both left until Ale ends `world.aleEndMarginRight` px inside the right edge.
 - `positionAboutSign()` keeps `#title-about-me` `aboutSign.rocketGap` px clear of the rocket.
 - It slides left until the first letter (`aboutSign.textLeft`, viewBox x) is `aboutSign.marginLeft` from the edge, then scales (`transform`) down to `aboutSign.minScale`.
-- Current config: nothing moves from 1504px up; everything fits down to the 1000px mobile layout viewport.
+- Current config: nothing moves from 1504px up; the side-by-side layout fits down to the 1000px landscape layout viewport.
+- Below that (the 600px portrait layout), when even `minScale` would overlap the rocket, the sign floats above it: centred, scaled to the width, its top `aboutSign.aboveDepth` viewBox px ending `aboutSign.aboveRocketGap` px above the rocket (clear of "BOARD ▶"), the rest of the extrusion masked out. Only if that fits at `minScale` or more: windows also too short (e.g. desktop 800×600) keep the `minScale` sign beside the rocket.
 
 ### Timing map
 
@@ -251,6 +268,7 @@ Applies to `image/logos/` and the summary-pill company marks.
 - Standalone: only `dist/404.min.css` and `dist/404.min.js` (from `src/css/404.css`, `src/js/404.js`). No resume scripts, no `gameConfig`.
 - **Absolute** asset paths: GitHub Pages serves it for missing URLs at any depth.
 - Tunables: frozen `invadersConfig` at the top of `404.js`.
+- `color-scheme: only light` (meta + `:root`) blocks Chrome's auto-dark; hover styles only under `(hover: hover)`.
 
 ### `#bsod`
 
@@ -261,24 +279,28 @@ Applies to `image/logos/` and the summary-pill company marks.
 - Reduced motion: `.bsod-garbage` rows stay static, nothing else moves.
 - `ENTER` (Return on Mac) reboots to `/` from every state, even mid-match. Exception: a `:focus-visible` link or button gets activated instead.
 - After `invadersConfig.autoDebugDelay` (5 s) the page scrolls to the game, unless the user scrolls, taps, clicks or presses a key.
+- Three columns above 860px, one below: under it the 7px font floor would clip the 40-character columns.
 
 ### `#debugger` (404 Invaders)
 
 - `<canvas>` game; 30 invaders form "404" (`invaderGlyphs`).
 - Fire (Space) starts/resumes/continues; ←/→ or A/D move; hold fire to keep shooting. Touch: hold and drag.
+- Touch/mouse outside play: a tap on the stage (release within `tapSlop` px, no `pointercancel`) starts/resumes/continues, so a scroll swipe never starts a game.
+- Stage `touch-action`: `pan-y` (page scrolls) except while playing (`.invaders-playing`, set in `setGameState`): `none`, so the drag never turns into a scroll. Scroll away from the HUD.
 - Keys are captured only while ≥ `viewThreshold` of the section is visible, so Space and arrows still scroll on the BSOD.
 - Scrolling away, blur or a hidden tab pauses.
 - States: `ready → playing ⇄ paused`; `playing → cleared` (fire: faster wave) or `gameover` (fire: retry).
-- Playfield in sprite pixels, scaled to the stage; integer scale when it fits.
+- Playfield in sprite pixels, scaled to the stage: integer CSS scale when it fits (≥ 2), else a whole number of device pixels. Resizes on window resize and stage `ResizeObserver`.
 
 ## Testing
 
 - Playwright, locally only; run `npm run deploy` first. `playwright.config.js` serves the root with `serve` on port 3000.
-- `tests/visual-regression.spec.js`: preloader + 12 scroll positions; fails above 1% pixel difference.
-- Baselines: `tests/visual-regression.spec.js-snapshots/`, platform-specific (`*-chromium-win32.png`).
+- `tests/visual-regression.spec.js`: preloader + 12 scroll positions; fails above 1% pixel difference. Runs in three projects: `chromium` (desktop 1280×720), `mobile-portrait` (Android 360×800) and `mobile-landscape` (800×360), touch layouts included.
+- On touch projects the position moves through the swipe path (`scrollToPercent`), not `scrollTo`.
+- Baselines: `tests/visual-regression.spec.js-snapshots/`, per project and platform (`*-chromium-win32.png`, `*-mobile-portrait-win32.png`, `*-mobile-landscape-win32.png`).
 - Section tests click `RUN`, then `settleGameAnimations()` finishes jQuery animations and stops JS cycles (stars, alien steer) at rest.
 - The CSS animation kill switch doesn't reach JS-driven cycles; `stopFireworks()` clears fireworks.
-- `tests/game.spec.js`: behaviour in the real page (preloader, `gameConfig` freeze, scenes, scroll phases, end detection, sitemap…).
+- `tests/game.spec.js`: behaviour in the real page (preloader, `gameConfig` freeze, scenes, scroll phases, end detection, touch layout and swipes, sitemap…). Desktop project only; its "Touch devices" block emulates a phone itself.
 - `npm run test:update` only after inspecting the diffs, for intentional visual changes.
 
 ## SEO

@@ -154,6 +154,104 @@ test.describe('Scroll phases', () => {
     });
 });
 
+test.describe('Touch devices', () => {
+    test.use({ isMobile: true, hasTouch: true, viewport: { width: 360, height: 800 } });
+
+    async function enterGameByTap(page) {
+        await waitForRunPrompt(page);
+        await page.touchscreen.tap(10, 10);
+        await page.waitForSelector('#preloader', { state: 'hidden' });
+        await page.waitForFunction(() => flags.preloadShiftUpDone);
+    }
+
+    // Real touch events, drifting a little vertically like a thumb does.
+    async function swipeLeft(page, distance) {
+        const cdp = await page.context().newCDPSession(page);
+        const startX = 300;
+        const y = 400;
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: startX, y }] });
+        for (let step = 1; step <= 10; step++) {
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: startX - distance * step / 10, y: y - 4 * step }] });
+        }
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    }
+
+    test('portrait gets the narrow layout, landscape one tall enough for the scenes', async ({ page }) => {
+        await waitForRunPrompt(page);
+        expect(await page.evaluate(() => window.innerWidth === gameConfig.viewport.portraitWidth)).toBe(true);
+
+        await page.setViewportSize({ width: 800, height: 360 });
+        // The layout viewport follows the orientation change (viewport.js): wait for it, then check its size.
+        await page.waitForFunction(() => window.innerWidth !== gameConfig.viewport.portraitWidth);
+        const landscape = await page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight, ...gameConfig.viewport }));
+        expect(landscape.width).toBeGreaterThanOrEqual(landscape.minWidth);
+        expect(landscape.height).toBeGreaterThanOrEqual(landscape.minHeight);
+    });
+
+    // A touchmove left to the browser scrolls the page, toggles the address bar (a resize per swipe) and
+    // can pull to refresh: the game must cancel every one (a passive listener silently cannot).
+    test('a swipe walks the world and is never handed to the browser', async ({ page }) => {
+        await enterGameByTap(page);
+        await page.evaluate(() => {
+            window.touchMovesLeftToBrowser = 0;
+            document.addEventListener('touchmove', (event) => {
+                if (!event.defaultPrevented) window.touchMovesLeftToBrowser++;
+            });
+        });
+        await swipeLeft(page, 200);
+        await page.waitForFunction(() => scrollState.position > 0);
+        expect(await page.evaluate(() => window.touchMovesLeftToBrowser)).toBe(0);
+    });
+
+    test('a resize while the page is still loading leaves the game working', async ({ page }) => {
+        const errors = [];
+        page.on('pageerror', (error) => errors.push(error.message));
+        // Holding one image back keeps the load event (and storeDivs) from running yet.
+        let releaseImage;
+        const imageHeld = new Promise((resolve) => { releaseImage = resolve; });
+        await page.route('**/cloud.png', async (route) => {
+            await imageHeld;
+            await route.continue();
+        });
+        await page.goto('/index.html', { waitUntil: 'domcontentloaded' });
+        const readyState = await page.evaluate(() => {
+            window.dispatchEvent(new Event('resize'));
+            return document.readyState;
+        });
+        releaseImage();
+        expect(readyState).not.toBe('complete');
+        await page.waitForSelector('#preloader.c64-waiting');
+        expect(errors).toEqual([]);
+    });
+
+    test('at the end of the portrait layout the ABOUT ME sign stays clear of the rocket', async ({ page }) => {
+        await enterGameByTap(page);
+        await page.evaluate(() => {
+            scrollState.positionOnTouch = 0;
+            scrollState.touchStartX = 0;
+            scrollState.touchCurrentX = -(pageDiv.offsetHeight - containerDiv.offsetHeight);
+            detectPageVerticalPosition();
+            runTheseFunctionsAfterScrollOrSwipe();
+        });
+        await page.waitForFunction(() => scrollState.layersMovement === 'at-rocket');
+        const layout = await page.evaluate(() => {
+            const sign = aboutSignTitleSvg.getBoundingClientRect();
+            const scale = sign.height / aboutSignTitleSvg.height.baseVal.value;
+            const { textLeft, aboveDepth } = gameConfig.world.aboutSign;
+            return {
+                textLeft: sign.left + textLeft * scale,
+                textRight: sign.right,
+                visibleBottom: sign.top + aboveDepth * scale,
+                boardTop: document.querySelector('.rocket-sign').getBoundingClientRect().top,
+                width: window.innerWidth
+            };
+        });
+        expect(layout.textLeft).toBeGreaterThanOrEqual(0);
+        expect(layout.textRight).toBeLessThanOrEqual(layout.width);
+        expect(layout.visibleBottom).toBeLessThanOrEqual(layout.boardTop);
+    });
+});
+
 test.describe('Sea', () => {
     test('Ale swims inside the sea and walks again outside it', async ({ page }) => {
         await enterGame(page);

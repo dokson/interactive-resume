@@ -55,6 +55,10 @@ var gameConfig = deepFreeze({
         introDrop: { bottom: "20%", duration: 500 }
     },
 
+    // Layout viewport of touch devices (viewport.js), in CSS px of the layout. minHeight keeps the
+    // 548px splash (bottom 20%) and its ribbon inside a landscape phone's screen.
+    viewport: { portraitWidth: 600, minWidth: 1000, minHeight: 680 },
+
     world: {
         riseDuration: 1000,
         aleToRocketDistance: 300,
@@ -65,7 +69,8 @@ var gameConfig = deepFreeze({
         aleMaxOffsetFromCenter: 332,
         rocketMaxOffsetFromCenter: 170,
         aleEndMarginRight: 20,
-        aboutSign: { textLeft: 460, rocketGap: 30, marginLeft: 10, minScale: 0.6 },
+        // aboveRocketGap clears the rocket's "BOARD" sign; aboveDepth (viewBox px from the top) is how much of the extrusion stays visible.
+        aboutSign: { textLeft: 460, rocketGap: 30, marginLeft: 10, minScale: 0.6, aboveRocketGap: 110, aboveDepth: 300, aboveMarginTop: 40 },
         aleRocketPaddingBottom: 150,
         resizeAfterOrientationDelay: 500
     },

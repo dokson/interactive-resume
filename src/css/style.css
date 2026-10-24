@@ -309,9 +309,13 @@ body {
     background-color: #00bff3
 }
 
-/* The native scrollbar is replaced by #progress-track: scrolling itself is untouched. */
+/* The native scrollbar is replaced by #progress-track: scrolling itself is untouched.
+   text-size-adjust: Android Chrome's text autosizing would inflate the game's absolutely sized labels
+   out of their boxes on touch layouts. */
 html {
-    scrollbar-width: none
+    scrollbar-width: none;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%
 }
 
 html::-webkit-scrollbar {
@@ -2678,4 +2682,45 @@ img {
     width: 533px;
     height: 190px;
     background-image: url(../image/layers/xray-machine.png);
+}
+
+/* Narrow layouts: the 600px portrait layout of touch devices (viewport.js) and narrow desktop windows.
+   The splash title's letters fill only x 549-1080 of the 1300px splash (the rest is their extrusion):
+   shifting it left by 165px centres them at full size. The ribbon moves back over "ALE", the swipe hint
+   back to the centre. The certification banners centre on the climb instead of overflowing right. */
+@media (max-width: 760px) {
+    #splash-container {
+        --splash-shift: -165px;
+        translate: var(--splash-shift) 0
+    }
+
+    #splash-container .ribbon-container {
+        translate: 85px 0
+    }
+
+    #splash-container .scroll-or-swipe-text-container {
+        translate: calc(-1 * var(--splash-shift)) 0
+    }
+
+    #banners-container {
+        left: calc(50% - 260px)
+    }
+}
+
+/* Touch layouts (viewport.js sets .touch-layout, never on desktop): phones draw the world at 0.5-0.6×,
+   so the smallest labels grow. Certification dates and names wrap inside their banner; the skill chart
+   headers fill their 150px column (ELEMENTARY, the longest, is 140px at 14px). */
+.touch-layout .banner-text-a {
+    font-size: 18px
+}
+
+.touch-layout .banner-text-c {
+    font-size: 16px;
+    line-height: 1.4
+}
+
+.touch-layout .skill-measurement-header {
+    width: 142px;
+    padding: 7px 0 6px;
+    font-size: 14px
 }

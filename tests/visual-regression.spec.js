@@ -3,11 +3,12 @@ const { test, expect } = require('@playwright/test');
 const ANIMATION_SETTLE_MS = 2000;
 const SCROLL_SETTLE_MS = 500;
 
-async function waitForSiteReady(page) {
+async function waitForSiteReady(page, hasTouch) {
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => document.fonts.ready);
     await page.waitForSelector('#preloader.c64-waiting');
-    await page.mouse.click(10, 10);
+    if (hasTouch) await page.touchscreen.tap(10, 10);
+    else await page.mouse.click(10, 10);
     await page.waitForSelector('#preloader', { state: 'hidden' });
     await page.waitForTimeout(ANIMATION_SETTLE_MS);
 }
@@ -43,11 +44,21 @@ async function settleGameAnimations(page) {
     });
 }
 
-async function scrollToPercent(page, percent) {
-    await page.evaluate((pct) => {
-        var maxScroll = document.getElementById('page').offsetHeight - window.innerHeight;
-        window.scrollTo(0, maxScroll * pct / 100);
-    }, percent);
+// Touch devices walk the world by swiping, not by scrolling: one swipe straight to the target goes through
+// the same path as a touchmove (layers.js handleMove), just as one scrollTo fires one scroll event.
+async function scrollToPercent(page, percent, hasTouch) {
+    await page.evaluate(({ pct, touch }) => {
+        const maxScroll = document.getElementById('page').offsetHeight - window.innerHeight;
+        if (!touch) {
+            window.scrollTo(0, maxScroll * pct / 100);
+            return;
+        }
+        scrollState.positionOnTouch = scrollState.position;
+        scrollState.touchStartX = 0;
+        scrollState.touchCurrentX = scrollState.position - maxScroll * pct / 100;
+        detectPageVerticalPosition();
+        runTheseFunctionsAfterScrollOrSwipe();
+    }, { pct: percent, touch: hasTouch });
     await page.waitForTimeout(SCROLL_SETTLE_MS);
 }
 
@@ -79,15 +90,15 @@ test.describe('Visual Regression', () => {
     });
 
     test.describe('Sections', () => {
-        test.beforeEach(async ({ page }) => {
+        test.beforeEach(async ({ page, hasTouch }) => {
             await page.goto('/index.html');
-            await waitForSiteReady(page);
+            await waitForSiteReady(page, hasTouch);
             await disableAnimations(page);
         });
 
         for (const section of sections) {
-            test(`section ${section.name}`, async ({ page }) => {
-                await scrollToPercent(page, section.percent);
+            test(`section ${section.name}`, async ({ page, hasTouch }) => {
+                await scrollToPercent(page, section.percent, hasTouch);
                 await settleGameAnimations(page);
                 await expect(page).toHaveScreenshot(`${section.name}.png`);
             });
