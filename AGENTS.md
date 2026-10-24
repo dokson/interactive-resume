@@ -158,6 +158,8 @@ Bosses and sea animals are generated from `bosses` / `seaAnimalSpecies` by `crea
 - Skill scale labels: BEGINNER, ELEMENTARY, COMPETENT, ADVANCED, EXPERT. ELEMENTARY (10 characters) is the longest a 14px header holds on one line: keep new labels at 10 characters or fewer.
 - `touchmove`/`touchend` listeners are non-passive (document-level ones default to passive and `preventDefault()` was ignored: native scroll, address bar toggling, a relayout per swipe). `touchstart` stays passive.
 - `html` has `text-size-adjust: 100%`: Android text autosizing would inflate fixed-size labels out of their boxes.
+- Momentum (`startFling`/`stopFling`, `layers.js`): the world follows the finger 1:1, then a quick release keeps it gliding through the same swipe path (the virtual finger moves). Velocity from the last `touch.flingSampleWindow` ms, so a finger that paused before lifting does not glide.
+- The glide decays by `touch.flingFriction` per ms (0.998, iOS's normal rate) and stops at either end, below `flingMinVelocity`, on the next `touchstart` or when swiping is disabled. Crossing the portrait world: about 14 quick flicks (84 without momentum).
 
 ### Animation
 
@@ -208,6 +210,7 @@ How `gameConfig` timings chain. Changing one link shifts everything after it.
 | Plants / buildings | item *i* starts at `stagger` × *i* (300), runs `duration` (800 / 1000)                                                                                                                                          | 1700 / 1600                              |
 | Sea animals        | animal *i* starts at `stagger` × *i* (100), swims `swimInDistance` px in `duration` 600                                                                                                                         | 600 + 100 × (n − 1)                      |
 | Rocket launch      | `launch.aleWalkDuration` 500 → `aleClimbDuration` 250 → `ignitionDuration` 500 (shake ±`shakeDistance` px every `shakeInterval` 60, flame every `exhaustFlickerInterval` 80) → `liftOffDuration` 800 → navigate | ≈ 2.05 s                                 |
+| Swipe glide        | release velocity *v* (layout px/ms, ≤ `touch.flingMaxVelocity` 8) × `flingFriction` 0.998 per ms until < `flingMinVelocity` 0.05; frames capped at `flingMaxFrame` 50                                         | ≈ 500 × *v* px, ≈ 2 s                    |
 
 - Boss text and chain drop run in parallel over `dropDuration` 1000; the idle loop starts at landing.
 - Fireworks (independent of the launch): a step every `frameInterval` 33; next volley of 1, 3 or 6 `volleyInterval` 1500 after the last, `volleyStagger` 280 apart.

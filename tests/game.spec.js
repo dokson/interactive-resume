@@ -164,8 +164,9 @@ test.describe('Touch devices', () => {
         await page.waitForFunction(() => flags.preloadShiftUpDone);
     }
 
-    // Real touch events, drifting a little vertically like a thumb does.
-    async function swipeLeft(page, distance) {
+    // Real touch events, drifting a little vertically like a thumb does. holdBeforeLift keeps the finger
+    // still on the glass before lifting it.
+    async function swipeLeft(page, distance, { holdBeforeLift = 0 } = {}) {
         const cdp = await page.context().newCDPSession(page);
         const startX = 300;
         const y = 400;
@@ -173,8 +174,12 @@ test.describe('Touch devices', () => {
         for (let step = 1; step <= 10; step++) {
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: startX - distance * step / 10, y: y - 4 * step }] });
         }
+        if (holdBeforeLift) await page.waitForTimeout(holdBeforeLift);
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        return cdp;
     }
+
+    const position = (page) => page.evaluate(() => scrollState.position);
 
     test('portrait gets the narrow layout, landscape one tall enough for the scenes', async ({ page }) => {
         await waitForRunPrompt(page);
@@ -201,6 +206,27 @@ test.describe('Touch devices', () => {
         await swipeLeft(page, 200);
         await page.waitForFunction(() => scrollState.position > 0);
         expect(await page.evaluate(() => window.touchMovesLeftToBrowser)).toBe(0);
+    });
+
+    test('a quick swipe keeps the world gliding after the finger lifts, until a touch stops it', async ({ page }) => {
+        await enterGameByTap(page);
+        const cdp = await swipeLeft(page, 200);
+        const lifted = await position(page);
+        await page.waitForFunction((at) => scrollState.position > at + 100, lifted);
+
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 400 }] });
+        const caught = await position(page);
+        await page.waitForTimeout(300);
+        expect(await position(page)).toBe(caught);
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    });
+
+    test('a swipe that stops before lifting does not glide', async ({ page }) => {
+        await enterGameByTap(page);
+        await swipeLeft(page, 200, { holdBeforeLift: 300 });
+        const lifted = await position(page);
+        await page.waitForTimeout(300);
+        expect(await position(page)).toBe(lifted);
     });
 
     test('a resize while the page is still loading leaves the game working', async ({ page }) => {

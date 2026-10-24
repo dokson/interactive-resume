@@ -48,13 +48,16 @@ function initTouchEvents() {
 }
 
 function handleStart(event) {
+    stopFling();
     scrollState.touchStartX = event.targetTouches[0].pageX;
-    scrollState.positionOnTouch = scrollState.position
+    scrollState.positionOnTouch = scrollState.position;
+    scrollState.touchSamples = [{ x: scrollState.touchStartX, time: event.timeStamp }]
 }
 
 function handleMove(event) {
     event.preventDefault();
     scrollState.touchCurrentX = event.targetTouches[0].pageX;
+    scrollState.touchSamples.push({ x: scrollState.touchCurrentX, time: event.timeStamp });
     if (scrollState.canScrollOrSwipe) {
         detectPageVerticalPosition();
         runTheseFunctionsAfterScrollOrSwipe()
@@ -63,7 +66,46 @@ function handleMove(event) {
 
 // Cancelling touchend suppresses the synthetic click, so let taps on links through.
 function handleEnd(event) {
-    if (!event.target.closest("a")) event.preventDefault()
+    if (!event.target.closest("a")) event.preventDefault();
+    startFling(event.timeStamp)
+}
+
+// ─── Touch momentum ──────────────────────────────────────────────────────────
+// The world follows the finger 1:1, then a quick swipe keeps it gliding and slowing down like a native
+// scroll: without it every swipe stopped dead and crossing the world took dozens of them. The glide moves
+// the virtual finger, so scenes, Ale and phases update exactly as under a real one.
+function startFling(endTime) {
+    const { flingSampleWindow, flingMinVelocity, flingMaxVelocity, flingFriction, flingMaxFrame } = gameConfig.touch;
+    // Only the last flingSampleWindow ms count: a finger that paused before lifting does not fling.
+    const samples = scrollState.touchSamples.filter((sample) => endTime - sample.time <= flingSampleWindow);
+    if (samples.length < 2 || !scrollState.canScrollOrSwipe) return;
+    const first = samples[0];
+    const last = samples[samples.length - 1];
+    if (last.time <= first.time) return;
+    // The position grows as the finger moves left.
+    let velocity = (first.x - last.x) / (last.time - first.time);
+    if (Math.abs(velocity) < flingMinVelocity) return;
+    velocity = Math.max(-flingMaxVelocity, Math.min(flingMaxVelocity, velocity));
+    let previousTime = performance.now();
+    const step = (time) => {
+        // Capped: after a background tab resumes, one long frame would teleport the world.
+        const elapsed = Math.min(time - previousTime, flingMaxFrame);
+        previousTime = time;
+        scrollState.touchCurrentX -= velocity * elapsed;
+        velocity *= flingFriction ** elapsed;
+        if (!scrollState.canScrollOrSwipe) return stopFling();
+        detectPageVerticalPosition();
+        runTheseFunctionsAfterScrollOrSwipe();
+        const atEdge = scrollState.position <= 0 || scrollState.position >= pageDiv.offsetHeight - containerDiv.offsetHeight;
+        if (atEdge || Math.abs(velocity) < flingMinVelocity) return stopFling();
+        timers.fling = requestAnimationFrame(step)
+    };
+    timers.fling = requestAnimationFrame(step)
+}
+
+function stopFling() {
+    cancelAnimationFrame(timers.fling);
+    timers.fling = undefined
 }
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────

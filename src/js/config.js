@@ -158,6 +158,10 @@ var gameConfig = deepFreeze({
 
     keyboard: { arrowScrollSpeed: 1 },
 
+    // Swipe momentum (layers.js startFling). Velocities in layout px/ms; flingFriction is the velocity kept
+    // per ms (0.998 halves it about every 350 ms, so a glide covers about 500 ms × the release velocity).
+    touch: { flingSampleWindow: 100, flingMinVelocity: 0.05, flingMaxVelocity: 8, flingFriction: 0.998, flingMaxFrame: 50 },
+
     // Rocket portal to the About page: Ale walks into the rocket, the exhaust ignites while it shakes, it lifts off, then the page navigates.
     launch: {
         aleWalkDuration: 500,

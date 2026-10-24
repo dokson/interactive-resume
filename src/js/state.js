@@ -41,6 +41,7 @@ var scrollState = {
     canScrollOrSwipe: undefined,
     touchStartX: 0,
     touchCurrentX: 0,
+    touchSamples: [],
     arrowDirection: 0
 };
 
@@ -75,7 +76,8 @@ var timers = {
     shiftUpLayer: undefined,
     shiftDownLayer: undefined,
     fireworks: undefined,
-    launchWalk: undefined
+    launchWalk: undefined,
+    fling: undefined
 };
 
 // ─── DOM elements: page structure ───────────────────────────────────────────
