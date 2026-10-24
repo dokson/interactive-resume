@@ -14,6 +14,18 @@ function disableScrollOrSwipe() {
     scrollState.canScrollOrSwipe = false
 }
 
+// The game moved Ale itself (a pipe warp, a position clamped to the level): the native scroll or the
+// virtual finger follows, so the next step continues from there.
+function moveInputTo(position) {
+    scrollState.position = position;
+    if (deviceName === "computer") {
+        window.scrollTo(0, position)
+    } else {
+        scrollState.positionOnTouch = position;
+        scrollState.touchStartX = scrollState.touchCurrentX
+    }
+}
+
 // All four arrows share one scroll, so left/right walk the world exactly like down/up
 const arrowDirections = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
 
@@ -110,10 +122,13 @@ function stopFling() {
 
 // ─── Scroll / swipe dispatch ─────────────────────────────────────────────────
 function runTheseFunctionsAfterScrollOrSwipe() {
+    // Nothing moved (a vertical swipe, the scroll that resyncs a landed cutscene): Ale must not start running.
+    if (scrollState.delta === 0) return;
+    // Power-up first: on a jump the pipes zero the delta it reads.
+    if (handlePowerUp() || handlePipes()) return;
     orientAle();
     checkAleJumpFallSwim();
     moveLayers();
-    shiftUpDownHorizontalLayers();
     triggerEnteredScenes();
     animateAleRunSwim();
     hideScrollOrSwipeTextContainer();
@@ -311,137 +326,15 @@ function positionVerticalLayersToHaveSameTopPosition() {
         layer.style.bottom = `${containerDiv.offsetHeight - layer.offsetHeight}px`
 }
 
-function positionVerticalLayersBottomToHorizontalLayersBottom() {
-    for (let i = 0; i < layerVerticalArray.length; i++)
-        layerVerticalArray[i].style.bottom = `${-1 * layerHorizontalArray[i].offsetTop}px`
-}
-
-// ─── Horizontal layer shift ──────────────────────────────────────────────────
-function shiftUpDownHorizontalLayers() {
-    const aleIsEnteringSea =
-        (scrollState.previousPosition < sea1Div.offsetLeft - ale.leftEdge || scrollState.previousPosition > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge) &&
-        scrollState.position >= sea1Div.offsetLeft - ale.leftEdge &&
-        scrollState.position <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
-    if (aleIsEnteringSea) {
-        ale.isSwimming = true;
-        shiftUpLayerHorizontal();
-        shiftAleToSeaFloor();
-        createBubble()
-    }
-
-    const aleIsLeavingSea =
-        scrollState.previousPosition >= sea1Div.offsetLeft - ale.leftEdge &&
-        scrollState.previousPosition <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge &&
-        (scrollState.position < sea1Div.offsetLeft - ale.leftEdge || scrollState.position > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge);
-    if (aleIsLeavingSea) {
-        ale.isSwimming = false;
-        shiftDownLayerHorizontal();
-        shiftAleToGroundLevel();
-        clearInterval(timers.bubble);
-        clearInterval(timers.blinkSeaAnimals)
-    }
-}
-
-function shiftUpDownHorizontalLayersOnResize() {
-    const aleIsInSea =
-        scrollState.position >= sea1Div.offsetLeft - ale.leftEdge &&
-        scrollState.position <= sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
-    if (aleIsInSea) {
-        clearShiftUpDownLayerHorizontalTimer();
-        ale.isSwimming = true;
-        positionLayerHorizontalToTop();
-        positionVerticalLayersBottomToHorizontalLayersBottom();
-        createBubble()
-    }
-
-    const aleIsOutsideSea =
-        scrollState.position < sea1Div.offsetLeft - ale.leftEdge ||
-        scrollState.position > sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge;
-    if (aleIsOutsideSea) {
-        clearShiftUpDownLayerHorizontalTimer();
-        ale.isSwimming = false;
-        if (scrollState.layersMovement === LayersMovement.horizontal) {
-            positionLayerHorizontalToBottom();
-            positionVerticalLayersBottomToHorizontalLayersBottom()
-        } else {
-            positionHorizontalLayersAtBottomMost();
-            positionHorizontalLayersToHaveSameRightPosition()
-        }
-        clearInterval(timers.bubble);
-        clearInterval(timers.blinkSeaAnimals)
-    }
-}
-
+// ─── Camera: the sea (level 2) lies below the land ───────────────────────────
 function setShiftUpLayerHorizontalDistance() {
     shiftUpLayerHorizontalDistance = gameConfig.world.seaShiftRatio * containerDiv.offsetHeight
 }
 
-function shiftUpLayerHorizontal() {
-    setShiftUpLayerHorizontalDistance();
-    clearShiftUpDownLayerHorizontalTimer();
-    timers.shiftUpLayer = setInterval(() => {
-        moveUpLayerHorizontal()
-    }, gameConfig.world.seaShiftInterval);
-    disableIsAleJumpingAndFalling()
-}
-
-function moveUpLayerHorizontal() {
-    if (scrollState.layersMovement === LayersMovement.horizontal) {
-        for (let i = 0; i < layerHorizontalArray.length; i++) {
-            let newTop = layerHorizontalArray[i].offsetTop - gameConfig.world.seaShiftStep;
-            if (newTop <= -shiftUpLayerHorizontalDistance) {
-                newTop = -shiftUpLayerHorizontalDistance;
-                layerHorizontalArray[i].style.top = `${newTop}px`;
-                clearInterval(timers.shiftUpLayer)
-            } else {
-                layerHorizontalArray[i].style.top = `${newTop}px`
-            }
-            if (aleContainerDiv.offsetTop > sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
-                ale.isBelowSeaLevel = true
-        }
-        positionVerticalLayersBottomToHorizontalLayersBottom()
-    } else {
-        resetLayersWhenNotHorizontal(timers.shiftUpLayer);
-    }
-}
-
-function shiftDownLayerHorizontal() {
-    clearShiftUpDownLayerHorizontalTimer();
-    timers.shiftDownLayer = setInterval(() => {
-        moveDownLayerHorizontal()
-    }, gameConfig.world.seaShiftInterval)
-}
-
-function moveDownLayerHorizontal() {
-    if (scrollState.layersMovement === LayersMovement.horizontal) {
-        for (let i = 0; i < layerHorizontalArray.length; i++) {
-            let newTop = layerHorizontalArray[i].offsetTop + gameConfig.world.seaShiftStep;
-            if (newTop >= 0) {
-                newTop = 0;
-                layerHorizontalArray[i].style.top = `${newTop}px`;
-                clearInterval(timers.shiftDownLayer)
-            } else {
-                layerHorizontalArray[i].style.top = `${newTop}px`
-            }
-            if (aleContainerDiv.offsetTop < sea1Div.offsetTop + layerHorizontalArray[layerHorizontalArray.length - 1].offsetTop)
-                ale.isBelowSeaLevel = false
-        }
-        positionVerticalLayersBottomToHorizontalLayersBottom()
-    } else {
-        resetLayersWhenNotHorizontal(timers.shiftDownLayer);
-    }
-}
-
-function resetLayersWhenNotHorizontal(timerToClear) {
-    clearInterval(timerToClear);
-    positionHorizontalLayersAtBottomMost();
-    positionHorizontalLayersToHaveSameRightPosition();
-    ale.isBelowSeaLevel = false;
-}
-
-function clearShiftUpDownLayerHorizontalTimer() {
-    clearInterval(timers.shiftUpLayer);
-    clearInterval(timers.shiftDownLayer)
+// Lifts the world by distance px, so the camera looks that far below the land; the vertical layers follow.
+function shiftCamera(distance) {
+    for (const layer of layerHorizontalArray) layer.style.top = `${-distance}px`;
+    for (const layer of layerVerticalArray) layer.style.bottom = `${distance}px`
 }
 
 // ─── Layer & rocket positioning ──────────────────────────────────────────────

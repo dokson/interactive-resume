@@ -53,17 +53,20 @@ window.onscroll = () => {
 };
 
 function handleResize() {
+    // The stops move with the viewport: a cutscene in progress lands first.
+    finishCutscene();
     setFrontLayerVerticalHeight();
     setBannersContainerVerticalPosition();
     setPageHeight();
     sizeFireworksCanvas();
     detectPageVerticalPosition();
+    clampPositionToLevel();
     updateScrollProgress();
     orientAle();
     setLayerSpeed();
     moveLayers();
     setAleLeftAndRightEdge();
-    shiftUpDownHorizontalLayersOnResize();
+    applyLevelState();
     triggerEnteredScenes();
     positionSplashContainer();
     positionAleContainerVertically();

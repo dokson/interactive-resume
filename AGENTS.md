@@ -90,6 +90,9 @@ container-transparent-or-displaynone.min.js  ← declares containerDiv
 init.min.js
 ale.min.js
 layers.min.js
+cutscene.min.js
+pipes.min.js
+powerup.min.js
 animation.min.js
 ending.min.js
 state.min.js
@@ -103,7 +106,10 @@ main.min.js                                  ← must be last: bootstrap + windo
 - `container-transparent-or-displaynone.js`: `containerDiv`.
 - `preloader.js`: C64 tape-loading sequence. `finishPreloader()` (on `window.onload`, returns a Promise) shows `RUN`, hides on click/tap/key.
 - `ale.js`: movement, jump/fall/swim, frames (`setAleFrame`), eyes, orientation, happy state.
-- `layers.js`: layers, scroll/swipe, phases (`setLayersMovement`), page dimensions, sea shift, touch, world rise after RUN.
+- `layers.js`: layers, scroll/swipe, phases (`setLayersMovement`), page dimensions, camera shift (`shiftCamera`), touch, world rise after RUN.
+- `cutscene.js`: runner for scripted moments that take the world over from the scroll (`startCutscene`, `finishCutscene`) and their shared steps (`settleAle`, `walkAle`, `panWorld`).
+- `pipes.js`: levels and the Super Mario pipe warps between them (`handlePipes`).
+- `powerup.js`: the ? block and mushroom that shave Ale between Bologna and Kyiv (`handlePowerUp`).
 - `animation.js`: scene behaviours and lifecycle (`resetScenes`/`layoutScenes`/`resizeScenes`/`triggerEnteredScenes`), stars, scroll hint, rAF utility, `flashElement`.
 - `ending.js`: fireworks, rocket portal (`setRocketBoardable`, `boardRocket`, `resetRocketLaunch`).
 - `init.js`: `storeDivs()`; `resetVariables()`/`resetFunctions()` delegate to the scene lifecycle and stop the fireworks.
@@ -113,7 +119,7 @@ main.min.js                                  ← must be last: bootstrap + windo
 
 ### Global state (`state.js`)
 
-- Namespaces: `ale` (physics, sprite), `scrollState` (position, touch, phase), `flags` (animation booleans), `timers` (every timer ID).
+- Namespaces: `ale` (physics, sprite, `isShaved`), `scrollState` (position, touch, phase, level), `flags` (animation booleans), `timers` (every timer ID), `cutscene` (the cutscene playing).
 - Per-boss and per-species state (`canAnimate`, `isAnimating`) lives on the `bosses` / `seaAnimalSpecies` objects.
 - DOM elements, arrays and counters stay individual `var`s. Tunable numbers go in `gameConfig`.
 - Never name a global after a browser built-in (`scroll`, `location`, `history`, `navigator`, `screen`). Hence `scrollState`.
@@ -144,6 +150,31 @@ Bosses and sea animals are generated from `bosses` / `seaAnimalSpecies` by `crea
 - Desktop: within 1px of the bottom counts as the end. Zoom/scaling makes `scrollY` fractional; its max can stop short of `pageDiv.offsetHeight - containerDiv.offsetHeight`.
 - Arrows go through `handleArrowKeys` (`layers.js`): down/right forward, up/left back.
 - Key repeats are ignored. A rAF loop scrolls at `keyboard.arrowScrollSpeed` px/ms until `keyup` or window blur.
+
+### Levels and pipes
+
+- `scrollState.level`: 1 (land), 2 (sea), 3 (land, to the end). The sea lies below the land: in level 2 the camera (`shiftCamera`) looks `world.seaShiftRatio` × viewport height lower.
+- Each land level reaches the sea through one pipe: `divePipe` under the LEVEL 2 "WARP ZONE" sign (wooden board on two posts, CSS only), `climbPipe` under the LEVEL 3 gate. Parts: top mouth `.pipe-top` (an `.elevation` Ale jumps onto), shaft, run along the sea floor, side mouth `.pipe-mouth` in the sea's wall.
+- `getPipeStops(pipe)`: scroll positions `land` (on the top mouth), `inside` (hidden in the side mouth), `sea` (just clear of it). A level is the range between stops: Ale never rests inside a pipe.
+- `handlePipes()` runs on every scroll/swipe step, right after `handlePowerUp()`. Walking past a stop toward the other mouth plays the warp, a cutscene: settle on the stop → sink → camera transit (Ale hidden) → walk out; back the same in reverse.
+- A step wider than the viewport (Home, End, test jumps) is no walk: the level follows the position (`getLevelAt`), clamped out of the pipes.
+- Pipes are CSS (hard-stop gradients, original art) with `z-index: 1`, in front of `#ale-container`, so Ale vanishes into the mouths. Keep other world elements from overlapping them.
+
+### Cutscenes
+
+- `startCutscene(facing, endPosition, steps, onEnd)`: each step `start()`s once, then `frame(t)` runs every animation frame with `t` from 0 to 1 over its `duration`. Frames must be idempotent in `t`: `finishCutscene()` replays the rest at `t = 1`.
+- The input is locked meanwhile: scroll, swipes, flings and arrows are dropped. At the end `moveInputTo` resyncs `scrollY` or the virtual finger, and scenes see the whole cutscene as one step.
+- Resize/rotation: `finishCutscene()` lands a running one first, then the position is clamped to the new stops. Reduced motion: cutscenes land at once.
+- Crossing needs more than 1px past a stop (`cutsceneCrossTolerance`): zoom makes `scrollY` fractional, and the resync after a cutscene must not read as a step back.
+- A dispatch step with `delta === 0` does nothing: the resync scroll would otherwise start Ale's run cycle.
+
+### Power-up (Bologna → Kyiv)
+
+- Ale starts with his hair (`image/ale/ale-slides.png`). Between Bologna and Kyiv, where a platform used to be, a ? block floats 260px over the ground (Ale's hair is 176px tall).
+- Walking under it plays the cutscene: settle → jump, head hits the block (it bumps and empties) → mushroom rises out of it → slides off the edge while Ale steps forward under it → drops onto his head → grow flicker into the shaved Ale (`ale-shave-slides.png`, `#ale.ale-shaved`).
+- `ale.isShaved` never resets: Ale stays shaved going back, at the start too, until a reload. A jump past the block shaves him at once (`usePowerUp`).
+- `handlePowerUp()` runs before `handlePipes()`: on a jump the pipes zero the delta it reads.
+- Block and mushroom are original pixel art (inline SVG); the mushroom starts inside the block, which paints over it. `#ale` carries the shaved sheet as an off-box background so it is loaded before the flicker.
 
 ### Touch layout (mobile)
 
@@ -205,7 +236,8 @@ How `gameConfig` timings chain. Changing one link shifts everything after it.
 | RUN → playable     | `RUN` (3 × 110 + 250) → `runBlankDuration` 120 → `world.riseDuration` 1000 (also the CSS transition) → scroll on + `ale.introDrop.duration` 500                                                                 | ≈ 1.7 s to scroll, 2.2 s to run          |
 | Jump               | `jump.upDuration` 300 (`jump.height` px) → `jump.downDuration` 300; falling off: `fallDuration` 300                                                                                                             | 600                                      |
 | Swim stroke        | up `swim.upMsPerPx` × delta → down `swim.downMsPerPx` × delta; delta ≤ sea height − Ale height                                                                                                                  | down = 2 × up                            |
-| Sea shift          | `seaShiftStep` px every `seaShiftInterval` (1 px/ms) over `seaShiftRatio` × viewport height                                                                                                                     | ≈ 540 at 720 px                          |
+| Pipe warp          | `cutscene.settleDuration` 250 → `pipes.sinkDuration` 800 (`sinkDepth` px) → `transitDuration` 700 (camera ± `world.seaShiftRatio` × viewport height) → `walkDuration` 700 (2 × `aleHalfWidth` px); back: reversed | ≈ 2.45 s                                 |
+| Power-up           | `cutscene.settleDuration` 250 → `powerUp.jumpDuration` 200 → `fallDuration` 250 (block bump) → `riseDuration` 500 → `stepDuration` 300 (`stepDistance` px) → `dropDuration` 250 → `growDuration` 700 (flicker every `growFlickerInterval` 100) | ≈ 2.45 s                                 |
 | Boss entry         | `enterDuration` (robot/squid 1000, alien 300) → `experience.piechartFadeDuration` 500 → 3 text pairs, `piechartTextStagger` 300 apart, `piechartTextDuration` 1000 each                                         | robot/squid 3100, alien 2400             |
 | Plants / buildings | item *i* starts at `stagger` × *i* (300), runs `duration` (800 / 1000)                                                                                                                                          | 1700 / 1600                              |
 | Sea animals        | animal *i* starts at `stagger` × *i* (100), swims `swimInDistance` px in `duration` 600                                                                                                                         | 600 + 100 × (n − 1)                      |
@@ -258,7 +290,7 @@ How `gameConfig` timings chain. Changing one link shifts everything after it.
 ## Images
 
 - Every image goes in its module's subfolder: `image/ale/`, `image/animation/`, `image/ending/`, `image/layers/`. **Never** in `image/` root.
-- About page: `image/certs/` (badges), `image/logos/` (tech marks).
+- About page: `image/certs/` (badges), `image/logos/` (tech marks), `image/about/` (career-map landmarks: WebP copies of the game's `image/layers/` art at 2× their largest displayed width; the game keeps the full-size PNGs).
 - `image/layers/urchin.png` and `urchin-eyes.png` are unused on purpose (future sea species). Don't delete them.
 
 ### Brand marks
@@ -308,7 +340,7 @@ Applies to `image/logos/` and the summary-pill company marks.
 - Baselines: `tests/visual-regression.spec.js-snapshots/`, per project and platform (`*-chromium-win32.png`, `*-mobile-portrait-win32.png`, `*-mobile-landscape-win32.png`).
 - Section tests click `RUN`, then `settleGameAnimations()` finishes jQuery animations and stops JS cycles (stars, alien steer) at rest.
 - The CSS animation kill switch doesn't reach JS-driven cycles; `stopFireworks()` clears fireworks.
-- `tests/game.spec.js`: behaviour in the real page (preloader, `gameConfig` freeze, scenes, scroll phases, end detection, touch layout and swipes, sitemap…). Desktop project only; its "Touch devices" block emulates a phone itself.
+- `tests/game.spec.js`: behaviour in the real page (preloader, `gameConfig` freeze, scenes, scroll phases, end detection, pipe warps, touch layout and swipes, sitemap…). Desktop project only; its "Touch devices" block emulates a phone itself.
 - `npm run test:update` only after inspecting the diffs, for intentional visual changes.
 
 ## SEO

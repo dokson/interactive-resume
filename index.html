@@ -250,8 +250,12 @@
                 </div>
                 <div id=gate-2>
                     <div class=gate-level-text id=gate-text-2-a>LEVEL 2</div>
-                    <div class=gate-level-subtext id=gate-text-2-b>LET'S DIVE IN</div>
+                    <div class=gate-level-subtext id=gate-text-2-b>WARP ZONE</div>
                 </div>
+                <div class=pipe-run id=pipe-dive-run></div>
+                <div class=pipe-shaft id=pipe-dive-shaft></div>
+                <div class=pipe-mouth id=pipe-dive-mouth></div>
+                <div class="elevation pipe-top" id=pipe-dive-top></div>
                 <div id=buildings-container>
                     <div class=building id=bologna></div>
                     <div class=building></div>
@@ -282,9 +286,11 @@
                         </div>
                     </div>
                 </div>
-                <div class=elevation id=elevation-2>
-                    <div class=ground></div>
-                    <div class=grass></div>
+                <div id=power-up-mushroom aria-hidden=true>
+                    <svg viewBox="0 0 14 13" shape-rendering=crispEdges><path fill="#e3171f" d="M4 1h6v1h-6zM2 2h10v1h-10zM1 3h12v4h-12z"/><path fill="#fff" d="M5 1h4v2h-4zM1 4h2v2h-2zM11 4h2v2h-2z"/><path fill="#ffe3b3" d="M4 8h6v4h-6z"/><path fill="#161616" d="M4 0h6v1h-6zM2 1h2v1h-2zM10 1h2v1h-2zM1 2h1v1h-1zM12 2h1v1h-1zM0 3h1v4h-1zM13 3h1v4h-1zM0 7h14v1h-14zM3 8h1v4h-1zM10 8h1v4h-1zM4 12h6v1h-6zM5 9h1v2h-1zM8 9h1v2h-1z"/></svg>
+                </div>
+                <div id=power-up-block aria-hidden=true>
+                    <svg viewBox="0 0 16 16" shape-rendering=crispEdges><path fill="#3d1d06" d="M0 0h16v16h-16z"/><g class=face-question><path fill="#f7b52c" d="M1 1h14v14h-14z"/><path fill="#ffe08a" d="M1 1h14v1h-14zM1 2h1v13h-1z"/><path fill="#c97d10" d="M2 14h13v1h-13zM14 2h1v12h-1z"/><path fill="#3d1d06" d="M2 2h1v1h-1zM13 2h1v1h-1zM2 13h1v1h-1zM13 13h1v1h-1z"/><path fill="#3d1d06" transform="translate(1 1)" d="M6 3h4v1h-4zM5 4h2v1h-2zM9 4h2v2h-2zM8 6h2v1h-2zM7 7h2v2h-2zM7 10h2v2h-2z"/><path fill="#fff" d="M6 3h4v1h-4zM5 4h2v1h-2zM9 4h2v2h-2zM8 6h2v1h-2zM7 7h2v2h-2zM7 10h2v2h-2z"/></g><g class=face-used><path fill="#a8642a" d="M1 1h14v14h-14z"/><path fill="#cf8a4a" d="M1 1h14v1h-14zM1 2h1v13h-1z"/><path fill="#6e3a12" d="M2 14h13v1h-13zM14 2h1v12h-1z"/><path fill="#3d1d06" d="M2 2h1v1h-1zM13 2h1v1h-1zM2 13h1v1h-1zM13 13h1v1h-1z"/></g></svg>
                 </div>
                 <div id=ground-and-grass-container-1>
                     <div class=ground></div>
@@ -611,7 +617,6 @@
                     <div id=bubble-container>
                         <div id=bubble></div>
                     </div>
-                    <div class=ladder></div>
                 </div>
                 <div id=sea-floor></div>
                 <div class=ribbon-absolute id=ribbon-2-1>
@@ -791,6 +796,10 @@
                     <div class=gate-level-text id=gate-text-3-a>LEVEL 3</div>
                     <div class=gate-level-subtext id=gate-text-3-b>CAREER</div>
                 </div>
+                <div class=pipe-run id=pipe-climb-run></div>
+                <div class=pipe-shaft id=pipe-climb-shaft></div>
+                <div class=pipe-mouth id=pipe-climb-mouth></div>
+                <div class="elevation pipe-top" id=pipe-climb-top></div>
                 <div id=gate-4>
                     <h2 class=visually-hidden>Certifications</h2>
                     <div class=gate-level-text id=gate-text-4-a>LEVEL 4</div>
@@ -978,6 +987,9 @@
     <script src=dist/init.min.js></script>
     <script src=dist/ale.min.js></script>
     <script src=dist/layers.min.js></script>
+    <script src=dist/cutscene.min.js></script>
+    <script src=dist/pipes.min.js></script>
+    <script src=dist/powerup.min.js></script>
     <script src=dist/animation.min.js></script>
     <script src=dist/ending.min.js></script>
     <script src=dist/state.min.js></script>

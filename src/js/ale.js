@@ -3,31 +3,15 @@ function setAleFrame(frameIndex) {
     aleFramesDiv.style.left = `${-1 * frameIndex * gameConfig.ale.frameWidth}px`
 }
 
-function shiftAleToGroundLevel() {
-    $(aleContainerDiv).stop().animate({
-        bottom: `${containerDiv.offsetHeight - groundAndGrassContainer1Div.offsetTop}px`
-    }, gameConfig.ale.snapDuration)
-}
-
-function shiftAleToSeaFloor() {
-    $(aleContainerDiv).stop().animate({
-        bottom: `${seaFloorDiv.offsetHeight}px`
-    }, gameConfig.ale.snapDuration)
-}
-
 function positionLayerHorizontalToTop() {
     if (ale.isSwimming) {
         setShiftUpLayerHorizontalDistance();
-        for (const layer of layerHorizontalArray) layer.style.top = `${-shiftUpLayerHorizontalDistance}px`;
-        for (const layer of layerVerticalArray) layer.style.bottom = `${shiftUpLayerHorizontalDistance}px`
+        shiftCamera(shiftUpLayerHorizontalDistance)
     }
 }
 
 function positionLayerHorizontalToBottom() {
-    if (!ale.isSwimming) {
-        for (const layer of layerHorizontalArray) layer.style.top = "0px";
-        for (const layer of layerVerticalArray) layer.style.bottom = "0px"
-    }
+    if (!ale.isSwimming) shiftCamera(0)
 }
 
 // ─── Ale: jump & fall ────────────────────────────────────────────────────────

@@ -591,16 +591,44 @@ html::-webkit-scrollbar {
     display: none
 }
 
-#elevation-1,
-#elevation-2 {
+#elevation-1 {
     left: 4380px;
     bottom: 20%;
     width: 400px;
     height: 120px
 }
 
-#elevation-2 {
-    left: 6080px
+/* Power-up (powerup.js) between Bologna and Kyiv: the ? block in the air, 260px over the ground (clear of
+   Ale's hair, 176px), and its mushroom, hidden inside it until the block is hit. Original pixel art. */
+#power-up-block,
+#power-up-mushroom {
+    position: absolute;
+    bottom: calc(20% + 260px)
+}
+
+#power-up-block {
+    left: 6248px;
+    width: 64px;
+    height: 64px
+}
+
+#power-up-mushroom {
+    left: 6252px;
+    width: 56px;
+    height: 52px;
+    visibility: hidden
+}
+
+#power-up-block svg,
+#power-up-mushroom svg {
+    display: block;
+    width: 100%;
+    height: 100%
+}
+
+.power-up-used .face-question,
+#power-up-block:not(.power-up-used) .face-used {
+    display: none
 }
 
 #elevation-3,
@@ -840,13 +868,42 @@ html::-webkit-scrollbar {
     background: url(../image/layers/gates-sprite.png) no-repeat 0 0;
 }
 
+/* Level 2: a wooden sign on two posts over the dive pipe (original art, CSS only). Its bottom clears Ale's
+   head while he stands on the pipe; the posts stand either side of the pipe, the ▼ points into it. */
 #gate-2 {
     position: absolute;
-    left: 7780px;
-    bottom: 20%;
-    width: 320px;
+    left: 7790px;
+    bottom: calc(20% + 300px);
+    box-sizing: border-box;
+    width: 300px;
+    height: 110px;
+    border: 4px solid #4a2a10;
+    border-radius: 8px;
+    background: repeating-linear-gradient(180deg, #c8843c 0 30px, #a8662a 30px 34px);
+    box-shadow: inset 0 -6px #8a521f, inset 0 4px #e0a060
+}
+
+#gate-2::before,
+#gate-2::after {
+    content: "";
+    position: absolute
+}
+
+#gate-2::before {
+    top: calc(100% + 4px);
+    left: 36px;
+    width: 228px;
     height: 300px;
-    background-image: url(../image/layers/gate.png);
+    background: linear-gradient(90deg, #4a2a10 0 3px, #a8662a 3px 13px, #4a2a10 13px 16px, transparent 16px calc(100% - 16px), #4a2a10 calc(100% - 16px) calc(100% - 13px), #a8662a calc(100% - 13px) calc(100% - 3px), #4a2a10 calc(100% - 3px))
+}
+
+#gate-2::after {
+    top: calc(100% + 14px);
+    left: calc(50% - 20px);
+    border-top: 24px solid #fff;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    filter: drop-shadow(3px 3px 0 #4a2a10)
 }
 
 #gate-3 {
@@ -856,6 +913,114 @@ html::-webkit-scrollbar {
     width: 298px;
     height: 316px;
     background: url(../image/layers/gates-sprite.png) no-repeat 0 -620px;
+}
+
+/* Super Mario pipes between the levels (pipes.js): the top mouth on the land (also an .elevation Ale stands
+   on), its shaft down through the ground, the run along the sea floor and the side mouth in the sea's wall.
+   z-index 1 puts every part in front of Ale (#ale-container) so he vanishes into the mouths; nothing else
+   overlaps them. Original pixel art: hard-stop gradients, the highlight on the left or on top. */
+.pipe-top,
+.pipe-shaft,
+.pipe-run,
+.pipe-mouth {
+    --pipe-stops: #0e3a17 0 3%, #2f8f3a 3% 8%, #9be05a 8% 22%, #46b04f 22% 62%, #2f8f3a 62% 67%, #46b04f 67% 72%, #2f8f3a 72% 97%, #0e3a17 97%;
+    position: absolute;
+    z-index: 1
+}
+
+.pipe-top {
+    bottom: 20%;
+    width: 160px;
+    height: 120px
+}
+
+.pipe-top::before,
+.pipe-top::after {
+    content: "";
+    position: absolute
+}
+
+.pipe-top::before,
+.pipe-top::after,
+.pipe-shaft {
+    background: linear-gradient(90deg, var(--pipe-stops))
+}
+
+.pipe-run,
+.pipe-mouth {
+    background: linear-gradient(180deg, var(--pipe-stops))
+}
+
+/* The lip: wider than the body, outlined above and below */
+.pipe-top::before {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    box-shadow: inset 0 4px #0e3a17, inset 0 -4px #0e3a17
+}
+
+.pipe-top::after {
+    left: 8px;
+    top: 40px;
+    width: 144px;
+    height: 80px
+}
+
+.pipe-shaft {
+    top: 80%;
+    width: 144px;
+    height: 90%
+}
+
+/* On the sea floor (top: 170%), under the shaft's foot */
+.pipe-run {
+    top: calc(170% - 144px);
+    height: 144px
+}
+
+.pipe-mouth {
+    top: calc(170% - 152px);
+    width: 40px;
+    height: 160px;
+    box-shadow: inset 4px 0 #0e3a17, inset -4px 0 #0e3a17
+}
+
+/* Level 1 → 2: under the LEVEL 2 sign, out of the sea's left wall */
+#pipe-dive-top {
+    left: 7860px
+}
+
+#pipe-dive-shaft {
+    left: 7868px
+}
+
+#pipe-dive-run {
+    left: 7940px;
+    width: 160px
+}
+
+/* The side lip sits 16px in the wall */
+#pipe-dive-mouth {
+    left: 8084px
+}
+
+/* Level 2 → 3: out of the sea's right wall, up under the LEVEL 3 gate's arch */
+#pipe-climb-mouth {
+    left: 13296px
+}
+
+#pipe-climb-run {
+    left: 13320px;
+    width: 179px
+}
+
+#pipe-climb-shaft {
+    left: 13427px
+}
+
+#pipe-climb-top {
+    left: 13419px
 }
 
 #gate-4 {
@@ -902,16 +1067,17 @@ html::-webkit-scrollbar {
 #gate-text-2-a,
 #gate-text-2-b {
     left: 0;
-    width: 280px;
-    color: #fff
+    width: 100%;
+    color: #fff;
+    text-shadow: 3px 3px 0 #4a2a10
 }
 
 #gate-text-2-a {
-    top: 22px
+    top: 20px
 }
 
 #gate-text-2-b {
-    top: 68px
+    top: 64px
 }
 
 #gate-text-3-a,
@@ -1088,15 +1254,6 @@ img {
     right: 760px;
     width: 480px;
     height: 440px
-}
-
-.ladder {
-    position: absolute;
-    right: 5px;
-    top: -96px;
-    width: 156px;
-    height: 200%;
-    background-image: url(../image/layers/ladder.png);
 }
 
 .layer-horizontal {
@@ -1697,12 +1854,15 @@ img {
     }
 }
 
+/* The shaved sheet rides along as an off-box background so it is loaded before the power-up's flicker
+   needs it (a background only starts loading when shown). */
 #ale {
     position: relative;
     left: -50%;
     width: 200px;
     height: 185px;
-    overflow: hidden
+    overflow: hidden;
+    background: url(../image/ale/ale-shave-slides.png) no-repeat -9999px 0
 }
 
 #ale-container {
@@ -1721,11 +1881,16 @@ img {
     background-image: url(../image/ale/ale-eyes-close.png)
 }
 
+/* Ale starts with his hair; the power-up mushroom shaves him (#ale.ale-shaved, powerup.js). */
 #ale-slides {
     left: 0;
     top: 0;
     width: 1800px;
     height: 400px;
+    background-image: url(../image/ale/ale-slides.png)
+}
+
+.ale-shaved #ale-slides {
     background-image: url(../image/ale/ale-shave-slides.png)
 }
 

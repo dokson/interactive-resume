@@ -9,6 +9,8 @@ var ale = {
     isSwimming: false,
     isBelowSeaLevel: false,
     isHappy: false,
+    // Starts with his hair (ale-slides.png); the power-up mushroom shaves him for good (powerup.js)
+    isShaved: false,
     swimUpHeight: undefined,
     canRunSwim: undefined,
     startFrame: undefined,
@@ -38,6 +40,8 @@ var scrollState = {
     previousPosition: 0,
     delta: 0,
     layersMovement: undefined,
+    // 1 and 3 are on land, 2 is the sea (pipes.js): which side of the pipes Ale is on
+    level: 1,
     canScrollOrSwipe: undefined,
     touchStartX: 0,
     touchCurrentX: 0,
@@ -73,8 +77,7 @@ var timers = {
     stars: undefined,
     alienEyes: undefined,
     scrollText: undefined,
-    shiftUpLayer: undefined,
-    shiftDownLayer: undefined,
+    cutscene: undefined,
     fireworks: undefined,
     launchWalk: undefined,
     fling: undefined
@@ -112,6 +115,44 @@ var seaFloorDiv = document.getElementById("sea-floor");
 var seaFloorFrontObjectArray = [];
 var seaFloorBackObjectArray = [];
 var bubbleDiv = document.getElementById("bubble");
+
+// ─── Pipes: Super Mario warps between the levels (pipes.js) ─────────────────
+/**
+ * @typedef {object} Pipe
+ * @property {HTMLElement} topDiv  mouth on top, standing on the land; also an .elevation Ale stands on
+ * @property {HTMLElement} mouthDiv  mouth in the sea's wall, facing the water
+ * @property {number} landLevel  the land level it joins to the sea
+ * @property {1|-1} towardSea  scroll direction from the top mouth to the side one
+ */
+
+/** @returns {Pipe} */
+function createPipe(name, landLevel, towardSea) {
+    return {
+        topDiv: document.getElementById(`pipe-${name}-top`),
+        mouthDiv: document.getElementById(`pipe-${name}-mouth`),
+        landLevel,
+        towardSea
+    };
+}
+
+var divePipe = createPipe("dive", 1, 1);
+var climbPipe = createPipe("climb", 3, -1);
+var pipes = [divePipe, climbPipe];
+
+// ─── Power-up: the ? block and its mushroom between Bologna and Kyiv (powerup.js) ─
+var powerUpBlockDiv = document.getElementById("power-up-block");
+var powerUpMushroomDiv = document.getElementById("power-up-mushroom");
+
+// ─── Namespace: cutscene playing now (cutscene.js) ──────────────────────────
+// Its steps (start once, then frame(t) with t from 0 to 1) and where it began and ends.
+var cutscene = {
+    isActive: false,
+    steps: [],
+    stepIndex: 0,
+    startPosition: 0,
+    endPosition: 0,
+    onEnd: undefined
+};
 
 // ─── DOM elements: about section (plants & buildings) ───────────────────────
 var about1ContainerDiv = document.getElementById("plants-container");

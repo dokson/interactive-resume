@@ -21,6 +21,22 @@ async function scrollTo(page, position) {
 
 const maxScroll = (page) => page.evaluate(() => pageDiv.offsetHeight - containerDiv.offsetHeight);
 
+// Scrolls toward the target in steps a user could make (a jump wider than the viewport skips cutscenes)
+// until a cutscene (pipe warp, power-up) takes over.
+async function walkUntilCutscene(page, target) {
+    await page.evaluate(async (y) => {
+        const from = scrollState.position;
+        const steps = Math.ceil(Math.abs(y - from) / 100);
+        for (let i = 1; i <= steps && !cutscene.isActive; i++) {
+            window.scrollTo(0, from + (y - from) * i / steps);
+            await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        }
+    }, target);
+    expect(await page.evaluate(() => cutscene.isActive)).toBe(true);
+}
+
+const cutsceneEnded = (page) => page.waitForFunction(() => !cutscene.isActive, null, { timeout: 10000 });
+
 test.describe('Preloader', () => {
     test('plays the tape-loading sequence, then waits for RUN', async ({ page }) => {
         await waitForRunPrompt(page);
@@ -278,17 +294,120 @@ test.describe('Touch devices', () => {
     });
 });
 
-test.describe('Sea', () => {
-    test('Ale swims inside the sea and walks again outside it', async ({ page }) => {
+test.describe('Pipes', () => {
+    const pipeStops = (page, name) => page.evaluate((pipeName) => getPipeStops(pipeName === 'dive' ? divePipe : climbPipe), name);
+
+    const state = (page) => page.evaluate(() => ({
+        level: scrollState.level,
+        position: scrollState.position,
+        scrollY: Math.round(window.scrollY),
+        isSwimming: ale.isSwimming,
+        aleBottom: aleContainerDiv.style.bottom,
+        cameraDepth: Math.max(0, -layerHorizontalArray[0].offsetTop),
+        seaFloorBottom: `${seaFloorDiv.offsetHeight}px`,
+        seaDepth: gameConfig.world.seaShiftRatio * containerDiv.offsetHeight
+    }));
+
+    test('walking into the level 1 pipe warps Ale to the sea floor, ignoring the scroll meanwhile', async ({ page }) => {
         await enterGame(page);
-        const { enter, exit } = await page.evaluate(() => ({
-            enter: Math.round(sea1Div.offsetLeft - ale.leftEdge + 50),
-            exit: Math.round(sea1Div.offsetLeft + sea1Div.offsetWidth - ale.rightEdge + 50)
-        }));
-        await scrollTo(page, enter);
-        expect(await page.evaluate(() => ale.isSwimming)).toBe(true);
-        await scrollTo(page, exit);
-        expect(await page.evaluate(() => ale.isSwimming)).toBe(false);
+        const dive = await pipeStops(page, 'dive');
+        await scrollTo(page, dive.land - 300);
+        await walkUntilCutscene(page, dive.land + 50);
+        await page.evaluate(() => window.scrollTo(0, window.scrollY + 2000));
+        await cutsceneEnded(page);
+        const after = await state(page);
+        expect(after).toMatchObject({ level: 2, position: dive.sea, scrollY: dive.sea, isSwimming: true, aleBottom: after.seaFloorBottom });
+        expect(after.cameraDepth).toBeCloseTo(after.seaDepth, 0);
+    });
+
+    test('walking back into the side mouth warps Ale onto the level 1 pipe', async ({ page }) => {
+        await enterGame(page);
+        const dive = await pipeStops(page, 'dive');
+        await scrollTo(page, dive.sea + 300);
+        await walkUntilCutscene(page, dive.sea - 50);
+        await cutsceneEnded(page);
+        const after = await state(page);
+        const pipeTopBottom = await page.evaluate(() => `${containerDiv.offsetHeight - divePipe.topDiv.offsetTop}px`);
+        expect(after).toMatchObject({ level: 1, position: dive.land, isSwimming: false, aleBottom: pipeTopBottom, cameraDepth: 0 });
+    });
+
+    test('the level 3 pipe climbs out of the sea and back down', async ({ page }) => {
+        await enterGame(page);
+        const climb = await pipeStops(page, 'climb');
+        await scrollTo(page, climb.sea - 300);
+        await walkUntilCutscene(page, climb.sea + 50);
+        await cutsceneEnded(page);
+        expect(await state(page)).toMatchObject({ level: 3, position: climb.land, isSwimming: false, cameraDepth: 0 });
+
+        await walkUntilCutscene(page, climb.land - 50);
+        await cutsceneEnded(page);
+        expect(await state(page)).toMatchObject({ level: 2, position: climb.sea, isSwimming: true });
+    });
+
+    test('a jump does not warp: it lands in the nearest level, never inside a pipe', async ({ page }) => {
+        await enterGame(page);
+        const dive = await pipeStops(page, 'dive');
+        await page.evaluate((y) => window.scrollTo(0, y), dive.land + 50);
+        await page.waitForFunction((y) => scrollState.position === y, dive.land);
+        expect(await page.evaluate(() => cutscene.isActive)).toBe(false);
+        expect(await state(page)).toMatchObject({ level: 1, isSwimming: false });
+
+        await scrollTo(page, dive.sea + 2000);
+        expect(await state(page)).toMatchObject({ level: 2, isSwimming: true });
+    });
+
+    test('a resize lands the warp at once, at the stops of the new viewport', async ({ page }) => {
+        await enterGame(page);
+        const dive = await pipeStops(page, 'dive');
+        await scrollTo(page, dive.land - 300);
+        await walkUntilCutscene(page, dive.land + 50);
+        await page.setViewportSize({ width: 1000, height: 720 });
+        await page.waitForFunction(() => !cutscene.isActive, null, { timeout: 1000 });
+        const narrowDive = await pipeStops(page, 'dive');
+        expect(await state(page)).toMatchObject({ level: 2, position: narrowDive.sea, isSwimming: true });
+    });
+
+    test('with reduced motion the warp lands at once', async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await enterGame(page);
+        const dive = await pipeStops(page, 'dive');
+        await scrollTo(page, dive.land - 300);
+        await page.evaluate((y) => window.scrollTo(0, y), dive.land + 50);
+        await page.waitForFunction((y) => scrollState.position === y, dive.sea);
+        expect(await state(page)).toMatchObject({ level: 2, isSwimming: true });
+    });
+});
+
+test.describe('Power-up', () => {
+    const look = (page) => page.evaluate(() => ({
+        isShaved: ale.isShaved,
+        sheet: getComputedStyle(aleFramesDiv).backgroundImage.split('/').pop().replace(/["')]/g, ''),
+        blockUsed: powerUpBlockDiv.classList.contains('power-up-used'),
+        mushroomVisible: getComputedStyle(powerUpMushroomDiv).visibility === 'visible',
+        position: scrollState.position
+    }));
+
+    test('Ale starts with his hair, takes the mushroom under the ? block and stays shaved, back to the start too', async ({ page }) => {
+        await enterGame(page);
+        expect(await look(page)).toMatchObject({ isShaved: false, sheet: 'ale-slides.png', blockUsed: false });
+        const { stop, step } = await page.evaluate(() => ({ stop: getPowerUpStop(), step: gameConfig.powerUp.stepDistance }));
+        await scrollTo(page, stop - 300);
+        expect(await look(page)).toMatchObject({ isShaved: false, sheet: 'ale-slides.png' });
+
+        await walkUntilCutscene(page, stop + 50);
+        await cutsceneEnded(page);
+        expect(await look(page)).toMatchObject({ isShaved: true, sheet: 'ale-shave-slides.png', blockUsed: true, mushroomVisible: false, position: stop + step });
+
+        await scrollTo(page, 0);
+        expect(await look(page)).toMatchObject({ isShaved: true, sheet: 'ale-shave-slides.png', blockUsed: true });
+    });
+
+    test('a jump past the block shaves Ale at once, without the cutscene', async ({ page }) => {
+        await enterGame(page);
+        const stop = await page.evaluate(() => getPowerUpStop());
+        await scrollTo(page, stop + 2000);
+        expect(await page.evaluate(() => cutscene.isActive)).toBe(false);
+        expect(await look(page)).toMatchObject({ isShaved: true, sheet: 'ale-shave-slides.png', blockUsed: true });
     });
 });
 

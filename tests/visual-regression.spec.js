@@ -30,6 +30,8 @@ async function disableAnimations(page) {
 async function settleGameAnimations(page) {
     await page.evaluate(() => {
         for (let i = 0; i < 5; i++) $('[id^="experience-"] *').finish();
+        // Sea animals swim in staggered: once off screen they look settled before the last one has arrived.
+        for (const species of seaAnimalSpecies) $(species.animals).finish();
         clearRafInterval(timers.stars);
         for (const star of stars) star.style.filter = gameConfig.stars.palette[0];
         clearRafInterval(timers.blinkAleEyes);

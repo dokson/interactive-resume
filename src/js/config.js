@@ -49,7 +49,6 @@ var gameConfig = deepFreeze({
         edgeInset: 65,
         jump: { height: 300, upDuration: 300, downDuration: 300 },
         fallDuration: 300,
-        snapDuration: 300,
         swim: { upMsPerPx: 3, downMsPerPx: 6, minDownDistance: 100 },
         happy: { interval: 3000, handsUpDuration: 1000 },
         introDrop: { bottom: "20%", duration: 500 }
@@ -64,8 +63,6 @@ var gameConfig = deepFreeze({
         aleToRocketDistance: 300,
         endingCloudGap: 400,
         seaShiftRatio: 0.75,
-        seaShiftStep: 40,
-        seaShiftInterval: 40,
         aleMaxOffsetFromCenter: 332,
         rocketMaxOffsetFromCenter: 170,
         aleEndMarginRight: 20,
@@ -141,6 +138,33 @@ var gameConfig = deepFreeze({
         bubbleInterval: 3000,
         bubbleMsPerPx: 2,
         backObjectsBottomRatio: -0.7
+    },
+
+    // Shared by every cutscene (cutscene.js): the glide back onto the stop the scroll overshot.
+    cutscene: { settleDuration: 250 },
+
+    // Super Mario pipes between the levels (pipes.js). aleHalfWidth: half of Ale's drawn sprite, so he is
+    // hidden just inside a side mouth and clear of it just outside; sinkDepth: how far he sinks to vanish
+    // into a top mouth. A warp: settle → sink → transit (camera) → walk out, or the same in reverse.
+    pipes: { aleHalfWidth: 60, sinkDepth: 150, sinkDuration: 800, transitDuration: 700, walkDuration: 700 },
+
+    // Super Mario power-up between Bologna and Kyiv (powerup.js): settle → jump → head hits the block (it
+    // bumps) → mushroom rises out → it slides off the edge while Ale steps forward under it → it drops onto
+    // his head → grow flicker into the shaved Ale. In px: aleJumpReach and aleHeadTop are Ale's head above his
+    // feet in the jumpUp and idle frames of ale-slides.png (top rows 22 and 10 of 185); stepDistance is both
+    // Ale's step and the mushroom's slide from the block's centre, so it lands right on him.
+    powerUp: {
+        aleJumpReach: 163,
+        aleHeadTop: 175,
+        jumpDuration: 200,
+        fallDuration: 250,
+        bumpHeight: 12,
+        riseDuration: 500,
+        stepDistance: 60,
+        stepDuration: 300,
+        dropDuration: 250,
+        growDuration: 700,
+        growFlickerInterval: 100
     },
 
     // Original pixel-art star (happy face, Super Mario style): the yellow sprite cycles through a palette of CSS filters.
