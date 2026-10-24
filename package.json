@@ -20,6 +20,7 @@
         "deploy:generate-llms": "node src/build/generate-llms.js",
         "deploy:generate-robots": "node src/build/generate-robots.js",
         "deploy:generate-logo-sprite": "node src/build/generate-logo-sprite.js",
+        "deploy:version-assets": "node src/build/version-assets.js",
         "start": "npm run deploy",
         "test": "npx playwright test",
         "test:update": "npx playwright test --update-snapshots"
@@ -107,6 +108,10 @@
                 {
                     "name": "Generate logo sprite",
                     "script": "deploy:generate-logo-sprite"
+                },
+                {
+                    "name": "Version asset URLs",
+                    "script": "deploy:version-assets"
                 }
             ],
             "externalLibs": [

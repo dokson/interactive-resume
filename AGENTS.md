@@ -25,7 +25,11 @@ npm run deploy:copy-libs             # npm bundles (jQuery) → dist/
 npm run deploy:generate-llms         # llms.txt template → dist/llms.txt
 npm run deploy:generate-robots       # robots.txt template → dist/robots.txt
 npm run deploy:generate-logo-sprite  # image/logos/*.svg → <symbol> sprite dist/logos.svg
+npm run deploy:version-assets        # every dist/ URL in dist/*.html gets ?v=<content hash>; must stay last
 ```
+
+- Cache: Cloudflare gives static files a one-month browser cache, HTML ten minutes. Unversioned `dist/` URLs left phones on old JS/CSS under new HTML; `version-assets` changes a file's URL whenever its content changes.
+- Source HTML keeps plain `dist/…` URLs (tests and local preview serve them); only the built pages are versioned. Files outside `dist/` (images, fonts) are not versioned: give a changed one a new name.
 
 ## Architecture
 
