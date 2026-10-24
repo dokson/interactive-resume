@@ -416,7 +416,7 @@ main {
     box-shadow: 1px 1px 0 var(--ink);
 }
 
-/* Keeps a pill and the punctuation after it on the same line; a long name still wraps inside its pill. */
+/* Keeps a run on one line: a pill and the punctuation after it, a year range. A long pill name still wraps inside its pill. */
 .nobr {
     white-space: nowrap;
 }
@@ -733,12 +733,19 @@ mark {
     color: #fff;
 }
 
-/* The years live on the level strip above; each stage keeps them as visually-hidden text,
-   because the strip is aria-hidden. */
 .stage h3 {
     margin-bottom: 8px;
     font-size: 24px;
     line-height: 1.15;
+}
+
+/* The years also sit on the level strip above, but that strip is aria-hidden: each stage shows its own. */
+.stage-years {
+    margin: 0 0 8px;
+    color: var(--red-dark);
+    font-family: var(--font-ui);
+    font-size: 11px;
+    line-height: 1.4;
 }
 
 .at {
@@ -854,7 +861,7 @@ mark {
     transform: translateX(-50%);
 }
 
-/* bologna.png ends in a 63 px paved base (rows 463–525): crop it so the city stands on the grass. */
+/* The Bologna skyline ends in a paved base (its bottom 12%): crop it so the city stands on the grass. */
 .landmark-bologna {
     left: 16.7%;
     width: 26%;
